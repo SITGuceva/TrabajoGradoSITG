@@ -73,6 +73,9 @@ public partial class Default2 : System.Web.UI.Page
     /*evento que se llama cuando llenga las columnas*/
     protected void gvSysRol_RowDataBound(object sender, GridViewRowEventArgs e) { }
 
+    private void hola() { }
+
+
     public void cargarTabla()
     {
         /*     string sql = "";
