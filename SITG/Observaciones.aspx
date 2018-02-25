@@ -181,23 +181,13 @@
 
                                     <asp:BoundField DataField="OBS_CODIGO" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:BoundField DataField="OBS_DESCRIPCION" HeaderText="Descripción" HeaderStyle-HorizontalAlign="Center" />
-                                    <asp:BoundField DataField="OBS_FECHA" HeaderText="Fecha" HeaderStyle-HorizontalAlign="Center" />
+                               
 
-                                    <asp:TemplateField HeaderText="Estado">
-                                        <EditItemTemplate>
-                                            <asp:DropDownList ID="estado" runat="server">
-                                                <asp:ListItem Value="ACTIVO">ACTIVO</asp:ListItem>
-                                                <asp:ListItem Value="INACTIVO">INACTIVO</asp:ListItem>
-                                            </asp:DropDownList>
-                                        </EditItemTemplate>
-                                        <ItemTemplate>
-                                            <asp:Label ID="Label1" runat="server" Text='<%# Bind("OBS_ESTADO") %>'></asp:Label>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
+                                   
 
                                     <asp:CommandField ShowDeleteButton="true" HeaderText="Eliminar" ShowHeader="true"></asp:CommandField>
 
-                                    <asp:TemplateField>
+                                    <asp:TemplateField HeaderText="Modificar">
                                         <ItemTemplate>
                                             <asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" />
                                         </ItemTemplate>

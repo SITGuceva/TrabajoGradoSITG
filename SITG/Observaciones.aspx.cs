@@ -30,7 +30,7 @@ public partial class Observaciones : Conexion
         BtCancelar.Enabled = true;
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
         string sql = "", texto = "sql registrado correctamente";
-        sql = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION ,PROP_CODIGO, OBS_FECHA) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Text + "', '" + TBcodigo.Text + "' , TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
+        sql = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Text + "','Comite', '" + TBcodigo.Text + "')";
         Ejecutar(texto, sql);
         cargarTabla();
         Resultado.Visible = true;
@@ -38,6 +38,7 @@ public partial class Observaciones : Conexion
 
     protected void Buscar_observacion(object sender, EventArgs e)
     {
+
         Linfo.Visible = true;
 
         if (string.IsNullOrEmpty(TBcodigo.Text) == true)
@@ -189,7 +190,7 @@ public partial class Observaciones : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION, OBS_FECHA,  OBS_ESTADO FROM OBSERVACION  WHERE PROP_CODIGO ='" + TBcodigo.Text + "'";
+                sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='" + TBcodigo.Text + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -248,7 +249,7 @@ public partial class Observaciones : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "select CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) as integrantes from estudiante e, usuario u  where e.propuesta_prop_codigo = '" + TBcodigo.Text + "' and u.usu_username = e.usu_username";
+                sql = "select CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) as integrantes from estudiante e, usuario u  where e.prop_codigo = '" + TBcodigo.Text + "' and u.usu_username = e.usu_username";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -358,12 +359,11 @@ public partial class Observaciones : Conexion
         GridViewRow row = (GridViewRow)gvSysRol.Rows[e.RowIndex];
         if (conn != null)
         {
-            DropDownList combo = gvSysRol.Rows[e.RowIndex].FindControl("estado") as DropDownList;
-            string estado = combo.SelectedValue;
+          
             TextBox observacion = (TextBox)row.Cells[1].Controls[0];
             TextBox codigo = (TextBox)gvSysRol.Rows[e.RowIndex].Cells[0].Controls[0];
 
-            string sql = "update observacion set obs_descripcion = '" + observacion.Text + "', obs_estado='"+estado+"' where  obs_codigo ='" + codigo.Text + "'";
+            string sql = "update observacion set obs_descripcion = '" + observacion.Text + "' where  obs_codigo ='" + codigo.Text + "'";
             Linfo.Text = sql;
             
             cmd = new OracleCommand(sql, conn);
@@ -388,7 +388,6 @@ public partial class Observaciones : Conexion
         gvSysRol.Rows[indice].Cells[0].Enabled = false;
         gvSysRol.Rows[indice].Cells[2].Enabled = false;
 
-        DropDownList combo = gvSysRol.Rows[e.NewEditIndex].FindControl("estado") as DropDownList;
 
         /*if (combo != null)
         {
