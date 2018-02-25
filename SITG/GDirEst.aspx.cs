@@ -25,16 +25,12 @@ public partial class GDirEst : Conexion
         string sql2 = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido)from profesor p, usuario u where u.usu_username=p.usu_username";
         DDLlista.Items.AddRange(con.cargardatos(sql2));
 
-        RevisarExiste();
-        
-
-        SolicitudHecha();
-
-        
+        RevisarExiste();    
+        SolicitudHecha();     
     }
 
 
-    private void RevisarExiste()
+    private void RevisarExiste() //Saber si existe la propuesta
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
@@ -51,19 +47,10 @@ public partial class GDirEst : Conexion
                 {
                     LBSolicitar.Enabled = false;
                     LBSolicitar.ForeColor = System.Drawing.Color.Gray;
-
-
-                }
-                else
-                {
-
+                } else{
                     LBSolicitar.Enabled = true;
                     LBSolicitar.ForeColor = System.Drawing.Color.Black;
                     prop_codigo= drc1.GetInt32(0);
-
-
-
-
                 }
             }
             drc1.Close();
@@ -71,42 +58,33 @@ public partial class GDirEst : Conexion
     }
 
 
-    private void  SolicitudAceptada()
-    {
-        string sql = "SELECT SOL_ESTADO FROM SOLICITUD_DIR WHERE PROP_CODIGO ='"+prop_codigo+"'";
-        List<string> list = con.consulta(sql, 1, 0);
-        string estado = list[0];
-
-        if (estado.Equals("Rechazada")){
-            LBSolicitar.Enabled = true;
-            LBSolicitar.ForeColor = System.Drawing.Color.Black;
-           
-        }else{
-            SolicitudHecha();
-        }       
-    }
-
-
-
-    private void SolicitudHecha()
+    private void SolicitudHecha() //Si la solicitud existe y depende del estado se habilita o no la opcion
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
-            string sql = "SELECT PROP_CODIGO FROM SOLICITUD_DIR WHERE PROP_CODIGO ='" + prop_codigo + "'";
-
+        if (conn != null){
+            string sql = "SELECT SOL_ESTADO FROM SOLICITUD_DIR WHERE PROP_CODIGO ='" + prop_codigo + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
             if (drc1.HasRows)
-            {
-                SolicitudAceptada();
-                LBSolicitar.Enabled = false;
-                LBSolicitar.ForeColor = System.Drawing.Color.Gray;
-      
-            }
+            {               
+                if (drc1.IsDBNull(0)){
+                    LBSolicitar.Enabled = true;
+                    LBSolicitar.ForeColor = System.Drawing.Color.Black;
+                }else{
 
+                    string estado = drc1.GetString(0);                   
+                    if (estado.Equals("Rechazado")){
+                        LBSolicitar.Enabled = true;
+                        LBSolicitar.ForeColor = System.Drawing.Color.Black;
+                    } else{
+                        LBSolicitar.Enabled = false;
+                        LBSolicitar.ForeColor = System.Drawing.Color.Gray;
+                    }
+                }
+            }
+            drc1.Close();          
         }
     }
 
@@ -118,7 +96,7 @@ public partial class GDirEst : Conexion
         Linfo.Visible = true;
                 string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
 
-                string sql = "insert into solicitud_dir (SOL_ID, SOL_FECHA, SOL_ESTADO, PROP_CODIGO, USU_USERNAME) values(SOLICITUD_DIR_SEQUENCE.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'Pendiente', '"+prop_codigo+"','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
+                string sql = "insert into solicitud_dir (SOL_ID, SOL_FECHA, SOL_ESTADO, PROP_CODIGO, USU_USERNAME) values(SOLICITUDID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'Pendiente', '"+prop_codigo+"','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
 
                 string texto = "Datos agregados satisfactoriamente";
        
