@@ -13,7 +13,7 @@
     <link href="~/Content/Menu.css" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
+<body onkeypress="return pulsar(event)">
     <font size="2" color="White" face="Arial, Bold italic">  <%--revisar--%>
  
     <form runat="server">
