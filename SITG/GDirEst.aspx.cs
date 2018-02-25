@@ -26,7 +26,11 @@ public partial class GDirEst : Conexion
         DDLlista.Items.AddRange(con.cargardatos(sql2));
 
         RevisarExiste();
+        
 
+        SolicitudHecha();
+
+        
     }
 
 
@@ -67,16 +71,57 @@ public partial class GDirEst : Conexion
     }
 
 
+    private void  SolicitudAceptada()
+    {
+        string sql = "SELECT SOL_ESTADO FROM SOLICITUD_DIR WHERE PROP_CODIGO ='"+prop_codigo+"'";
+        List<string> list = con.consulta(sql, 1, 0);
+        string estado = list[0];
+
+        if (estado.Equals("Rechazada")){
+            LBSolicitar.Enabled = true;
+            LBSolicitar.ForeColor = System.Drawing.Color.Black;
+           
+        }else{
+            SolicitudHecha();
+        }       
+    }
+
+
+
+    private void SolicitudHecha()
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            string sql = "SELECT PROP_CODIGO FROM SOLICITUD_DIR WHERE PROP_CODIGO ='" + prop_codigo + "'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows)
+            {
+                SolicitudAceptada();
+                LBSolicitar.Enabled = false;
+                LBSolicitar.ForeColor = System.Drawing.Color.Gray;
+      
+            }
+
+        }
+    }
+
 
 
     protected void Aceptar(object sender, EventArgs e)
     {
-                
+      
+        Linfo.Visible = true;
                 string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
 
                 string sql = "insert into solicitud_dir (SOL_ID, SOL_FECHA, SOL_ESTADO, PROP_CODIGO, USU_USERNAME) values(SOLICITUD_DIR_SEQUENCE.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'Pendiente', '"+prop_codigo+"','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
 
-                string texto = "Datos modificados satisfactoriamente";
+                string texto = "Datos agregados satisfactoriamente";
+       
                 Ejecutar(texto, sql);
 
     }
@@ -85,11 +130,16 @@ public partial class GDirEst : Conexion
     protected void Solicitar(object sender, EventArgs e)
     {
         Solicitar2.Visible = true;
+        resultado.Visible = false;
+        consulta2.Visible = false;
+        Linfo.Visible = false;
     }
 
 
     protected void  Consultar(object sender, EventArgs e)
     {
+        Linfo.Visible = true;
+        Solicitar2.Visible = false;
         consulta2.Visible = true;
         resultado.Visible = true;
         cargarTabla();
@@ -104,6 +154,8 @@ public partial class GDirEst : Conexion
     /*evento que cambia la pagina de la tabla*/
     protected void gvSysDatosConsulta_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
+        gvSysDatosConsulta.PageIndex = e.NewPageIndex;
+        cargarTabla();// la consulta a la base de datos
 
     }
 
@@ -163,8 +215,10 @@ public partial class GDirEst : Conexion
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
+
         if (info.Equals("Funciono"))
         {
+          
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = texto;
         }
