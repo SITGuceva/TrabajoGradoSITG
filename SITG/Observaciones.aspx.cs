@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Observaciones : Conexion
@@ -32,6 +31,7 @@ public partial class Observaciones : Conexion
         string sql = "", texto = "sql registrado correctamente";
         sql = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Text + "','Comite', '" + TBcodigo.Text + "')";
         Ejecutar(texto, sql);
+        TBdescripcion.Text = "";
         cargarTabla();
         Resultado.Visible = true;
     }
@@ -156,18 +156,18 @@ public partial class Observaciones : Conexion
     }
 
     /*evento que cambia la pagina de la tabla*/
-    protected void gvSysRol_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    protected void gvObservaciones_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         BtCancelar.Visible = true;
         BtCancelar.Enabled = true;
         BTagregar.Enabled = true;
         TBdescripcion.Enabled = true;
-        gvSysRol.PageIndex = e.NewPageIndex;
+        gvObservaciones.PageIndex = e.NewPageIndex;
         cargarTabla();// la consulta a la base de datos
     }
 
     /*evento que se llama cuando llenga las columnas*/
-    protected void gvSysRol_RowDataBound(object sender, GridViewRowEventArgs e) {
+    protected void gvObservaciones_RowDataBound(object sender, GridViewRowEventArgs e) {
 
         BtCancelar.Visible = true;
         BtCancelar.Enabled = true;
@@ -199,12 +199,12 @@ public partial class Observaciones : Conexion
                   
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    gvSysRol.DataSource = dataTable;
+                    gvObservaciones.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
 
-                gvSysRol.DataBind();
+                gvObservaciones.DataBind();
 
             }
             conn.Close();
@@ -216,18 +216,18 @@ public partial class Observaciones : Conexion
     }
 
     /*evento que cambia la pagina de la tabla*/
-    protected void gvSysDatosPropuesta_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    protected void gvDatosPropuesta_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         BtCancelar.Visible = true;
         BtCancelar.Enabled = true;
         BTagregar.Enabled = true;
         TBdescripcion.Enabled = true;
-        gvSysRol.PageIndex = e.NewPageIndex;
+        gvObservaciones.PageIndex = e.NewPageIndex;
         cargarTabla();// la consulta a la base de datos
     }
 
     /*evento que se llama cuando llenga las columnas*/
-    protected void gvSysDatosPropuesta_RowDataBound(object sender, GridViewRowEventArgs e)
+    protected void gvDatosPropuesta_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         BtCancelar.Visible = true;
         BtCancelar.Enabled = true;
@@ -257,12 +257,12 @@ public partial class Observaciones : Conexion
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    gvSysDatosPropuesta.DataSource = dataTable;
+                    gvDatosPropuesta.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
 
-                gvSysDatosPropuesta.DataBind();
+                gvDatosPropuesta.DataBind();
 
             }
             conn.Close();
@@ -275,18 +275,18 @@ public partial class Observaciones : Conexion
 
 
     /*evento que cambia la pagina de la tabla*/
-    protected void gvSysDatosTitulo_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    protected void gvTitulo_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         BtCancelar.Visible = true;
         BtCancelar.Enabled = true;
         BTagregar.Enabled = true;
         TBdescripcion.Enabled = true;
-        gvSysRol.PageIndex = e.NewPageIndex;
+        gvObservaciones.PageIndex = e.NewPageIndex;
         cargarTabla();// la consulta a la base de datos
     }
 
     /*evento que se llama cuando llenga las columnas*/
-    protected void gvSysDatosTitulo_RowDataBound(object sender, GridViewRowEventArgs e)
+    protected void gvTitulo_RowDataBound(object sender, GridViewRowEventArgs e)
     {
         BtCancelar.Visible = true;
         BtCancelar.Enabled = true;
@@ -312,12 +312,12 @@ public partial class Observaciones : Conexion
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    gvSysDatosTitulo.DataSource = dataTable;
+                    gvTitulo.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
 
-                gvSysDatosTitulo.DataBind();
+                gvTitulo.DataBind();
 
             }
             conn.Close();
@@ -329,13 +329,13 @@ public partial class Observaciones : Conexion
     }
 
 
-    protected void gvSysRol_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    protected void gvObservaciones_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-            string id = gvSysRol.Rows[e.RowIndex].Cells[0].Text;
+            string id = gvObservaciones.Rows[e.RowIndex].Cells[0].Text;
            
            // Label lbldeleteID = (Label)gvSysRol.Rows[e.RowIndex].FindControl("lblstId");
                 string sql = "Delete from observacion where OBS_CODIGO='" + id + "'";
@@ -351,17 +351,17 @@ public partial class Observaciones : Conexion
         }
 
 
-    protected void gvSysRol_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    protected void gvObservaciones_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
 
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        GridViewRow row = (GridViewRow)gvSysRol.Rows[e.RowIndex];
+        GridViewRow row = (GridViewRow)gvObservaciones.Rows[e.RowIndex];
         if (conn != null)
         {
           
             TextBox observacion = (TextBox)row.Cells[1].Controls[0];
-            TextBox codigo = (TextBox)gvSysRol.Rows[e.RowIndex].Cells[0].Controls[0];
+            TextBox codigo = (TextBox)gvObservaciones.Rows[e.RowIndex].Cells[0].Controls[0];
 
             string sql = "update observacion set obs_descripcion = '" + observacion.Text + "' where  obs_codigo ='" + codigo.Text + "'";
             Linfo.Text = sql;
@@ -372,7 +372,7 @@ public partial class Observaciones : Conexion
             {
 
                 //Setting the EditIndex property to -1 to cancel the Edit mode in Gridview  
-                gvSysRol.EditIndex = -1;
+                gvObservaciones.EditIndex = -1;
                 //Call ShowData method for displaying updated data  
 
                 cargarTabla();
@@ -380,13 +380,13 @@ public partial class Observaciones : Conexion
         }
     }
 
-    protected void gvSysRol_RowEditing(object sender, GridViewEditEventArgs e)
+    protected void gvObservaciones_RowEditing(object sender, GridViewEditEventArgs e)
     {
         //NewEditIndex property used to determine the index of the row being edited.  
-        int indice= gvSysRol.EditIndex = e.NewEditIndex;
+        int indice= gvObservaciones.EditIndex = e.NewEditIndex;
         cargarTabla();
-        gvSysRol.Rows[indice].Cells[0].Enabled = false;
-        gvSysRol.Rows[indice].Cells[2].Enabled = false;
+        gvObservaciones.Rows[indice].Cells[0].Enabled = false;
+        gvObservaciones.Rows[indice].Cells[2].Enabled = false;
 
 
         /*if (combo != null)
@@ -400,10 +400,10 @@ public partial class Observaciones : Conexion
         combo.SelectedValue = Convert.ToString(row["pais"]);*/
     }
 
-    protected void gvSysRol_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    protected void gvObservaciones_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
         //Setting the EditIndex property to -1 to cancel the Edit mode in Gridview  
-        gvSysRol.EditIndex = -1;
+        gvObservaciones.EditIndex = -1;
         cargarTabla();
     }
 

@@ -13,18 +13,17 @@
                         </div>
 
                         <div id="Ingreso" runat="server" visible="false" class="row">
-                            <asp:Table ID="TableRol1" runat="server" HorizontalAlign="left">
-                            </asp:Table>
+                      
 
-                            <asp:Table ID="Tableobservacion" runat="server" HorizontalAlign="center">
+                            <asp:Table ID="TBingresar" runat="server" HorizontalAlign="center">
                                 <asp:TableRow>
 
                                     <asp:TableCell>
-                                        <asp:Label ID="Label1" runat="server" Text="Codigo de la propuesta:" ForeColor="Black" Font-Bold="True"></asp:Label>
+                                        <asp:Label ID="LCodigo" runat="server" Text="Codigo de la propuesta:" ForeColor="Black" Font-Bold="True"></asp:Label>
                                     </asp:TableCell>
 
                                     <asp:TableCell>
-                                        <asp:Label ID="Label2" runat="server" Text="Descripcion:" ForeColor="Black" Font-Bold="True"></asp:Label>
+                                        <asp:Label ID="LDescripcion" runat="server" Text="Descripcion:" ForeColor="Black" Font-Bold="True"></asp:Label>
                                     </asp:TableCell>
                                 </asp:TableRow>
 
@@ -52,64 +51,14 @@
 
                         </div>
 
-
-
-
-                        <div id="Actualizar" runat="server" visible="false" class="row">
-                            <asp:Table ID="TableRol2" runat="server" HorizontalAlign="Center">
-                                <asp:TableRow>
-                                    <asp:TableCell>
-                                        <asp:Label ID="Lid2" runat="server" Text="ID:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                                    </asp:TableCell>
-                                    <asp:TableCell>
-                                        <asp:DropDownList ID="DDLid" runat="server"></asp:DropDownList>
-                                    </asp:TableCell>
-                                </asp:TableRow>
-                                <asp:TableRow>
-                                    <asp:TableCell>
-                                        <asp:Label ID="Lnombre2" runat="server" Text="NOMBRE:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                                    </asp:TableCell>
-                                    <asp:TableCell ColumnSpan="3">
-                                        <asp:TextBox ID="TBnombre2" runat="server" CssClass="form-control"></asp:TextBox>
-                                    </asp:TableCell>
-                                </asp:TableRow>
-                            </asp:Table>
-
-                        </div>
-
-                        <div id="Eliminar" runat="server" visible="false" class="row">
-                            <asp:Table ID="TableRol3" runat="server" HorizontalAlign="Center">
-                                <asp:TableRow>
-                                    <asp:TableCell>
-                                        <asp:Label ID="Lid3" runat="server" Text="ID:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                                    </asp:TableCell>
-                                    <asp:TableCell>
-                                        <asp:DropDownList ID="DDLid2" runat="server"></asp:DropDownList>
-                                    </asp:TableCell>
-                                </asp:TableRow>
-                                <asp:TableRow>
-                                    <asp:TableCell>
-                                        <asp:Label ID="Lestado" runat="server" Text="ESTADO:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                                    </asp:TableCell>
-                                    <asp:TableCell ColumnSpan="3">
-                                        <asp:DropDownList ID="DDLestado" runat="server">
-                                            <asp:ListItem Value="ACTIVO" Text="ACTIVO"></asp:ListItem>
-                                            <asp:ListItem Value="INACTIVO" Text="INACTIVO"></asp:ListItem>
-                                        </asp:DropDownList>
-                                    </asp:TableCell>
-                                </asp:TableRow>
-                            </asp:Table>
-                        </div>
-
-                        <br>
-
+                    <br>
 
                         <div id="Resultado3" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
-                            <asp:GridView ID="gvSysDatosTitulo" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"
-                                OnPageIndexChanging="gvSysDatosTitulo_PageIndexChanging"
+                            <asp:GridView ID="gvTitulo" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"
+                                OnPageIndexChanging="gvTitulo_PageIndexChanging"
                                 AutoGenerateColumns="False"
                                 CssClass="table table-bordered bs-table"
-                                OnRowDataBound="gvSysRol_RowDataBound" PageSize="2">
+                                OnRowDataBound="gvTitulo_RowDataBound" PageSize="10">
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
@@ -129,11 +78,11 @@
                         </div>
 
                         <div id="Resultado2" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
-                            <asp:GridView ID="gvSysDatosPropuesta" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"
-                                OnPageIndexChanging="gvSysDatosPropuesta_PageIndexChanging"
+                            <asp:GridView ID="gvDatosPropuesta" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"
+                                OnPageIndexChanging="gvDatosPropuesta_PageIndexChanging"
                                 AutoGenerateColumns="False"
                                 CssClass="table table-bordered bs-table"
-                                OnRowDataBound="gvSysDatosPropuesta_RowDataBound" PageSize="2">
+                                OnRowDataBound="gvDatosPropuesta_RowDataBound" PageSize="2">
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
@@ -146,23 +95,19 @@
                                 <EmptyDataTemplate>
                                 </EmptyDataTemplate>
                                 <Columns>
+
                                     <asp:BoundField DataField="integrantes" HeaderText="Integrantes" />
                                   
-
-
-
-
-
                                 </Columns>
                             </asp:GridView>
                         </div>
 
                         <div id="Resultado" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
-                            <asp:GridView ID="gvSysRol" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"
-                                OnPageIndexChanging="gvSysRol_PageIndexChanging"
+                            <asp:GridView ID="gvObservaciones" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"
+                                OnPageIndexChanging="gvObservaciones_PageIndexChanging"
                                 AutoGenerateColumns="False"
                                 CssClass="table table-bordered bs-table"
-                                OnRowDataBound="gvSysRol_RowDataBound" PageSize="10" OnRowDeleting="gvSysRol_RowDeleting" OnRowUpdating="gvSysRol_RowUpdating" OnRowEditing="gvSysRol_RowEditing" OnRowCancelingEdit="gvSysRol_RowCancelingEdit">
+                                OnRowDataBound="gvObservaciones_RowDataBound" PageSize="10" OnRowDeleting="gvObservaciones_RowDeleting" OnRowUpdating="gvObservaciones_RowUpdating" OnRowEditing="gvObservaciones_RowEditing" OnRowCancelingEdit="gvObservaciones_RowCancelingEdit">
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />

@@ -10,7 +10,7 @@
                     <div class="col-md-12">
                        <ul class="breadcrumb">
                             <li><asp:LinkButton ID="LBSolicitar" runat="server" OnClick="Solicitar" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Solicitar Director</asp:LinkButton></li>
-                            <li><asp:LinkButton ID="LBConsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-pencil"></span>Consultar SolicitudES</asp:LinkButton></li>
+                            <li><asp:LinkButton ID="LBConsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-pencil"></span>Consultar Solicitudes</asp:LinkButton></li>
                         </ul> 
                     </div>
                 </div>
