@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" EnableEventValidation="false" AutoEventWireup="true" CodeFile="CambiarEstadoP.aspx.cs" Inherits="CambiarEstadoP" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" EnableEventValidation="false" AutoEventWireup="true" CodeFile="GEPropuesta.aspx.cs" Inherits="CambiarEstadoP" %>
 
 <asp:Content ID="CambiarEstadoP" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">

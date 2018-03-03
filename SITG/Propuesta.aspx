@@ -27,10 +27,11 @@
                             <asp:TableCell>
                                 <asp:Label ID="Ldocumento" runat="server" Text="Documento:" ForeColor="Black" Font-Bold="True"></asp:Label>
                             </asp:TableCell>
-                            <asp:TableCell>
-                                <asp:FileUpload ID="FUdocumento" runat="server" class="btn btn-default image-preview-input"/>
-                            </asp:TableCell>
-                        </asp:TableRow>
+                            <asp:TableCell>                                
+                                <asp:FileUpload ID="FUdocumento" runat="server" class="btn btn-default image-preview-input" />
+                             </asp:TableCell>
+                            
+                         </asp:TableRow>
 
                          <asp:TableRow>
                          <asp:TableHeaderCell>
@@ -38,8 +39,7 @@
                             </asp:TableHeaderCell>
                        </asp:TableRow>
 
-                        <asp:TableRow>
-                           
+                        <asp:TableRow>                        
                             <asp:TableCell>
                                 <asp:Label ID="Lintegrante" runat="server" Text="Codigo del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label>
                             </asp:TableCell>
@@ -101,7 +101,7 @@
                         <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
                         <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate> ¡No Ha Subido La Propuesta!  </EmptyDataTemplate>
+                        <EmptyDataTemplate> ¡No se ha subido la propuesta!  </EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="PROP_CODIGO" HeaderText="CODIGO" />
                             <asp:BoundField DataField="PROP_TITULO" HeaderText="TITULO" />
@@ -152,5 +152,6 @@
 
         </div>
     </div>
+
 </asp:Content>
 

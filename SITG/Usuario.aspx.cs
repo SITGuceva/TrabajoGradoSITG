@@ -104,18 +104,19 @@ public partial class Estudiante : Conexion
                 sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES (USUARIOID.nextval,'" + cod + "','" + rol + "')";
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);
+                string sql2 = "";
                 if (rol.Equals("EST"))
                 {
-                    sql = "insert into ESTUDIANTE (EST_SEMESTRE, USU_USERNAME, PROG_CODIGO) VALUES ('" + TBsemestre.Text + "','" + cod + "', '"+ DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' )";
+                    sql2 = "insert into ESTUDIANTE (EST_SEMESTRE, USU_USERNAME, PROG_CODIGO) VALUES ('" + TBsemestre.Text + "','" + cod + "', '"+ DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' )";
                     texto = "Datos guardados satisfactoriamente";
-                    Ejecutar(texto, sql);
+                    Ejecutar(texto, sql2);
                     DDLprograma.SelectedIndex = 0;
                 }
                 else if (rol.Equals("DOC"))
                 {
-                    sql = "insert into PROFESOR (USU_USERNAME) VALUES ('" + cod + "' )";
+                    sql2 = "insert into PROFESOR (USU_USERNAME) VALUES ('" + cod + "' )";
                     texto = "Datos guardados satisfactoriamente";
-                    Ejecutar(texto, sql);
+                    Ejecutar(texto, sql2);
                 }
             }
             DDLrol.SelectedIndex = 0;

@@ -108,7 +108,7 @@ public partial class SiteMaster : MasterPage
                                 OracleDataReader drc2 = cmd1.ExecuteReader();
 
                                 if (drc2.HasRows){
-                                    PHprueba.Controls.Add(new LiteralControl("<ul class=\"sub-menu collapse\" id=\"" + cat + "\">"));
+                                    PHprueba.Controls.Add(new LiteralControl("<ul class=\"nav nav-second-level\" id=\"" + cat + "\">"));
                                     while (drc2.Read()) {
                                         if (drc2.GetString(2).Equals("ACTIVO")){
                                            PHprueba.Controls.Add(new LiteralControl("<li><a href=" + drc2.GetString(1) + ">" + drc2.GetString(0) + "</a></li>"));

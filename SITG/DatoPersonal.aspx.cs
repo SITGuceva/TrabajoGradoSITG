@@ -16,10 +16,8 @@ public partial class DatoPersonal : Conexion
         if (Session["Usuario"] == null)
         {
             Response.Redirect("Default.aspx");
-        }else
-        {
-            if (!IsPostBack)
-            {
+        }else{
+            if (!IsPostBack){
                 Buscar();
             }
         } 
@@ -53,7 +51,7 @@ public partial class DatoPersonal : Conexion
             if (info.Equals("Funciono")){
                 Linfo.ForeColor = System.Drawing.Color.Green;
                 Linfo.Text = "Datos Modificados Satisfactoriamente";
-                //Session["Usuario"] = TBnombre.Text + " " + TBapellido.Text;
+                Session["Usuario"] = TBnombre.Text + " " + TBapellido.Text;
                 Buscar();
             }else{
                 Linfo.ForeColor = System.Drawing.Color.Red;

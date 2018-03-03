@@ -9,58 +9,30 @@
                 <div class="row">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
-                            <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Crear</asp:LinkButton></li>
-                            <li><asp:LinkButton ID="LBModificar" runat="server" OnClick="Modificar" ForeColor="Black"><span class="glyphicon glyphicon-pencil"></span>Modificar</asp:LinkButton></li>
-                            <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>
-                            <li><asp:LinkButton ID="LBInhabilitar" runat="server" OnClick="Inhabilitar" ForeColor="Black"><span class="glyphicon glyphicon-refresh"></span>Inhabilitar</asp:LinkButton></li>
-                        </ul>
+                            <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Crear</asp:LinkButton></li>                       
+                            <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>                         
+                       </ul>
                     </div>
                 </div>
 
                  <div id="Ingreso" runat="server" visible="true" class="row">
-                    <asp:Table ID="TFac" runat="server" HorizontalAlign="Center" >
-                        <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lid" runat="server" Text="ID:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
-                            <asp:TableCell><asp:TextBox ID="TBid" runat="server" CssClass="form-control"></asp:TextBox>    </asp:TableCell>                           
-                        </asp:TableRow>                   
+                    <asp:Table ID="TFac" runat="server" HorizontalAlign="Center" >                     
                          <asp:TableRow>
                            <asp:TableCell><asp:Label ID="Lnombre" runat="server" Text="NOMBRE:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
                            <asp:TableCell><asp:TextBox ID="TBnombre" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
                         </asp:TableRow>                                             
-                    </asp:Table>                
-                </div>
-
-                 <div id="Actualizar" runat="server" visible="false" class="row">
-                    <asp:Table ID="TFac2" runat="server" HorizontalAlign="Center" >
+                    </asp:Table>  
+                      <asp:Table ID="TBotonoes" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lid2" runat="server" Text="ID:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
-                            <asp:TableCell><asp:DropDownList ID="DDLid" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>                           
-                        </asp:TableRow>                   
-                         <asp:TableRow>
-                           <asp:TableCell><asp:Label ID="Lnombre2" runat="server" Text="NOMBRE:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
-                           <asp:TableCell><asp:TextBox ID="TBnombre2" runat="server" CssClass="form-control"></asp:TextBox>    </asp:TableCell>
-                        </asp:TableRow>                                             
-                    </asp:Table>                
-                </div>
-
-                <div id="Eliminar" runat="server" visible="false" class="row">
-                    <asp:Table ID="TFac3" runat="server" HorizontalAlign="Center" >                
-                        <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lid3" runat="server" Text="ID:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
-                            <asp:TableCell><asp:DropDownList ID="DDLid2" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>                           
-                        </asp:TableRow>                        
-                        <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lestado" runat="server" Text="ESTADO:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                         
-                            <asp:TableCell ColumnSpan="3"><asp:DropDownList ID="DDLestado" class="btn btn-secondary btn-lg dropdown-toggle" runat="server">
-                                    <asp:ListItem Value="ACTIVO" Text="ACTIVO"></asp:ListItem> 
-                                    <asp:ListItem Value="INACTIVO" Text="INACTIVO"></asp:ListItem> 
-                            </asp:DropDownList></asp:TableCell>                         
-                        </asp:TableRow>                                                                                             
-                    </asp:Table>         
+                            <asp:TableCell><asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
+                        </asp:TableRow>
+                    </asp:Table>
                 </div>
 
                 <div id="Resultado" runat="server" visible="false" class="row">
-                     <asp:GridView ID="GVfac" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVfac_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVfac_RowDataBound" PageSize="6">
+                     <asp:GridView ID="GVfac" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVfac_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVfac_RowDataBound" 
+                         PageSize="8"  OnRowUpdating="GVfac_RowUpdating" OnRowEditing="GVfac_RowEditing" OnRowCancelingEdit="GVfac_RowCancelingEdit">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
                         <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
@@ -74,20 +46,27 @@
                         <Columns>
                             <asp:BoundField DataField="FAC_CODIGO" HeaderText="ID" />
                             <asp:BoundField DataField="FAC_NOMBRE" HeaderText="NOMBRE" />
-                            <asp:BoundField DataField="FAC_ESTADO" HeaderText="ESTADO" />                            
+                            <asp:TemplateField HeaderText="Estado">
+                                <EditItemTemplate>
+                                    <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
+                                        <asp:ListItem Value="ACTIVO">ACTIVO</asp:ListItem>
+                                        <asp:ListItem Value="INACTIVO">INACTIVO</asp:ListItem>
+                                    </asp:DropDownList>
+                                </EditItemTemplate>
+                                <ItemTemplate><asp:Label ID="Lestado" runat="server" Text='<%# Bind("FAC_ESTADO") %>'></asp:Label></ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Modificar">
+                                <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/></ItemTemplate>
+                                <EditItemTemplate>
+                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-default"/>
+                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-default" />
+                                </EditItemTemplate>
+                            </asp:TemplateField>
                         </Columns>
                      </asp:GridView>
                 </div>
 
-                <div id="Botones" runat="server" class="row" visible="true">
-                    <asp:Table ID="TBotonoes" runat="server" HorizontalAlign="Center">
-                        <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-secondary" /></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-secondary" /></asp:TableCell>
-                        </asp:TableRow>
-                    </asp:Table>
-                </div>
-             
+         
                 <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True" ></asp:Label>                     
             </div>
            </ContentTemplate></asp:UpdatePanel>

@@ -20,41 +20,13 @@ public partial class Roles : Conexion
     /*Metodos de crear-modificar-consultar-inhabilitar que manejan la parte del fronted*/
     protected void Crear(object sender, EventArgs e) {
         Ingreso.Visible = true;
-        Resultado.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
-        Botones.Visible = true;
-        Linfo.Text = "";
-    }
-    protected void Modificar(object sender, EventArgs e) {
-        DDLid.Items.Clear();
-        string sql2 = "SELECT ROL_ID FROM ROL WHERE ROL_ESTADO='ACTIVO'";
-        DDLid.Items.AddRange(con.cargarDDLid(sql2));
-        Actualizar.Visible = true;
-        Ingreso.Visible = false;
-        Resultado.Visible = false;
-        Eliminar.Visible = false;
-        Botones.Visible = true;
+        Resultado.Visible = false;   
         Linfo.Text = "";
     }
     protected void Consultar(object sender, EventArgs e){
         cargarTabla();
-        Resultado.Visible = true;
-        Botones.Visible = false;
-        Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
-    }
-    protected void Inhabilitar(object sender, EventArgs e) {
-        DDLid2.Items.Clear();
-        string sql1 = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
-        DDLid2.Items.AddRange(con.cargardatos(sql1)); 
-        Eliminar.Visible = true;
-        Ingreso.Visible = false;
-        Resultado.Visible = false;
-        Actualizar.Visible = false;
-        Botones.Visible = true;
-        Linfo.Text = "";
+        Resultado.Visible = true;      
+        Ingreso.Visible = false;      
     }
 
     /*Evento del boton limpiar*/
@@ -62,10 +34,9 @@ public partial class Roles : Conexion
         Linfo.Text = "";
         TBid.Text = "";
         TBnombre.Text = "";
-        TBnombre2.Text = "";
     }
 
-    /*Metodos que se utilizan para guardar-actualizar-inhabilitar*/
+    /*Metodos que se utilizan para guardar*/
     protected void Aceptar(object sender, EventArgs e) {
         string sql = "";
         string texto = "";
@@ -78,20 +49,7 @@ public partial class Roles : Conexion
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);
             }
-        } else if (Actualizar.Visible) {
-            if (string.IsNullOrEmpty(TBnombre2.Text) == true){
-                Linfo.ForeColor = System.Drawing.Color.Red;
-                Linfo.Text = "Los campos son obligatorios";
-            }else { 
-               sql = "UPDATE ROL SET ROL_NOMBRE = '" + TBnombre2.Text + "' WHERE ROL_ID = '" + DDLid.Items[DDLid.SelectedIndex].Value.ToString() + "'";
-                texto= "Datos modificados satisfactoriamente";
-                Ejecutar(texto, sql);
-            }
-        } else if (Eliminar.Visible) {
-            sql = "UPDATE ROL SET ROL_ESTADO = '" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' WHERE ROL_ID = '" + DDLid2.Items[DDLid2.SelectedIndex].Value.ToString() + "'";
-            texto = "Rol se ha puesto "+DDLestado.Items[DDLestado.SelectedIndex].Value.ToLower()+ " satisfactoriamente";
-            Ejecutar(texto, sql);
-        }       
+        } 
     }
     private void Ejecutar(string texto, string sql)
     {
@@ -105,7 +63,6 @@ public partial class Roles : Conexion
         }
         TBid.Text = "";
         TBnombre.Text = "";
-        TBnombre2.Text = "";
     }
 
     /*Metodos que se utilizan para la consulta*/
@@ -138,5 +95,37 @@ public partial class Roles : Conexion
         }catch (Exception ex){
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
+    }
+    protected void GVrol_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            DropDownList combo = GVrol.Rows[e.RowIndex].FindControl("estado") as DropDownList;
+            string estado = combo.SelectedValue;
+            TextBox nombre = (TextBox)GVrol.Rows[e.RowIndex].Cells[1].Controls[0];
+            TextBox codigo = (TextBox)GVrol.Rows[e.RowIndex].Cells[0].Controls[0];
+          
+            string sql = "update rol set rol_nombre = '" + nombre.Text + "', rol_estado='" + estado + "' where  rol_id ='" + codigo.Text + "'";
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            using (OracleDataReader reader = cmd.ExecuteReader())
+            {
+                GVrol.EditIndex = -1;
+                cargarTabla();
+            }
+        }
+    }
+    protected void GVrol_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        int indice = GVrol.EditIndex = e.NewEditIndex;
+        cargarTabla();
+        GVrol.Rows[indice].Cells[0].Enabled = false;
+    }
+    protected void GVrol_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GVrol.EditIndex = -1;
+        cargarTabla();
     }
 }
