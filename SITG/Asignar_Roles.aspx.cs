@@ -57,7 +57,7 @@ public partial class Asignar_Roles : Conexion
         protected void Consultar(object sender, EventArgs e)
     {
         
-  
+  /**/
         
         ConsultarR.Visible = false;
         codigo = TBcodigo.Text;

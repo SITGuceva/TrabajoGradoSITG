@@ -16,6 +16,7 @@ public partial class Asignar_Comite : Conexion
         Roles.Visible = false;
 
     }
+    /*djd*//
 
 
     /*Metodo que llama a la interfaz asignar comite*/

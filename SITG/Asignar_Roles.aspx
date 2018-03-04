@@ -9,8 +9,8 @@
                 <div class="row">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
-                            <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Asignar Rol</asp:LinkButton></li>
-                            <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="ConsultarR2" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>
+                            <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black" ><span class="glyphicon glyphicon-plus"></span>Asignar Rol</asp:LinkButton></li>
+                            <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="ConsultarR2" ForeColor="Black" Text="hsh"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>
                            
                         </ul>
                     </div>

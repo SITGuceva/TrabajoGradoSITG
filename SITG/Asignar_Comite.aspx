@@ -11,7 +11,7 @@
                             <div class="col-md-12">
                                 <ul class="breadcrumb">
                             <li><asp:LinkButton ID="LBasignar" runat="server" OnClick="LIAsignar" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Asignar Comite</asp:LinkButton></li>
-                            <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="LIConsultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar Comite</asp:LinkButton></li>
+                            <li><asp:LinkButton ID="LBconsultar" Text="jkd" runat="server" OnClick="LIConsultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar Comite</asp:LinkButton></li>
                            
                         </ul>
                             </div>
