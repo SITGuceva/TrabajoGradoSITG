@@ -20,18 +20,17 @@
                                 <asp:TableRow>
                                     <asp:TableCell><asp:Label ID="Lreunion" runat="server" Text="Reunion:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell> <asp:DropDownList ID="DDLreunion" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>
-                                     <asp:TableCell>
-                                        <asp:Label ID="Lpropuesta" runat="server" Text="Propuesta:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
-                                    <asp:TableCell>
-                                        <asp:DropDownList ID="DDLpropuesta" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>
-                                </asp:TableRow>
+                                     <asp:TableCell><asp:Label ID="Lpropuesta" runat="server" Text="Propuesta:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                                    <asp:TableCell> <asp:DropDownList ID="DDLpropuesta" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>
+                                    <asp:TableCell><asp:Button ID="Brevisar" runat="server" OnClick="Revisar" Text="Revisar" class="btn btn-default" /></asp:TableCell>
+                                 </asp:TableRow>
                             </asp:Table>
 
 
 
-                            <asp:GridView ID="GVevaluarcrit" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
+                            <asp:GridView ID="GVevaluarcrit" runat="server" Visible="false" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                                 OnPageIndexChanging="GVevaluarcrit_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table"
-                                OnRowDataBound="GVevaluarcrit_RowDataBound" PageSize="6" >
+                                OnRowDataBound="GVevaluarcrit_RowDataBound" PageSize="8" >
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
@@ -65,10 +64,8 @@
 
                         <asp:Table ID="Tbotones" runat="server" HorizontalAlign="Center">
                             <asp:TableRow>
-                                <asp:TableCell>
-                                    <asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-secondary" /></asp:TableCell>
-                                <asp:TableCell>
-                                    <asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-secondary" /></asp:TableCell>
+                                <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" /></asp:TableCell>
+                                <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
                             </asp:TableRow>
                         </asp:Table>
 

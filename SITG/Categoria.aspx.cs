@@ -17,63 +17,29 @@ public partial class Categoria : Conexion
         }
     }
 
+    /*Metodos de crear-consultar que manejan la parte del fronted*/
     protected void Crear(object sender, EventArgs e) {
         Ingreso.Visible = true;
         Resultado.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
-        Botones.Visible = true;
         Linfo.Text = "";
     }
-
-    protected void Modificar(object sender, EventArgs e)
-    {
-        DDLid.Items.Clear();
-        string sql2 = "SELECT CATS_ID FROM CATEGORIA_SISTEMA";
-        DDLid.Items.AddRange(con.cargarDDLid(sql2));
-        Actualizar.Visible = true;
-        Ingreso.Visible = false;
-        Resultado.Visible = false;
-        Eliminar.Visible = false;
-        Botones.Visible = true;
-        Linfo.Text = "";
-    }
-
     protected void Consultar(object sender, EventArgs e)
     {
         cargarTabla();
         Resultado.Visible = true;
-        Botones.Visible = false;
         Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
     }
 
-    protected void Inhabilitar(object sender, EventArgs e)
-    {
-        DDLid2.Items.Clear();
-        string sql1 = "SELECT CATS_ID, CATS_NOMBRE FROM CATEGORIA_SISTEMA";
-        DDLid2.Items.AddRange(con.cargardatos(sql1));
-        Eliminar.Visible = true;
-        Ingreso.Visible = false;
-        Resultado.Visible = false;
-        Actualizar.Visible = false;
-        Botones.Visible = true;
-        Linfo.Text = "";
-    }
-
+    /*Evento del boton limpiar*/
     protected void Limpiar(object sender, EventArgs e)
     {
         Linfo.Text = "";
         TBid.Text = "";
         TBnombre.Text = "";
         TBicono.Text = "";
-        TBnombre2.Text = "";
-        TBicono2.Text = "";
     }
 
-    
-
+    /*Metodos que se utilizan para guardar*/
     protected void Aceptar(object sender, EventArgs e)
     {
         string sql = "";
@@ -92,28 +58,7 @@ public partial class Categoria : Conexion
                 Ejecutar(texto, sql);
             }
         }
-        else if (Actualizar.Visible)
-        {
-            if ( string.IsNullOrEmpty(TBnombre2.Text) == true || string.IsNullOrEmpty(TBicono2.Text) == true)
-            {
-                Linfo.ForeColor = System.Drawing.Color.Red;
-                Linfo.Text = "Los campos son obligatorios";
-            }
-            else
-            {
-                sql = "UPDATE CATEGORIA_SISTEMA SET CATS_NOMBRE='"+TBnombre2.Text+"', CATS_ICONO='"+TBicono2.Text+"'  WHERE CATS_ID ='"+DDLid2.Items[DDLid2.SelectedIndex].Value.ToString()+"'";
-                texto = "Datos modificados satisfactoriamente";
-                Ejecutar(texto, sql);
-            }
-        }
-        else if (Eliminar.Visible)
-        {
-           sql = "UPDATE CATEGORIA_SISTEMA SET CATS_ESTADO = '" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' WHERE CATS_ID = '" + DDLid2.Items[DDLid2.SelectedIndex].Value.ToString() + "'";
-           texto = "Categoria se ha puesto "+ DDLestado.Items[DDLestado.SelectedIndex].Value.ToLower() + " satisfactoriamente";
-           Ejecutar(texto, sql);
-        }    
     }
-
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
@@ -131,19 +76,17 @@ public partial class Categoria : Conexion
         TBid.Text = "";
         TBnombre.Text = "";
         TBicono.Text = "";
-        TBnombre2.Text = "";
-        TBicono2.Text = "";
     }
 
     /*evento que cambia la pagina de la tabla*/
-    protected void gvSysRol_PageIndexChanging(object sender, GridViewPageEventArgs e){
-        gvSysRol.PageIndex = e.NewPageIndex;
+    protected void GVcategoria_PageIndexChanging(object sender, GridViewPageEventArgs e){
+        GVcategoria.PageIndex = e.NewPageIndex;
         cargarTabla();
     }
-
     /*evento que se llama cuando llenga las columnas*/
-    protected void gvSysRol_RowDataBound(object sender, GridViewRowEventArgs e) { }
+    protected void GVcategoria_RowDataBound(object sender, GridViewRowEventArgs e) { }
 
+    /*Metodos que se utilizan para la consulta*/
     public void cargarTabla(){
         string sql = "";
         List<ListItem> list = new List<ListItem>();
@@ -161,11 +104,11 @@ public partial class Categoria : Conexion
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    gvSysRol.DataSource = dataTable;
+                    GVcategoria.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
-                gvSysRol.DataBind();
+                GVcategoria.DataBind();
 
             }
             conn.Close();
@@ -173,6 +116,41 @@ public partial class Categoria : Conexion
         catch (Exception ex)
         {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+    }
+    protected void GVcategoria_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GVcategoria.EditIndex = -1;
+        cargarTabla();
+    }
+    protected void GVcategoria_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        int indice = GVcategoria.EditIndex = e.NewEditIndex;
+        cargarTabla();
+        GVcategoria.Rows[indice].Cells[0].Enabled = false;
+    }
+    protected void GVcategoria_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            DropDownList combo = GVcategoria.Rows[e.RowIndex].FindControl("estado") as DropDownList;
+            string estado = combo.SelectedValue;
+            TextBox nombre = (TextBox)GVcategoria.Rows[e.RowIndex].Cells[1].Controls[0];
+            TextBox codigo = (TextBox)GVcategoria.Rows[e.RowIndex].Cells[0].Controls[0];
+            TextBox icono = (TextBox)GVcategoria.Rows[e.RowIndex].Cells[2].Controls[0];
+
+            string sql = "update categoria_sistema set cats_nombre = '" + nombre.Text + "', cats_icono='" + icono.Text + "', cats_estado='" + estado + "' where  cats_id ='" + codigo.Text + "'";
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            using (OracleDataReader reader = cmd.ExecuteReader())
+            {
+                GVcategoria.EditIndex = -1;
+                sql = "update opcion_sistema set opcs_estado = '" + estado + "' where cats_id = '" + codigo.Text + "'";
+                Ejecutar("", sql);
+                cargarTabla();
+            }
         }
     }
 }

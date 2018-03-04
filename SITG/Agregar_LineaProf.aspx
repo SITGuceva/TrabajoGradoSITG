@@ -6,7 +6,15 @@
         <div class="panel-body">
             <asp:UpdatePanel ID="UPasiglprof" runat="server"> <ContentTemplate>
             <div class="container-fluid">
-               
+               <div class="row">
+                    <div class="col-md-12">
+                        <ul class="breadcrumb">
+                            <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Crear</asp:LinkButton></li>                     
+                            <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>
+                        </ul>
+                    </div>
+                </div>
+
                 <div id="Ingreso" runat="server" visible="true" class="row">
                     <asp:Table ID="Tasiglprof" runat="server" HorizontalAlign="Center">                     
                          <asp:TableRow>
@@ -49,14 +57,15 @@
                         <asp:TableRow>
                             <asp:TableCell><asp:Label ID="Lprog2" runat="server" Text="Programa:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:DropDownList ID="DDLprog2" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"  AutoPostBack="true"></asp:DropDownList></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bbuscar" runat="server" OnClick="Buscar" CssClass="btn btn-default" Text="BUSCAR" /></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bnueva" runat="server" OnClick="Nueva" CssClass="btn btn-default" Text="NUEVA CONSULTA" /></asp:TableCell>
+                            <asp:TableCell>
+                                <asp:Button ID="Bbuscar" runat="server" OnClick="Buscar" CssClass="btn btn-default" Visible="true" Text="BUSCAR" />
+                                <asp:Button ID="Bnueva" runat="server" OnClick="Nueva" CssClass="btn btn-default" Visible="false" Text="NUEVA CONSULTA" />
+                            </asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>                   
                 </div>
 
-                <div id="SolLinProf" runat="server" visible="false" class="row">       
-                    <asp:Label ID="Lprof" runat="server" Text="Linea Profundizacion:" ForeColor="Black" Font-Bold="True"></asp:Label>
+                <div id="SolLinProf" runat="server" visible="false" class="row">                          
                      <asp:GridView ID="GVlineaprof" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                          OnPageIndexChanging="GVlineaprof_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" 
                          OnRowDataBound="GVlineaprof_RowDataBound" PageSize="6" OnRowUpdating="GVlineaprof_RowUpdating" OnRowEditing="GVlineaprof_RowEditing"
@@ -70,7 +79,7 @@
                         <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay lineas de profundizacion agregadas para el tema!</EmptyDataTemplate>
+                        <EmptyDataTemplate>¡No hay lineas de profundizacion agregadas para el programa!</EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="LPROF_CODIGO" HeaderText="ID" />   
                             <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="PROFUNDIZACION" />
@@ -103,7 +112,23 @@
                      </asp:GridView>
                 </div>
 
-                <div id="SolTema" runat="server" visible="false" class="row">                   
+                <div id="SolTema" runat="server" visible="false" class="row">      
+                    
+                    
+                    
+                    <asp:Table ID="TAgregartema" runat="server" HorizontalAlign="Center">
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Lprof" runat="server" Text="Linea Profundizacion:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Lreslp" runat="server"  ForeColor="Black" CssClass="form-control"></asp:Label></asp:TableCell>               
+                        </asp:TableRow>
+                        <asp:TableRow>
+                             <asp:TableCell><asp:Label ID="Lagregt" runat="server" Text="Agregar Tema:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:TextBox ID="TBagregt" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="BagregarT" runat="server" OnClick="AgregarT" CssClass="btn btn-default" Text="AGREGAR" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="BregresarLP" runat="server" OnClick="RegresarLP" CssClass="btn btn-default" Text="REGRESAR" /></asp:TableCell>
+                        </asp:TableRow>
+                    </asp:Table>    
+
                     <asp:GridView ID="GVtema" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" 
                         OnPageIndexChanging="GVtema_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" 
                         OnRowDataBound="GVtema_RowDataBound" PageSize="6"  OnRowUpdating="GVtema_RowUpdating" OnRowEditing="GVtema_RowEditing"

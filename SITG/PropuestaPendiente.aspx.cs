@@ -19,7 +19,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         ResultadoConsulta();
     }
 
-
+    /*Metodos que se encargan de la consulta de las propuestas que esten pendientes del respectivo programa(comite) */
     protected void DownloadFile(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
@@ -62,7 +62,6 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         GVconsultaPP.PageIndex = e.NewPageIndex;
         ResultadoConsulta();
     }
-
     private void ResultadoConsulta()
     {
         List<ListItem> list = new List<ListItem>();
@@ -73,9 +72,9 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             if (conn != null)
             {
                 string sql = "select DISTINCT   p.PROP_CODIGO,p.PROP_TITULO, p.PROP_ESTADO, p.PROP_FECHA  " +
-                    "from estudiante e, PROPUESTA p, comite c, PROFESOR p " +
-                    "WHERE p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = 'Pendiente' and p.COM_CODIGO = c.COM_CODIGO" +
-                    " and c.PROG_CODIGO = e.PROG_CODIGO and p.USU_USERNAME = '"+ Session["id"] + "'";
+                    "from estudiante e, PROPUESTA p, comite c, PROFESOR d " +
+                    "WHERE p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = 'Pendiente' and d.COM_CODIGO = c.COM_CODIGO" +
+                    " and c.PROG_CODIGO = e.PROG_CODIGO and d.USU_USERNAME = '"+ Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

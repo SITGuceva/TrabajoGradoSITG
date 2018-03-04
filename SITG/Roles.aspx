@@ -46,7 +46,7 @@
                         <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay Roles!  </EmptyDataTemplate>
+                        <EmptyDataTemplate>¡No hay roles!  </EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="ROL_ID" HeaderText="Id" />
                             <asp:BoundField DataField="ROL_NOMBRE" HeaderText="Nombre" />                          

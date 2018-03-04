@@ -52,6 +52,9 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
         SolLinProf.Visible = false;
         Ingreso.Visible = false;      
         Linfo.Text = "";
+        Bbuscar.Visible = true;
+        DDLprog2.Enabled = true;
+        Bnueva.Visible = false;
     }
 
     /*Metodo que se utiliza para la busqueda del insertar tema*/
@@ -117,16 +120,20 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
     {
         cargarTabla();
         SolLinProf.Visible = true;
-        Bbuscar.Enabled = false;
+        Bbuscar.Visible = false;
+        Bnueva.Visible = true;
         DDLprog2.Enabled = false;
     }
     protected void Nueva(object sender, EventArgs e)
     {
-        Bbuscar.Enabled = true;
+        Bbuscar.Visible = true;
+        Bnueva.Visible = false;
         DDLprog2.Enabled = true;
         SolLinProf.Visible = false;
         SolTema.Visible = false;
         Linfo.Text = "";
+        Lreslp.Text = "";
+        TBagregt.Text = "";
     }
     public void cargarTabla()
     {
@@ -201,10 +208,27 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
             Metodo.Value = row.Cells[0].Text;
             ResultadoTemas();
             SolTema.Visible = true;
+            SolLinProf.Visible = false;
+            Lreslp.Text= row.Cells[1].Text;
         }
     }
-
+    
     /*Metodos que se utilizan para la consulta de los temas*/
+
+    protected void RegresarLP(object sender, EventArgs e) {
+        SolTema.Visible = false;
+        SolLinProf.Visible = true;
+        cargarTabla();
+        Lreslp.Text = "";
+        TBagregt.Text = "";
+    }
+    protected void AgregarT(object sender, EventArgs e)
+    {
+       string sql = "insert into TEMA (TEM_CODIGO,TEM_NOMBRE,LPROF_CODIGO) VALUES(temaid.nextval, '" + TBagregt.Text+ "', '"+Metodo.Value+"')";
+       string texto = "";    
+       Ejecutar(texto, sql);
+       ResultadoTemas();
+    }     
     public void ResultadoTemas()
     {        
           try{
@@ -221,8 +245,9 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
                       dataTable.Load(reader);
                       GVtema.DataSource = dataTable;
                       int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
-                     // Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
-                  }
+                      Linfo.ForeColor = System.Drawing.Color.Red;
+                      Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
+                }
                   GVtema.DataBind();
               }
               conn.Close();
@@ -259,7 +284,6 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
             }
         }
     }
-
     protected void GVtema_RowEditing(object sender, GridViewEditEventArgs e)
     {
         
@@ -267,7 +291,6 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
         ResultadoTemas();
         GVtema.Rows[indice].Cells[0].Enabled = false;  
     }
-
     protected void GVtema_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
     {
         GVtema.EditIndex = -1;

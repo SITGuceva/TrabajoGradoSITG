@@ -17,7 +17,7 @@ public partial class Roles : Conexion
         } 
     }
 
-    /*Metodos de crear-modificar-consultar-inhabilitar que manejan la parte del fronted*/
+    /*Metodos de crear-consultar que manejan la parte del fronted*/
     protected void Crear(object sender, EventArgs e) {
         Ingreso.Visible = true;
         Resultado.Visible = false;   

@@ -13,78 +13,54 @@ public partial class CambiarEstadoP : Conexion
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (!IsPostBack)
+        if (Session["Usuario"] == null)
         {
+            Response.Redirect("Default.aspx");
+        }else if (!IsPostBack){
             Ingreso.Visible = true;
-
         }
-
     }
 
+    /*Evento del boton nueva consulta*/
+    protected void Nueva(object sender, EventArgs e)
+    {
+        TBCodigoE.Text = "";
+        TBCodigoP.Text = "";
+        BTbuscar.Visible = true;
+        BTnueva.Visible = false;
+        TBCodigoE.Enabled = true;
+        TBCodigoP.Enabled = true;
+        TablaResultado.Visible = false;
+        Linfo.Text = "";
+    }
 
+    /*Evento del boton buscar*/
     protected void Buscar(object sender, EventArgs e)
     {
-
-
-        if (TBCodigoP.Text.Equals(""))
-        {
-            
-                TablaResultado.Visible = true;
-                CargarTablaPropuestaE();
-
-         
-
-        }
-
-        if (TBCodigoE.Text.Equals(""))
-        {
-           
-
-                TablaResultado.Visible = true;
-            CargarTablaPropuestaP();
-
-           
-
-        }
-
-        if (TBCodigoE.Text.Equals("") && TBCodigoP.Text.Equals(""))
-        {
-
+        if (TBCodigoE.Text.Equals("") && TBCodigoP.Text.Equals("")){
             Linfo.Text = "Digite un criterio de busqueda o ambos para consultar";
             Linfo.Visible = true;
-
-
-        }
-
-        if (!TBCodigoE.Text.Equals("") && !TBCodigoP.Text.Equals(""))
-        {
-
-         
-                TablaResultado.Visible = true;
-                CargarTablaPropuestaAmbas();
-            
-
-        }
-
+        }else if (!TBCodigoE.Text.Equals("") && !TBCodigoP.Text.Equals("")){
+                CargarPropuesta(2);
+                
+        }else if (TBCodigoP.Text.Equals("")){
+            CargarPropuesta(1);
+        } else if (TBCodigoE.Text.Equals("")){
+            CargarPropuesta(3);
+        }   
+    }
+    private void Comprobado() {
+        TablaResultado.Visible = true;
+        BTnueva.Visible = true;
+        BTbuscar.Visible = false;
+        TBCodigoP.Enabled = false;
+        TBCodigoE.Enabled = false;
+        Linfo.Text = "";
     }
 
-
-
-    /*evento que cambia la pagina de la tabla*/
-    protected void gvTablaResultado_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    /*Metodos que se utilizan para la consulta y el modificar el estado*/
+    public void CargarPropuesta(int crit)
     {
-
-    }
-
-    /*evento que se llama cuando llenga las columnas*/
-    protected void gvTablaResultado_RowDataBound(object sender, GridViewRowEventArgs e)
-    {
-
-    }
-
-    public void CargarTablaPropuestaP()
-    {
-
         string sql = "";
         List<ListItem> list = new List<ListItem>();
         try
@@ -93,20 +69,27 @@ public partial class CambiarEstadoP : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, solicitud_dir s, usuario u where s.prop_codigo='" + TBCodigoP.Text + "' and u.usu_username = s.usu_username and s.prop_codigo = p.prop_codigo ";
-
+                if (crit.Equals(2)){
+                    sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, solicitud_dir s, usuario u, estudiante e where e.usu_username='" + TBCodigoE.Text + "' and e.prop_codigo='" + TBCodigoP.Text + "' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo and p.prop_estado='Pendiente'";
+                }else if (crit.Equals(1)){
+                    sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha,  CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, solicitud_dir s, usuario u, estudiante e where e.usu_username='" + TBCodigoE.Text + "' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo and p.prop_estado='Pendiente'";
+                }
+                else if (crit.Equals(3)){
+                    sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, solicitud_dir s, usuario u where s.prop_codigo='" + TBCodigoP.Text + "' and u.usu_username = s.usu_username and s.prop_codigo = p.prop_codigo and p.prop_estado='Pendiente'";
+                }
+                
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    gvTablaResultado.DataSource = dataTable;
+                    GVgepropuesta.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
 
                 }
 
-                gvTablaResultado.DataBind();
+                GVgepropuesta.DataBind();
 
             }
             conn.Close();
@@ -115,174 +98,40 @@ public partial class CambiarEstadoP : Conexion
         {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
+
+        Comprobado();
     }
-
-
-    public void CargarTablaPropuestaE()
+    protected void GVgepropuesta_RowDataBound(object sender, GridViewRowEventArgs e) { }
+    protected void GVgepropuesta_RowCommand(object sender, GridViewCommandEventArgs e)
     {
+        int index = Convert.ToInt32(e.CommandArgument);
+        GridViewRow row = GVgepropuesta.Rows[index];
+        Metodo.Value = row.Cells[0].Text;
+        string sql = "", texto = "";
 
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
-            OracleConnection conn = con.crearConexion();
-            OracleCommand cmd = null;
-            if (conn != null)
-            {
-                sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, solicitud_dir s, usuario u, estudiante e where e.usu_username='" + TBCodigoE.Text + "' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo ";
-
-                cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
-                    DataTable dataTable = new DataTable();
-                    dataTable.Load(reader);
-                    gvTablaResultado.DataSource = dataTable;
-                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
-
-                }
-
-                gvTablaResultado.DataBind();
-
-            }
-            conn.Close();
-        }
-        catch (Exception ex)
-        {
-            Linfo.Text = "Error al cargar la lista: " + ex.Message;
-        }
-    }
-
-
-
-
-    public void CargarTablaPropuestaAmbas()
-    {
-
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
-            OracleConnection conn = con.crearConexion();
-            OracleCommand cmd = null;
-            if (conn != null)
-            {
-                sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, solicitud_dir s, usuario u, estudiante e where e.usu_username='" + TBCodigoE.Text + "' and e.prop_codigo='" + TBCodigoP.Text + "' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo ";
-
-                cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
-                    DataTable dataTable = new DataTable();
-                    dataTable.Load(reader);
-                    gvTablaResultado.DataSource = dataTable;
-                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
-
-                }
-
-                gvTablaResultado.DataBind();
-
-            }
-            conn.Close();
-        }
-        catch (Exception ex)
-        {
-            Linfo.Text = "Error al cargar la lista: " + ex.Message;
-        }
-    }
-
-
-
-    protected void DownloadFile(object sender, EventArgs e)
-    {
-        int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
-
-        OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-
-                    contentype = drc1["PROP_TIPO"].ToString();
-                    fileName = drc1["PROP_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PROP_DOCUMENTO"];
-
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
-        }
-
-    }
-
-
-
-    protected void gvTablaResultado_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-
-
-
-        if (e.CommandName == "Aprobar")
-        {
-
-            int index = Convert.ToInt32(e.CommandArgument);
-            GridViewRow row = gvTablaResultado.Rows[index];
-            Metodo.Value = row.Cells[0].Text;
-            string sql = "", texto = "Propuesta Aprobada";
+        if (e.CommandName == "Aprobar"){
+            texto= "Propuesta Aprobada";
             sql = "update PROPUESTA set PROP_ESTADO='Aprobado' where PROP_CODIGO='" + Metodo.Value + "'";
             Ejecutar(texto, sql);
-            TablaResultado.Visible = false;
+        }else  if (e.CommandName == "Rechazar") {
 
-
-
-        }
-
-        if (e.CommandName == "Rechazar")
-        {
-
-            int index = Convert.ToInt32(e.CommandArgument);
-            GridViewRow row = gvTablaResultado.Rows[index];
-            Metodo.Value = row.Cells[0].Text;
-            string sql = "", texto = "Propuesta Rechazada";
+            texto = "Propuesta Rechazada";
             sql = "update PROPUESTA set PROP_ESTADO='Rechazado' where PROP_CODIGO='" + Metodo.Value + "'";
-            Ejecutar(texto, sql);
-            TablaResultado.Visible = false;
-
-
+            Ejecutar(texto, sql);           
         }
-
+        TablaResultado.Visible = false;
     }
-
-
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono"))
-        {
+        if (info.Equals("Funciono")){
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = texto;
-        }
-        else
+        }else
         {
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = info;
         }
-
     }
 
 }

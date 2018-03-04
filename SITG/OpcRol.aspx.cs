@@ -15,55 +15,17 @@ public partial class OpcRol : Conexion
         if (Session["Usuario"] == null)
         {
             Response.Redirect("Default.aspx");
-        }
-       else
-        {
-            if (!IsPostBack)
-            {
+        }else{
+            if (!IsPostBack){
                 DDLrolbuscar.Items.Clear();
                 string sql = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
-                    DDLrolbuscar.Items.AddRange(con.cargardatos(sql));
+                DDLrolbuscar.Items.AddRange(con.cargardatos(sql));
             }
         }
    
-    }
+    }   
 
-    protected void Buscar(object sender, EventArgs e){      
-        if (Metodo.Value.Equals("1")){
-            Ingreso.Visible = true;
-            Botones.Visible = true;
-            DDLopcs.Items.Clear();
-            string sql = "SELECT O.OPCS_ID,O.OPCS_NOMBRE FROM OPCION_SISTEMA O WHERE O.OPCS_ID NOT IN (SELECT R.OPCS_ID FROM OPCION_ROL R WHERE  R.ROL_ID='" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "') ORDER BY O.OPCS_ID";
-            DDLopcs.Items.AddRange(con.cargardatos(sql));
-        }
-        else if (Metodo.Value.Equals("2"))
-        {
-            DDLansopcs.Items.Clear();
-            string sql = "SELECT R.OPCROL_ID, S.OPCS_NOMBRE FROM OPCION_ROL R, OPCION_SISTEMA S WHERE  R.ROL_ID='" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "' AND S.OPCS_ID = R.OPCS_ID ORDER BY R.OPCS_ID";
-            DDLansopcs.Items.AddRange(con.cargardatos(sql));
-            Lansid.Text = DDLansopcs.Items[DDLansopcs.SelectedIndex].Value.ToString();
-
-            DDLopactu.Items.Clear();
-            string sql1 = "SELECT O.OPCS_ID,O.OPCS_NOMBRE FROM OPCION_SISTEMA O WHERE O.OPCS_ID NOT IN (SELECT R.OPCS_ID FROM OPCION_ROL R WHERE  R.ROL_ID='" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "') ORDER BY O.OPCS_ID";
-            DDLopactu.Items.AddRange(con.cargardatos(sql1));          
-            Actualizar.Visible = true;
-            Botones.Visible = true;
-        }
-        else if (Metodo.Value.Equals("3"))
-        {
-            Resultado.Visible = true;
-            cargarTabla();
-        }
-        else if (Metodo.Value.Equals("4"))
-        {
-            DDLopcrol.Items.Clear();
-            string sql = "SELECT O.OPCROL_ID, S.OPCS_NOMBRE  FROM OPCION_ROL O, OPCION_SISTEMA S WHERE S.OPCS_ID = O.OPCS_ID AND O.ROL_ID='" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "' ORDER BY O.OPCROL_ID";
-            DDLopcrol.Items.AddRange(con.cargardatos(sql));
-            Eliminar.Visible = true;
-            Botones.Visible = true;
-        }    
-    }
-
+    /*Metodos de crear-consultar que manejan la parte del fronted*/
     protected void Crear(object sender, EventArgs e) {
         DDLrolbuscar.Items.Clear();
         string sql = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
@@ -71,13 +33,10 @@ public partial class OpcRol : Conexion
         Metodo.Value = "1";
         Linfo.Text = "";
         Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
-        Resultado.Visible = false;
-        Botones.Visible = false;
+        Busqueda.Visible = true;
+        Resultado.Visible = false;      
     }
-
-    protected void Modificar(object sender, EventArgs e)
+    protected void Consultar(object sender, EventArgs e)
     {
         DDLrolbuscar.Items.Clear();
         string sql = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
@@ -85,108 +44,62 @@ public partial class OpcRol : Conexion
         Metodo.Value = "2";
         Linfo.Text = "";
         Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
+        Busqueda.Visible = true;
         Resultado.Visible = false;
-        Botones.Visible = false;
     }
 
-    protected void Consultar(object sender, EventArgs e)
-    {
-        DDLrolbuscar.Items.Clear();
-        string sql = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
-        DDLrolbuscar.Items.AddRange(con.cargardatos(sql));
-        Metodo.Value = "3";
-        Linfo.Text = "";
-        Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
-        Resultado.Visible = false;
-        Botones.Visible = false;
+    /*Evento del boton buscar*/
+    protected void Buscar(object sender, EventArgs e){      
+        if (Metodo.Value.Equals("1")){
+            CargarOpciones();
+            Ingreso.Visible = true;
+        }else if (Metodo.Value.Equals("2"))
+        {
+            Resultado.Visible = true;
+            cargarTabla();
+        }
     }
-
-    protected void Inhabilitar(object sender, EventArgs e)
-    {
-        DDLrolbuscar.Items.Clear();
-        string sql = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
-        DDLrolbuscar.Items.AddRange(con.cargardatos(sql));
-        Metodo.Value = "4";
-        Linfo.Text = "";
-        Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
-        Resultado.Visible = false;
-        Botones.Visible = false;
-    }
-
+    
+    /*Evento del boton limpiar*/
     protected void Limpiar(object sender, EventArgs e)
     {
         Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
+        Busqueda.Visible = true;
         Resultado.Visible = false;
-        Botones.Visible = false;
         Linfo.Text = "";   
     }
-   
+
+    /*Metodos que se utilizan para guardar*/
     protected void Aceptar(object sender, EventArgs e){
         string sql = "";
         string texto = "";
-        if (Ingreso.Visible)
-        {
-            if (string.IsNullOrEmpty(TBid.Text) == true){
-                Linfo.ForeColor = System.Drawing.Color.Red;
-                Linfo.Text = "Los campos son obligatorios";
-            }else{                      
-                int id = Int32.Parse(TBid.Text);
-                string op = DDLopcs.Items[DDLopcs.SelectedIndex].Value.ToString();
-                int opcid = Int32.Parse(op);
-                sql = "insert into OPCION_ROL (OPCROL_ID,OPCS_ID,ROL_ID) VALUES('" + id + "', '" + opcid + "', '" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "')";
-                texto = "Datos guardados satisfactoriamente";
-                Ejecutar(sql, texto);
-                DDLopcs.SelectedIndex = 1;
+        Linfo.Text = "estos son todos" + Metodo.Value;
+        GVasignaopc.Enabled = false;
+        if (Ingreso.Visible){
+            String[] ciclo = Metodo.Value.Split(' ');
+
+            for(int i=0; i< ciclo.Length-1; i++)
+            {
+                 sql = "insert into OPCION_ROL (OPCROL_ID,OPCS_ID,ROL_ID) VALUES(opcrid.nextval, '" + ciclo[i] + "', '" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "')";
+                 texto = "Datos guardados satisfactoriamente";
+                 Ejecutar(sql, texto);
             }
-        }else if (Actualizar.Visible){
-         
-            sql = "UPDATE OPCION_ROL SET OPCS_ID= '" + DDLopactu.Items[DDLopactu.SelectedIndex].Value.ToString() + "', ROL_ID = '" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "'  WHERE OPCROL_ID = '" + DDLansopcs.Items[DDLansopcs.SelectedIndex].Value.ToString() + "'";
-            texto = "Datos modificados satisfactoriamente";
-            Ejecutar( sql,texto);
-        }else if (Eliminar.Visible)
-        {
-            sql = "UPDATE OPCION_ROL SET OPCROL_ESTADO = '" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' WHERE OPCROL_ID = '" + DDLopcrol.Items[DDLopcrol.SelectedIndex].Value.ToString() + "'";
-            texto = "La opcion del rol se ha puesto "+ DDLestado.Items[DDLestado.SelectedIndex].Value.ToLower() + " satisfactoriamente";
-            Linfo.Text = sql;
-            Ejecutar( sql,texto);
+            CargarOpciones();
+            GVasignaopc.Enabled = true;
         }
     }
-
     private void Ejecutar( string sql,string texto)
     {
         string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono"))
-        {
+        if (info.Equals("Funciono")){
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = texto;
-        }
-        else
-        {
+        }else{
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = info;
         }
-
-        TBid.Text = "";
     }
-
-
-    protected void gvSysRol_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        gvSysRol.PageIndex = e.NewPageIndex;
-        cargarTabla();
-    }
-
-    protected void gvSysRol_RowDataBound(object sender, GridViewRowEventArgs e) { }
-
-    public void cargarTabla()
+    public void CargarOpciones()
     {
         string sql = "";
         List<ListItem> list = new List<ListItem>();
@@ -196,26 +109,93 @@ public partial class OpcRol : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "SELECT DISTINCT C.OPCROL_ID,O.OPCS_NOMBRE ,C.OPCROL_ESTADO  FROM OPCION_SISTEMA O, OPCION_ROL C WHERE O.OPCS_ID = C.OPCS_ID AND C.ROL_ID = '"+ DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "' ORDER BY C.OPCROL_ID ";
-
+                sql = "SELECT O.OPCS_ID,O.OPCS_NOMBRE FROM OPCION_SISTEMA O WHERE O.OPCS_ESTADO='ACTIVO' AND O.OPCS_ID NOT IN(SELECT R.OPCS_ID FROM OPCION_ROL R WHERE  R.ROL_ID = '" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "') ORDER BY O.OPCS_ID";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    gvSysRol.DataSource = dataTable;
-                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
-                    Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
+                    GVasignaopc.DataSource = dataTable;
                 }
-                gvSysRol.DataBind();
-
+                GVasignaopc.DataBind();
             }
             conn.Close();
         }
         catch (Exception ex)
         {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+    }
+    protected void CBeligio_CheckedChanged(object sender, EventArgs e)
+    {
+        string codigos="";
+        foreach (GridViewRow row in GVasignaopc.Rows)
+        {
+            CheckBox check = row.FindControl("CBeligio") as CheckBox;
+            if (check.Checked){
+                codigos += row.Cells[0].Text + " ";
+                Metodo.Value = codigos;
+            }
+        }
+        
+    }
+    protected void GVasignaopc_RowDataBound(object sender, GridViewRowEventArgs e){}
+    protected void GVasignaopc_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GVasignaopc.PageIndex = e.NewPageIndex;
+        CargarOpciones();
+    }
+
+     /*Metodos que se utilizan para la consulta*/
+    protected void GVopcrol_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null){
+            string id = GVopcrol.Rows[e.RowIndex].Cells[0].Text;
+            string sql = "Delete from opcion_rol where opcrol_id='" + id + "'";
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            using (OracleDataReader reader = cmd.ExecuteReader()){
+                cargarTabla();
+            }
+        }
+    }
+    protected void GVopcrol_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GVopcrol.PageIndex = e.NewPageIndex;
+        cargarTabla();
+    }
+    protected void GVopcrol_RowDataBound(object sender, GridViewRowEventArgs e) { }
+    public void cargarTabla()
+    {
+        string sql = "";
+        List<ListItem> list = new List<ListItem>();
+        try{
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null){
+                sql = "SELECT DISTINCT C.OPCROL_ID,O.OPCS_ID,O.OPCS_NOMBRE  FROM OPCION_SISTEMA O, OPCION_ROL C WHERE O.OPCS_ID = C.OPCS_ID AND C.ROL_ID = '"+ DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "' ORDER BY O.OPCS_ID ";
+
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader()){
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVopcrol.DataSource = dataTable;
+                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.ForeColor = System.Drawing.Color.Red;
+                    Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
+                }
+                GVopcrol.DataBind();
+            }
+            conn.Close();
+        }catch (Exception ex){
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }       
     }
+
+
+   
 }

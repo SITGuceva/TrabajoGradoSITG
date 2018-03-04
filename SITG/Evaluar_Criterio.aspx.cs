@@ -30,28 +30,18 @@ public partial class Evaluar_Criterio : System.Web.UI.Page
         }
     }
 
-    /*Metodos de crear-modificar-consultar-inhabilitar que manejan la parte del fronted*/
+    /*Metodos de evaluar que manejan la parte del fronted*/
     protected void Crear(object sender, EventArgs e)
     {
-        Ingreso.Visible = true;
-        
+        Ingreso.Visible = true;        
         Metodo.Value = "";
         Linfo.Text = "";
-
-        CargarCriterios();
-
-
     }
-
     protected void Consultar(object sender, EventArgs e)
     {
-        
-        
-        Metodo.Value = "2";
-        
-        
-        Ingreso.Visible = false;
-        
+               
+        Metodo.Value = "2";  
+        Ingreso.Visible = false;  
         Linfo.Text = "";
     }
     
@@ -102,7 +92,11 @@ public partial class Evaluar_Criterio : System.Web.UI.Page
     }
 
     /*Metodos que se utilizan para la consulta*/
- 
+    protected void Revisar(object sender, EventArgs e)
+    {
+        GVevaluarcrit.Visible = true;
+        CargarCriterios();
+    }
 
     public void CargarCriterios()
     {
@@ -133,47 +127,24 @@ public partial class Evaluar_Criterio : System.Web.UI.Page
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
-
     protected void GVevaluarcrit_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         GVevaluarcrit.PageIndex = e.NewPageIndex;
         CargarCriterios();
     }
-
     protected void GVevaluarcrit_RowDataBound(object sender, GridViewRowEventArgs e) {}
-
-    
-
+ 
     protected void CBcumplio_CheckedChanged(object sender, EventArgs e)
     {
-        /*foreach (GridViewRow row in GVevaluarcrit.Rows)
-        {
-            CheckBox check = row.FindControl("CBcumplio") as CheckBox;
-
-            if (check.Checked)
-            {
-
-                //Ex.:
-                int variable = Convert.ToInt32(row.Cells[1].Text);
-                Linfo.Text = "es" + variable;
-                //Cualquier codigo aqui
-            }
-        }*/
-       
         foreach (GridViewRow row in GVevaluarcrit.Rows)
         {
 
             CheckBox check = row.FindControl("CBcumplio") as CheckBox;
-
-            
-
             if (check.Checked)
             {
                string x= row.Cells[2].Text;
                 porcentaje += Convert.ToInt32( x);
-                Linfo.Text = "funciona" + porcentaje;
-           
-
+                Linfo.Text = "funciona" + porcentaje;          
             }
         }
 
