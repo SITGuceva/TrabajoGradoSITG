@@ -17,109 +17,69 @@ public partial class Estudiante : Conexion
             Response.Redirect("Default.aspx");
         }
     }
-  
+
     //METODOS DE CREAR, MODIFICAR, CONSULTAR, INHABILITAR ME MANEJAN QUE SE HACE VISIBLE EN EL  FRONTED
     protected void Crear(object sender, EventArgs e){
         Ingreso.Visible = true;
+        ConsultarUsuario.Visible = false;
         Resultado.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;
         Botones.Visible = true;
         Linfo.Text = "";
-    }
-    protected void Modificar(object sender, EventArgs e){
-        DDLcodigo2.Items.Clear();
-        string sql2 = "SELECT USU_USERNAME FROM USUARIO";
-        DDLcodigo2.Items.AddRange(con.cargarDDLid(sql2));
-        Actualizar.Visible = true;
-        Ingreso.Visible = false;
-        Resultado.Visible = false;
-        Eliminar.Visible = false;
-        Botones.Visible = true;
-        Linfo.Text = "";
+
     }
     protected void Consultar(object sender, EventArgs e){
-        cargarTabla();
-        Resultado.Visible = true;
+        ConsultarUsuario.Visible = true;
         Botones.Visible = false;
         Ingreso.Visible = false;
-        Actualizar.Visible = false;
-        Eliminar.Visible = false;  
+       
     }
-    protected void Inhabilitar(object sender, EventArgs e){
-        DDLcodigo.Items.Clear();
-        string sql1 = "SELECT USU_USERNAME FROM USUARIO";
-        DDLcodigo.Items.AddRange(con.cargarDDLid(sql1));
-        Eliminar.Visible = true;
-        Ingreso.Visible = false;
-        Resultado.Visible = false;
-        Actualizar.Visible = false;
-        Botones.Visible = true;
-        Linfo.Text = "";
-    }
-
     //METODO ACEPTAR(GUARDAR) REALIZA LAS OPERACIONES DE CREAR, MODIFICAR, INHABILITAR
     protected void Aceptar(object sender, EventArgs e){ 
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        if (Ingreso.Visible){
-            guardar();
-        }else if (Actualizar.Visible){
-            if (string.IsNullOrEmpty(DDLcodigo2.Text) == true || string.IsNullOrEmpty(TBcontra2.Text) == true || string.IsNullOrEmpty(TBnombre2.Text) == true || string.IsNullOrEmpty(TBapellido2.Text) == true || string.IsNullOrEmpty(TBtelefono2.Text) == true || string.IsNullOrEmpty(TBdireccion2.Text) == true || string.IsNullOrEmpty(TBcorreo2.Text) == true){
+        if (Ingreso.Visible)
+        {
+            int cod;
+            if (string.IsNullOrEmpty(TBcodigo.Text) == true || string.IsNullOrEmpty(TBcontra.Text) == true || string.IsNullOrEmpty(TBnombre.Text) == true || string.IsNullOrEmpty(TBapellido.Text) == true || string.IsNullOrEmpty(TBtelefono.Text) == true || string.IsNullOrEmpty(TBdireccion.Text) == true || string.IsNullOrEmpty(TBcorreo.Text) == true)
+            {
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Los campos son obligatorios";
-            }else{
-                string pass = con.GetMD5(TBcontra2.Text);
-                sql = "UPDATE USUARIO SET USU_CONTRASENA = '" + pass + "', USU_NOMBRE ='" + TBnombre2.Text + "', USU_APELLIDO ='" + TBapellido2.Text + "', USU_TELEFONO ='" + TBtelefono2.Text + "', USU_DIRECCION ='" + TBdireccion2.Text + "', USU_CORREO ='" + TBcorreo2.Text + "', USU_FMODIFICACION = TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS')  WHERE USU_USERNAME = '" + DDLcodigo2.Items[DDLcodigo2.SelectedIndex].Value.ToString() + "'";
-                texto = "Datos modificados satisfactoriamente";
-                Ejecutar(texto, sql);
-            }
-        }else if (Eliminar.Visible){
-             sql = "UPDATE USUARIO SET USU_ESTADO = '" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "', USU_FMODIFICACION = TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS') WHERE USU_USERNAME = '" + DDLcodigo.Items[DDLcodigo.SelectedIndex].Value.ToString() + "'";
-             texto = "Usuario se ha puesto "+ DDLestado.Items[DDLestado.SelectedIndex].Value.ToLower() + " satisfactoriamente";
-             Ejecutar(texto, sql);
-        }
-     }    
-    private void guardar()
-    {
-        int cod;
-        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        if (string.IsNullOrEmpty(TBcodigo.Text) == true || string.IsNullOrEmpty(TBcontra.Text) == true || string.IsNullOrEmpty(TBnombre.Text) == true || string.IsNullOrEmpty(TBapellido.Text) == true || string.IsNullOrEmpty(TBtelefono.Text) == true || string.IsNullOrEmpty(TBdireccion.Text) == true || string.IsNullOrEmpty(TBcorreo.Text) == true) {
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "Los campos son obligatorios";
-        } else {
-            string rol = DDLrol.Items[DDLrol.SelectedIndex].Value.ToString();
-            string pass = con.GetMD5(TBcontra.Text);
-            cod = Int32.Parse(TBcodigo.Text);
-            sql = "insert into USUARIO (USU_USERNAME,USU_CONTRASENA,USU_NOMBRE,USU_APELLIDO,USU_TELEFONO,USU_DIRECCION,USU_CORREO,USU_FCREACION, USU_FMODIFICACION) VALUES('" + TBcodigo.Text + "', '" + pass + "', '" + TBnombre.Text + "', '" + TBapellido.Text + "', '" + TBtelefono.Text + "', '" + TBdireccion.Text + "', '" + TBcorreo.Text + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
-            texto = "Datos guardados satisfactoriamente";
-            Ejecutar(texto, sql);
-
-            if (rol.Equals("NULL"))
-            {
-                Linfo.ForeColor = System.Drawing.Color.Green;
-                Linfo.Text += "Datos guardados satisfactoriamente";
             }
             else
             {
-                sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES (USUARIOID.nextval,'" + cod + "','" + rol + "')";
+                string rol = DDLrol.Items[DDLrol.SelectedIndex].Value.ToString();
+                string pass = con.GetMD5(TBcontra.Text);
+                cod = Int32.Parse(TBcodigo.Text);
+                sql = "insert into USUARIO (USU_USERNAME,USU_CONTRASENA,USU_NOMBRE,USU_APELLIDO,USU_TELEFONO,USU_DIRECCION,USU_CORREO,USU_FCREACION, USU_FMODIFICACION) VALUES('" + TBcodigo.Text + "', '" + pass + "', '" + TBnombre.Text + "', '" + TBapellido.Text + "', '" + TBtelefono.Text + "', '" + TBdireccion.Text + "', '" + TBcorreo.Text + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);
-                string sql2 = "";
-                if (rol.Equals("EST"))
+
+                if (rol.Equals("NULL"))
                 {
-                    sql2 = "insert into ESTUDIANTE (EST_SEMESTRE, USU_USERNAME, PROG_CODIGO) VALUES ('" + TBsemestre.Text + "','" + cod + "', '"+ DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' )";
-                    texto = "Datos guardados satisfactoriamente";
-                    Ejecutar(texto, sql2);
-                    DDLprograma.SelectedIndex = 0;
+                    Linfo.ForeColor = System.Drawing.Color.Green;
+                    Linfo.Text += "Datos guardados satisfactoriamente";
                 }
-                else if (rol.Equals("DOC"))
+                else
                 {
-                    sql2 = "insert into PROFESOR (USU_USERNAME) VALUES ('" + cod + "' )";
+                    sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES (USUARIOID.nextval,'" + cod + "','" + rol + "')";
                     texto = "Datos guardados satisfactoriamente";
-                    Ejecutar(texto, sql2);
+                    Ejecutar(texto, sql);
+                    string sql2 = "";
+                    if (rol.Equals("EST"))
+                    {
+                        sql2 = "insert into ESTUDIANTE (EST_SEMESTRE, USU_USERNAME, PROG_CODIGO) VALUES ('" + TBsemestre.Text + "','" + cod + "', '" + DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' )";
+                        texto = "Datos guardados satisfactoriamente";
+                        Ejecutar(texto, sql2);
+                        DDLprograma.SelectedIndex = 0;
+                    }
+                    else if (rol.Equals("DOC"))
+                    {
+                        sql2 = "insert into PROFESOR (USU_USERNAME) VALUES ('" + cod + "' )";
+                        texto = "Datos guardados satisfactoriamente";
+                        Ejecutar(texto, sql2);
+                    }
                 }
+                DDLrol.SelectedIndex = 0;
             }
-            DDLrol.SelectedIndex = 0;
         }
     }
     protected void DDLrol_SelectedIndexChanged(object sender, EventArgs e)/*evento del ddl para cuando selecciona un item*/
@@ -146,7 +106,6 @@ public partial class Estudiante : Conexion
         }
         borrardatos();
     }
-   
     //EVENTO DEL BOTON ACEPTAR 
     protected void Limpiar(object sender, EventArgs e){
         Linfo.Text = "";
@@ -161,47 +120,58 @@ public partial class Estudiante : Conexion
         TBtelefono.Text = "";
         TBdireccion.Text = "";
         TBcorreo.Text = "";
-        TBcontra2.Text = "";
-        TBnombre2.Text = "";
-        TBapellido2.Text = "";
-        TBtelefono2.Text = "";
-        TBdireccion2.Text = "";
-        TBcorreo2.Text = "";
         Testudiante.Visible = false;
         DDLrol.SelectedIndex = 0;
        
     }
-
     //METODOS QUE REALIZAN LAS OPERACIONES DE CONSULTA   
-    protected void GVusuario_PageIndexChanging(object sender, GridViewPageEventArgs e)/*evento que cambia la pagina de la tabla*/
+
+
+
+
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    /*Metodos para la consulta de las observaciones*/
+    protected void GVusuarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        GVusuario.PageIndex = e.NewPageIndex;
-        cargarTabla();
+        GVusuarios.PageIndex = e.NewPageIndex;
+        LlamarTablaRoles();
     }
-    protected void GVusuario_RowDataBound(object sender, GridViewRowEventArgs e) { } /*evento que se llama cuando llenga las columnas*/
-    public void cargarTabla()
+    protected void GVusuarios_RowDataBound(object sender, GridViewRowEventArgs e) { }
+
+    protected void LlamarTablaRoles()/*Tabla para la consulta*/
     {
+
         string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try{
+      
+        try
+        {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "SELECT USU_USERNAME,USU_NOMBRE,USU_APELLIDO,USU_TELEFONO,USU_DIRECCION,USU_CORREO,USU_FCREACION, USU_FMODIFICACION,USU_ESTADO  FROM USUARIO ";
 
+                if (DDLconsulta.Items[DDLconsulta.SelectedIndex].Value.ToString().Equals("TODOS"))
+                {
+                    sql = "SELECT * FROM USUARIO";
+                }
+                else
+                {
+
+                    sql = "SELECT U.USU_USERNAME, U.USU_NOMBRE, U.USU_APELLIDO, U.USU_TELEFONO, U.USU_DIRECCION, U.USU_CORREO, U.USU_ESTADO FROM USUARIO U, USUARIO_ROL UR WHERE U.USU_USERNAME=UR.USU_USERNAME AND UR.ROL_ID='" + DDLconsulta.Items[DDLconsulta.SelectedIndex].Value.ToString() + "'";
+
+                }
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
                 {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    GVusuario.DataSource = dataTable;
+                    GVusuarios.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.ForeColor = System.Drawing.Color.Red;
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
-                GVusuario.DataBind();
-
+                GVusuarios.DataBind();
             }
             conn.Close();
         }
@@ -209,20 +179,56 @@ public partial class Estudiante : Conexion
         {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
+
     }
 
 
-    protected void consultausuario(object sender, EventArgs e)
+    /*Metodos que sirven para el modificar-eliminar de la tabla observaciones*/
+    protected void GVusuarios_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
-     //////////////////////////////////////////PROBLEMAAAAAAS //////////////////////////////////  
-        string sql = "SELECT USU_CONTRASENA,USU_NOMBRE,USU_APELLIDO, USU_DIRECCION,USU_CORREO, USU_TELEFONO FROM USUARIO WHERE USU_USERNAME='" + DDLcodigo2.Items[DDLcodigo2.SelectedIndex].Value.ToString() + "'";
-        List<string> list = con.consulta(sql, 6, 1);
-        TBcontra2.Text = list[0];
-        TBnombre2.Text = list[1];
-        TBapellido2.Text = list[2];
-        TBdireccion2.Text = list[3];
-        TBcorreo2.Text = list[4];
-        TBtelefono2.Text = list[5];
-        
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        GridViewRow row = (GridViewRow)GVusuarios.Rows[e.RowIndex];
+        if (conn != null)
+        {
+            DropDownList combo = GVusuarios.Rows[e.RowIndex].FindControl("estado") as DropDownList;
+            string estado = combo.SelectedValue;
+            TextBox codigo = (TextBox)GVusuarios.Rows[e.RowIndex].Cells[0].Controls[0];
+            TextBox nombre = (TextBox)GVusuarios.Rows[e.RowIndex].Cells[1].Controls[0];
+            TextBox apellido = (TextBox)GVusuarios.Rows[e.RowIndex].Cells[2].Controls[0];
+            TextBox telefono = (TextBox)GVusuarios.Rows[e.RowIndex].Cells[3].Controls[0];
+            TextBox direccion = (TextBox)GVusuarios.Rows[e.RowIndex].Cells[4].Controls[0];
+
+            string sql = "update usuario set usu_nombre = '" + nombre.Text + "', usu_apellido='"+apellido.Text+"', usu_telefono='"+telefono.Text+"', usu_direccion='"+direccion.Text+"', usu_estado='"+estado+"' where  usu_username ='" + codigo.Text + "'";
+            Linfo.Text = sql;
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            using (OracleDataReader reader = cmd.ExecuteReader())
+            {
+                GVusuarios.EditIndex = -1;
+                LlamarTablaRoles();
+            }
+        }
     }
+    protected void GVusuarios_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        int indice = GVusuarios.EditIndex = e.NewEditIndex;
+        LlamarTablaRoles();
+        GVusuarios.Rows[indice].Cells[0].Enabled = false;
+    }
+    protected void GVusuarios_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GVusuarios.EditIndex = -1;
+        LlamarTablaRoles();
+    }
+
+    protected void DDLconsulta_SelectedIndexChanged(object sender, EventArgs e)/*evento del ddl para cuando selecciona un item*/
+    {
+        Resultado.Visible = true;
+        LlamarTablaRoles();
+    }
+
+
+
 }
