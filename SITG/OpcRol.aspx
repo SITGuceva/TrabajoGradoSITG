@@ -16,6 +16,7 @@
                 </div>
 
                 <div id="Busqueda" runat="server" visible="true" class="row">
+                    <asp:Label ID="Ltitulo" runat="server" Text="Asignar Opcion al Rol" ForeColor="Black" Font-Bold="True"></asp:Label>
                     <asp:Table ID="Tablebuscar" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
                             <asp:TableCell>
@@ -32,6 +33,7 @@
                 </div>
 
                 <div id="Ingreso" runat="server" visible="false" class="row">
+                    
                     <asp:GridView ID="GVasignaopc" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"  OnPageIndexChanging="GVasignaopc_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVasignaopc_RowDataBound" PageSize="8">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />

@@ -34,7 +34,8 @@ public partial class OpcRol : Conexion
         Linfo.Text = "";
         Ingreso.Visible = false;
         Busqueda.Visible = true;
-        Resultado.Visible = false;      
+        Resultado.Visible = false;
+        Ltitulo.Text = "Asignar Opcion al Rol";
     }
     protected void Consultar(object sender, EventArgs e)
     {
@@ -46,6 +47,7 @@ public partial class OpcRol : Conexion
         Ingreso.Visible = false;
         Busqueda.Visible = true;
         Resultado.Visible = false;
+        Ltitulo.Text = "Consultar Opciones del rol";
     }
 
     /*Evento del boton buscar*/

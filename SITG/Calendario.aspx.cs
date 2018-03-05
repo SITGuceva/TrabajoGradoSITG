@@ -65,7 +65,6 @@ public partial class Calendario : System.Web.UI.Page
                 string fecha = Cfecha.SelectedDate.ToShortDateString();
                 sql = "insert into REUNION (REU_CODIGO,REU_FPROP,COM_CODIGO, REU_TITULO, REU_DESCRIPCION) VALUES(reunionid.nextval,TO_DATE( '"+fecha+"', 'DD-MM-YYYY'),'"+com+"', '"+TBnombre.Text+"',  '"+TBdescrip.Text+"')";
                 texto = "Datos guardados satisfactoriamente";
-               //Linfo.Text = sql;
                 Ejecutar(texto, sql);
                
             }
