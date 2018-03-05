@@ -36,7 +36,7 @@ public partial class Propuesta : Conexion
         OracleCommand cmd = null;
         if (conn != null)
         {
-            string sql = "SELECT PROP_CODIGO FROM ESTUDIANTE WHERE USU_USERNAME ='" + Session["id"] + "'";
+            string sql = "SELECT PROP_CODIGO FROM ESTUDIANTE WHERE USU_USERNAME ='" + Session["id"] + "' and PROP_CODIGO!=0";
 
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;

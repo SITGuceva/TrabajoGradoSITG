@@ -31,7 +31,10 @@ public partial class Estudiante : Conexion
         ConsultarUsuario.Visible = true;
         Botones.Visible = false;
         Ingreso.Visible = false;
-       
+        Linfo.Text = "";
+        DDLconsulta.SelectedIndex = 0;
+        LlamarTablaRoles();
+        Resultado.Visible = true;
     }
     //METODO ACEPTAR(GUARDAR) REALIZA LAS OPERACIONES DE CREAR, MODIFICAR, INHABILITAR
     protected void Aceptar(object sender, EventArgs e){ 
@@ -76,6 +79,7 @@ public partial class Estudiante : Conexion
                         sql2 = "insert into PROFESOR (USU_USERNAME) VALUES ('" + cod + "' )";
                         texto = "Datos guardados satisfactoriamente";
                         Ejecutar(texto, sql2);
+
                     }
                 }
                 DDLrol.SelectedIndex = 0;
@@ -88,10 +92,12 @@ public partial class Estudiante : Conexion
         if (rol.Equals("EST"))
         {
             Testudiante.Visible = true;
+            DDLprograma.Items.Clear();
             string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
             DDLprograma.Items.AddRange(con.cargardatos(sql));
-        } else if (rol.Equals("NULL")){
+        } else {
             Testudiante.Visible = false;
+
         }
     }
     private void Ejecutar(string texto, string sql)
