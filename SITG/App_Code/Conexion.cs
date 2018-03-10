@@ -71,9 +71,11 @@ public class Conexion : System.Web.UI.Page
                 OracleCommand cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 OracleDataReader dr = cmd.ExecuteReader();
+              
                 while (dr.Read()) {
-                    list.Add(new ListItem(dr[1].ToString(), dr[0].ToString()));
+                  list.Add(new ListItem(dr[1].ToString(), dr[0].ToString()));
                 }
+                
             }
             conn.Close();
         }

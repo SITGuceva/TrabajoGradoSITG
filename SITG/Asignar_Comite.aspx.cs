@@ -66,11 +66,28 @@ public partial class Asignar_Comite : Conexion
         Ejecutar(texto, sql);
 
         Roles.Visible = false;
+        RevisarExiste();
+    }
 
-        sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval,'" + TBcodigo.Text + "','COM')";
-        Ejecutar("", sql);
+    private void RevisarExiste()
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null) {
+            string sql = "SELECT USU_USERNAME FROM USUARIO_ROL WHERE ROL_ID ='COM' and USU_USERNAME='"+ TBcodigo.Text + "'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows){
+                if (drc1.IsDBNull(0)){
+                    sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval,'" + TBcodigo.Text + "','COM')";
+                    Ejecutar("", sql);
+                }
+            }
+            drc1.Close();
+        }
         CargarComite();
-       
     }
 
     /*Metodo que sirven para la consulta del usuario*/

@@ -64,6 +64,7 @@ public partial class Evaluar_Criterio : System.Web.UI.Page
     /*Metodos que se utilizan para guardar-actualizar-inhabilitar*/
     protected void Aceptar(object sender, EventArgs e)
     {
+      
         string sql = "", texto = "";
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
 

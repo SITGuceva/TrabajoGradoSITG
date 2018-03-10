@@ -4,7 +4,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">Gestionar Documentos - Propuesta</div>
         <div class="panel-body">
-
+            <asp:UpdatePanel ID="UPpropuesta" runat="server"> <ContentTemplate>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
@@ -16,36 +16,36 @@
                 </div>
 
                 <div id="Ingreso" runat="server" visible="false" class="row">
-                    <asp:Table ID="Tsubir" runat="server" HorizontalAlign="Center">                      
+                    <asp:Table ID="Tsubir" runat="server" HorizontalAlign="Center">   
                         <asp:TableRow>
-                            <asp:TableCell>
-                                <asp:Label ID="Lnombre" runat="server" Text="Titulo:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                            </asp:TableCell>
-                            <asp:TableCell>
-                                <asp:TextBox ID="TBnombre" runat="server" CssClass="form-control"></asp:TextBox>
-                            </asp:TableCell>                    
-                            <asp:TableCell>
-                                <asp:Label ID="Ldocumento" runat="server" Text="Documento:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                            </asp:TableCell>
-                            <asp:TableCell>                                
-                                <asp:FileUpload ID="FUdocumento" runat="server" class="btn btn-default image-preview-input" />
-                             </asp:TableCell>
-                            
+                            <asp:TableCell><asp:Label ID="Llprof" runat="server" Text="Linea Investigacion:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:DropDownList ID="DDLlprof" runat="server" class="btn btn-secondary btn-lg dropdown-toggle" AutoPostBack="true" OnSelectedIndexChanged="DDLlprof_SelectedIndexChanged"></asp:DropDownList></asp:TableCell>                    
+                            <asp:TableCell><asp:Label ID="Ltema" runat="server" Text="Tema:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:DropDownList ID="DDLtema" runat="server" class="btn btn-secondary btn-lg dropdown-toggle"> </asp:DropDownList></asp:TableCell>
                          </asp:TableRow>
-
-                         <asp:TableRow>
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Lnombre" runat="server" Text="Titulo:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><textarea ID="TAnombre" runat="server" CssClass="form-control"></textarea> </asp:TableCell>                    
+                            <asp:TableCell><asp:Label ID="Ljusti" runat="server" Text="Justificacion:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><textarea ID="TAjusti"  rows="3" runat="server" CssClass="form-control"></textarea></asp:TableCell>
+                         </asp:TableRow>
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Lobj" runat="server" Text="Objetivos:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><textarea ID="TAobj" runat="server" CssClass="form-control"></textarea> </asp:TableCell>                    
+                            <asp:TableCell><asp:Label ID="Lblib" runat="server" Text="Bibliografia:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><textarea ID="TAblib"  rows="3" runat="server" CssClass="form-control"></textarea> </asp:TableCell>                    
+                         </asp:TableRow>
+                        
+                        
+                        <asp:TableRow>
                          <asp:TableHeaderCell>
                                  <asp:Label ID="Ltin" runat="server" Text="INTEGRANTES" ForeColor="Black" Font-Bold="True"></asp:Label>
                             </asp:TableHeaderCell>
                        </asp:TableRow>
 
                         <asp:TableRow>                        
-                            <asp:TableCell>
-                                <asp:Label ID="Lintegrante" runat="server" Text="Codigo del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                            </asp:TableCell>
-                            <asp:TableCell>
-                                <asp:TextBox ID="TBcodint" runat="server" CssClass="form-control"></asp:TextBox>
-                            </asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Lintegrante" runat="server" Text="Codigo del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:TextBox ID="TBcodint" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
                             <asp:TableCell>
                                 <asp:Button ID="Bintegrante" runat="server" Text="Buscar" OnClick="Bintegrante_Click" class="btn btn-default"/>
                                 <asp:Button ID="Bnueva" runat="server" Text="Nueva Consulta" Visible="false"   OnClick="Bintegrante_Click" class="btn btn-default"/>
@@ -53,15 +53,9 @@
                         </asp:TableRow>
 
                         <asp:TableRow ID="RespInte" runat="server" Visible="false">
-                            <asp:TableCell>
-                                <asp:Label ID="Nombre" runat="server" Text="Nombre del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label>
-                            </asp:TableCell>
-                            <asp:TableCell>
-                                 <asp:Label ID="Rnombre" runat="server" Text="x" ForeColor="Black" CssClass="form-control"></asp:Label>
-                            </asp:TableCell>
-                             <asp:TableCell>
-                                <asp:Button ID="Agregar" runat="server" Text="Agregar" OnClick="AgregarIntegrante" class="btn btn-default" />
-                            </asp:TableCell>
+                            <asp:TableCell> <asp:Label ID="Nombre" runat="server" Text="Nombre del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label> </asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Rnombre" runat="server" Text="x" ForeColor="Black" CssClass="form-control"></asp:Label> </asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Agregar" runat="server" Text="Agregar" OnClick="AgregarIntegrante" class="btn btn-default" /></asp:TableCell>
                         </asp:TableRow>
 
                     </asp:Table>
@@ -84,12 +78,8 @@
 
                      <asp:Table ID="TableBotones" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell>
-                                <asp:Button ID="Bguardar" runat="server" Text="Guardar" OnClick="Guardar" class="btn btn-default"/>
-                            </asp:TableCell>
-                            <asp:TableCell>
-                                <asp:Button ID="Bcancelar" runat="server" Text="Cancelar" OnClick="Limpiar" class="btn btn-default"/>
-                            </asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bguardar" runat="server" Text="Guardar" OnClick="Guardar" class="btn btn-default"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" Text="Cancelar" OnClick="Limpiar" class="btn btn-default"/></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
                 </div>
@@ -107,9 +97,9 @@
                             <asp:BoundField DataField="PROP_TITULO" HeaderText="TITULO" />
                             <asp:BoundField DataField="PROP_FECHA" HeaderText="FECHA" />
                             <asp:BoundField DataField="PROP_ESTADO" HeaderText="ESTADO" />
-                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
+                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Propuesta">
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="lnkDownload" runat="server" Text="Download" OnClick="DownloadFile" CommandArgument='<%# Eval("PROP_CODIGO") %>'></asp:LinkButton>
+                                    <asp:Button ID="Bpropuesta" runat="server" Text="Consultar"  OnClick="Bpropuesta_Click" CommandArgument='<%# Eval("PROP_CODIGO") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Observaciones">
@@ -119,6 +109,28 @@
                             </asp:TemplateField>
                         </Columns>
                     </asp:GridView>
+                </div>
+
+                <div id="Documento" runat="server" visible="false" class="row">
+                    <asp:GridView ID="GVdocumento" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False"  CssClass="table table-bordered bs-table"  OnRowDataBound="GVdocumento_RowDataBound" >
+                        <AlternatingRowStyle BackColor="White" />
+                        <EditRowStyle BackColor="#2461BF" />
+                        <FooterStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="White" />
+                        <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
+                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <EditRowStyle BackColor="#ffffcc" />
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                        <EmptyDataTemplate>¡No hay documento! </EmptyDataTemplate>
+                        <Columns>
+                            <asp:BoundField DataField="PROP_JUSTIFICACION" HeaderText="JUSTIFICACION" />
+                            <asp:BoundField DataField="PROP_OBJETIVOS" HeaderText="OBJETIVOS" />
+                            <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="LINEA INVESTIGACION" /> 
+                            <asp:BoundField DataField="TEM_NOMBRE" HeaderText="TEMA" /> 
+                            <asp:BoundField DataField="PROP_BIBLIOGRAFIA" HeaderText="BIBLIOGRAFIA" /> 
+                        </Columns>
+                     </asp:GridView>                    
                 </div>
 
                 <div id="Observaciones" runat="server" visible="false" class="row">
@@ -147,9 +159,10 @@
 
 
                 <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
-                <asp:HiddenField ID="Metodo" runat="server" Value="" />     
+                <asp:HiddenField ID="Metodo" runat="server" Value="" />   
+                <asp:HiddenField ID="Verificador" runat="server" Value=""/>
             </div>
-
+          </ContentTemplate></asp:UpdatePanel>
         </div>
     </div>
 
