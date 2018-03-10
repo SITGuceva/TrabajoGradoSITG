@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" EnableEventValidation="false" AutoEventWireup="true" CodeFile="Consulta_Propuestas.aspx.cs" Inherits="Consulta_Propuestas" %>
 
-<asp:Content ID="ConsultaPropuesta" ContentPlaceHolderID="MainContent" runat="Server">
+<asp:Content ID="ConsultaPropuesta" ContentPlaceHolderID="MainContent" runat="Server" >
     <div class="panel panel-default">
         <div class="panel-heading">Gestionar Documentos - Consultar Propuestas</div>
         <div class="panel-body">
@@ -11,14 +11,32 @@
                         <div id="Ingreso" runat="server" visible="false" class="row">
                             <asp:Table ID="Tconsulta" runat="server" HorizontalAlign="center">
                                 <asp:TableRow>
-                                    <asp:TableCell> <asp:Label ID="LCodigoP" runat="server" Text="Codigo de la propuesta:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
-                                    <asp:TableCell> <asp:Label ID="LCodigoE" runat="server" Text="Codigo del estudiante" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
-                                </asp:TableRow>
+                                    <asp:TableCell>
+                                        <asp:Label ID="Label1" runat="server" Text="programa:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                        <asp:DropDownList ID="DDLconsultaPrograma" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLconsultaPrograma_SelectedIndexChanged" AutoPostBack="true">
+                                        </asp:DropDownList>
+                                    </asp:TableCell>
+                                  
 
-                               <asp:TableRow>
-                                    <asp:TableCell><asp:TextBox ID="TBCodigoP" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
-                                    <asp:TableCell><asp:TextBox ID="TBCodigoE" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
-                                    <asp:TableCell><asp:Button ID="BTbuscar" runat="server" Text="Buscar" OnClick="Buscar" CssClass="btn btn-default"></asp:Button> </asp:TableCell>
+                                   <asp:TableCell>
+                                        <asp:Label ID="Label2" runat="server" Text="linea de profundización:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                        <asp:DropDownList ID="DDLconsultaLinea" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" AutoPostBack="true" OnSelectedIndexChanged="DDLconsultaLinea_SelectedIndexChanged">
+                                        </asp:DropDownList>
+                                    </asp:TableCell>
+                                  
+                            
+                                     <asp:TableCell>
+                                         <asp:Label ID="Label3" runat="server" Text="tema:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                        <asp:DropDownList ID="DDLconsultaTema" class="btn btn-secondary btn-lg dropdown-toggle" runat="server">
+                                        </asp:DropDownList>
+                                    </asp:TableCell>
+
+                                    
+                                     <asp:TableCell>
+                                          <asp:Button ID="Btbuscar" OnClick="buscar" runat="server" Text="Buscar"  CssClass="btn btn-default"></asp:Button>
+                                            </asp:TableCell>
+                                  
+                                  
                                 </asp:TableRow>
                             </asp:Table>
                         </div>
@@ -35,7 +53,7 @@
                                 <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                                 <EditRowStyle BackColor="#ffffcc" />
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                                <EmptyDataTemplate></EmptyDataTemplate>
+                                <EmptyDataTemplate>No se encuentra propuestas con los datos ingresados</EmptyDataTemplate>
                                 <Columns>
                                     <asp:BoundField DataField="PROP_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="PROP_TITULO" HeaderText="Título" />
@@ -43,11 +61,7 @@
                                     <asp:BoundField DataField="PROP_ESTADO" HeaderText="Estado de la propuesta" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
                                     <asp:BoundField DataField="ESTADO" HeaderText="Estado director" />
-                                    <asp:TemplateField HeaderText="Documento">
-                                        <ItemTemplate>
-                                            <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("PROP_CODIGO") %>'></asp:LinkButton>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
+                                    
                                 </Columns>
                             </asp:GridView>
                         </div>
