@@ -1,15 +1,17 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="ActaReunion.aspx.cs" Inherits="ActaReunion" %>
 
 <asp:Content ID="ActaReunion" ContentPlaceHolderID="MainContent" Runat="Server">
+    
      <div class="panel panel-default">
         <div class="panel-heading">Actas - Acta de Reunion</div>
         <div class="panel-body">
-            <asp:UpdatePanel ID="UPactareu" runat="server"> <ContentTemplate>
+            <asp:UpdatePanel ID="UPactas" runat="server" > <ContentTemplate>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
                             <li><asp:LinkButton ID="LBgenerar" runat="server" OnClick="LBgenerar_Click" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Generar </asp:LinkButton></li>
+                            <li> <asp:LinkButton ID="LBsubir" runat="server" OnClick="LBsubir_Click" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Cargar </asp:LinkButton></li>                         
                             <li> <asp:LinkButton ID="LBconsultar" runat="server" OnClick="LBconsultar_Click" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar </asp:LinkButton></li>                         
                         </ul>
                     </div>
@@ -106,20 +108,80 @@
                             <asp:TableCell><asp:Button ID="Bgenerar" runat="server" Text="Generar" OnClick="Bgenerar_Click" class="btn btn-default"/></asp:TableCell>
                             <asp:TableCell><asp:Button ID="Bcancelar" runat="server" Text="Cancelar" OnClick="Bcancelar_Click" class="btn btn-default"/></asp:TableCell>
                         </asp:TableRow>
-                    </asp:Table>
-
-
-
-                    
+                    </asp:Table>                   
                 </div>
-             
+
+                <div id="SubirActa" runat="server" visible="false" class="row">
+                    <asp:Table ID="Tformatos" runat="server" HorizontalAlign="Center">                     
+                         <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Lreunion" runat="server" Text="Reunion:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:DropDownList ID="DDLreunion2" runat="server" class="btn btn-secondary btn-lg dropdown-toggle" AutoPostBack="true"></asp:DropDownList></asp:TableCell>
+                        </asp:TableRow>
+                         <asp:TableRow>
+                             <asp:TableCell><asp:Label ID="Ldocumento" runat="server" Text="Acta:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:FileUpload ID="FUdocumento" runat="server" class="btn btn-default image-preview-input" />
+                                            
+                            </asp:TableCell>
+                        </asp:TableRow>                                             
+                    </asp:Table>
+                    <asp:Table ID="botones" runat="server" HorizontalAlign="Center">
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Button ID="Bsubir" runat="server" OnClick="Bsubir_Click" Text="Guardar" class="btn btn-default" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Blimpiar" runat="server" OnClick="Blimpiar_Click" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
+                        </asp:TableRow>
+                    </asp:Table>
+                </div>
+               
+                <div id="ConsultarActa" runat="server" visible="false" class="row">
+                    <asp:Table runat="server" ID="Trango" HorizontalAlign="Center"> 
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Lfdesde" runat="server" Text="Desde:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:TextBox ID="TBdesde" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                            <asp:TableCell><asp:ImageButton ID="Idesde" runat="server" Height="23px" ImageUrl="~/Images/Icalendar.png" Width="36px" OnClick="IBdesde_Click"/></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Lfhasta" runat="server" Text="Hasta:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell> 
+                            <asp:TableCell><asp:TextBox ID="TBhasta" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                            <asp:TableCell><asp:ImageButton ID="IBhasta" runat="server" Height="23px" ImageUrl="~/Images/Icalendar.png" Width="36px" OnClick="IBhasta_Click"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="BbuscarAct" runat="server" OnClick="BbuscarAct_Click" Text="Buscar" class="btn btn-default" /></asp:TableCell>
+                         </asp:TableRow>       
+                         <asp:TableRow>
+                              <asp:TableCell HorizontalAlign="Center" ColumnSpan="3"><asp:Calendar ID="Cdesde" runat="server" style="margin-top: 0px" Visible="false" OnSelectionChanged="Cdesde_SelectionChanged"></asp:Calendar></asp:TableCell>
+                              <asp:TableCell HorizontalAlign="Center" ColumnSpan="3" ><asp:Calendar ID="Chasta" runat="server" style="margin-top: 0px" Visible="false" OnSelectionChanged="Chasta_SelectionChanged"></asp:Calendar></asp:TableCell>
+                         </asp:TableRow>
+                    </asp:Table>    
+                    <asp:GridView ID="GVactas" runat="server" Visible="false" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"  OnPageIndexChanging="GVactas_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" 
+                         OnRowDataBound="GVactas_RowDataBound" PageSize="8" caption="ACTAS" captionalign="Top"  >
+                        <AlternatingRowStyle BackColor="White" />
+                        <EditRowStyle BackColor="#2461BF" />
+                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="White" />
+                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <EditRowStyle BackColor="#ffffcc" />
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                        <EmptyDataTemplate>¡No hay actas en el rango consultado!</EmptyDataTemplate>
+                        <Columns>
+                            <asp:BoundField DataField="REU_CODIGO" HeaderText="Reunion" /> 
+                            <asp:BoundField DataField="FECHA" HeaderText="Fecha" /> 
+                            <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Acta">
+                                <ItemTemplate>
+                                    <asp:LinkButton ID="lnkDownload" ClientIDMode="AutoID" runat="server" Text="Download" OnClick="DownloadFile" CommandArgument='<%# Eval("REU_CODIGO") %>' ></asp:LinkButton>
+                                </ItemTemplate>
+                            </asp:TemplateField>  
+                        </Columns>
+                     </asp:GridView>
+                </div>
               
 
                 <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
                 <asp:HiddenField ID="Asistio" runat="server" Value="" />   
                 <asp:HiddenField ID="Noasistio" runat="server" Value=""/>
             </div>
-          </ContentTemplate></asp:UpdatePanel>
+          </ContentTemplate>
+                <Triggers>
+                    <asp:PostBackTrigger ControlID="Bsubir" />
+                 </Triggers>
+            </asp:UpdatePanel>
         </div>
     </div>
 

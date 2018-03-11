@@ -15,9 +15,9 @@
 
 <body onkeypress="return pulsar(event)">
     <font size="2" color="White" face="Arial, Bold italic">  <%--revisar--%>
- 
+    
     <form runat="server">
-        <asp:ScriptManager runat="server">
+        <asp:ScriptManager ID="ScriptManager1" runat="server">
             <Scripts>               
                 <%--Scripts de marco--%>
                 <asp:ScriptReference Name="MsAjaxBundle" />

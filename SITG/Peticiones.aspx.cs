@@ -10,18 +10,33 @@ public partial class PeticionDir : Conexion
 {
     Conexion con = new Conexion();
 
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["Usuario"] == null)
         {
             Response.Redirect("Default.aspx");
-        }else if (!IsPostBack){          
-            TPeticiones.Visible = true;
-            CargarTablaPeticiones();
         }
     }
 
+    /*Metodos que manejan la parte del fronted*/
+    protected void LBPeticion_Dir_Click(object sender, EventArgs e)
+    {
+        TPeticiones.Visible = true;
+        CargarTablaPeticiones();
+        Linfo.Text = "";
+        PetiEstudiante.Visible = false;
+        ConsultaPeti.Visible = false;
+        Tipo.Value = "";
+    }
+    protected void LBPeticion_Est_Click(object sender, EventArgs e)
+    {
+        TPeticiones.Visible = false;
+        Linfo.Text = "";
+        PetiEstudiante.Visible = true;
+        ConsultaPeti.Visible = false;
+        Tipo.Value = "";
+    }
+   
     /*Metodos que se utilizan para consultar las peticiones de director pendientes*/
     protected void GVpeticion_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
@@ -44,7 +59,6 @@ public partial class PeticionDir : Conexion
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
-
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVpeticion.DataSource = dataTable;
@@ -161,6 +175,105 @@ public partial class PeticionDir : Conexion
         catch (Exception ex)
         {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+    }
+
+    /*Metodos que se utilian para consulta - modificacion de las peticiones del estudiante*/
+    protected void Bbuscar_Click(object sender, EventArgs e)
+    {
+        if (DDLsol.SelectedIndex.Equals(0))
+        {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Debe escoger algun tipo de peticion";
+        } else {
+            ConsultaPeti.Visible = true;
+            PeticionEstudiante();
+            Tipo.Value = DDLsol.SelectedIndex.ToString();
+        }       
+    }
+    private void PeticionEstudiante()
+    {
+        try{
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null){
+                string sql = "select DISTINCT s.SOLE_ID, s.SOLE_FECHA, s.SOLE_MOTIVO, p.PROP_TITULO,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as ESTUDIANTE,s.SOLE_ESTADO " +
+                    "from solicitud_est s, propuesta p, usuario u, estudiante e where s.PROP_CODIGO = p.PROP_CODIGO  and u.USU_USERNAME = s.USU_USERNAME and s.SOLE_TIPO = '"+ DDLsol.Items[DDLsol.SelectedIndex].Text + "'  and s.SOLE_ESTADO='Pendiente' and e.PROG_CODIGO " +
+                    " in (select  c.PROG_CODIGO from profesor p, comite c where p.USU_USERNAME = '" + Session["id"] + "' and c.COM_CODIGO = p.COM_CODIGO ) order by s.sole_id";
+
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader())
+                {
+                    
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVconsulta.DataSource = dataTable;
+                }
+                GVconsulta.DataBind();
+            }
+            conn.Close();
+        }
+        catch (Exception ex)
+        {
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+    }
+    protected void GVconsulta_RowDataBound(object sender, GridViewRowEventArgs e){ }
+    protected void DDLsol_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDLsol.SelectedIndex.Equals(0))
+        {
+            ConsultaPeti.Visible = false;
+        }
+    }
+    protected void GVconsulta_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GVconsulta.EditIndex = -1;
+        PeticionEstudiante();
+    }
+    protected void GVconsulta_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        int indice = GVconsulta.EditIndex = e.NewEditIndex;
+        PeticionEstudiante();
+        GVconsulta.Rows[indice].Cells[0].Enabled = false;
+        GVconsulta.Rows[indice].Cells[1].Enabled = false;
+        GVconsulta.Rows[indice].Cells[2].Enabled = false;
+        GVconsulta.Rows[indice].Cells[3].Enabled = false;
+        GVconsulta.Rows[indice].Cells[4].Enabled = false;
+    }
+    protected void GVconsulta_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null){
+            DropDownList combo = GVconsulta.Rows[e.RowIndex].FindControl("estado") as DropDownList;
+            string estado = combo.SelectedValue;
+            TextBox codigo = (TextBox) GVconsulta.Rows[e.RowIndex].Cells[0].Controls[0];
+            string sql="";
+
+            if (estado.Equals("Aceptada")) {
+                int caso = Convert.ToInt32(Tipo.Value);
+                switch (caso){
+                    case 1: sql = "update estudiante set prop_codigo = 0 where  EXISTS (select 1 from estudiante e, SOLICITUD_EST s where e.PROP_CODIGO=s.PROP_CODIGO and s.SOLE_ID='" + codigo.Text + "')";
+                            break;
+                    case 2: sql = "update estudiante set prop_codigo = 0 where usu_username =(select solicitud_est.USU_USERNAME as estudiante from solicitud_est where SOLE_ID = '" + codigo.Text + "') ";
+                            break;
+                    case 3: sql = "update estudiante set prop_codigo = (select PROP_CODIGO as propuesta from solicitud_est where SOLE_ID = '" + codigo.Text + "') " +
+                                  "where usu_username = (select solicitud_est.USU_USERNAME as estudiante from solicitud_est where SOLE_ID = '" + codigo.Text + "')";
+                            break;
+                    default: break;
+                }
+                Ejecutar("", sql);
+            }
+            
+            sql = "update solicitud_est set sole_estado='" + estado + "' where  sole_id ='" + codigo.Text + "'";
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            using (OracleDataReader reader = cmd.ExecuteReader()){
+                GVconsulta.EditIndex = -1;
+                PeticionEstudiante();
+            }
         }
     }
 }

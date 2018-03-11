@@ -22,55 +22,21 @@ public partial class Calendario : System.Web.UI.Page
     /*Metodos de crear-modificar-consultar-inhabilitar que manejan la parte del fronted*/
     protected void Crear(object sender, EventArgs e)
     {
-        Ingreso.Visible = true;
-      
         Botones.Visible = true;
         Linfo.Text = "";
-    }
-   
-
-    /*Evento del boton limpiar*/
-    protected void Limpiar(object sender, EventArgs e)
-    {
-        Linfo.Text = "";
-       
-        TBnombre.Text = "";
-        TBdescrip.Text = "";
-   
     }
 
     /*Metodos que se utilizan para guardar-actualizar-inhabilitar*/
     protected void Aceptar(object sender, EventArgs e)
     {
-
-        
-
         string sql = "", sql2 = "";
         sql2= "select c.COM_CODIGO from comite c, profesor p where p.COM_CODIGO = c.COM_CODIGO and p.USU_USERNAME = '"+Session["id"]+"'";
         List<string> list = con.consulta(sql2, 1, 1);
        
        string com= list[0];
-
-        string texto = "";
-        string nombre = TBnombre.Text;
-        if (Ingreso.Visible)
-        {
-            if (string.IsNullOrEmpty(TBdescrip.Text) == true || string.IsNullOrEmpty(TBnombre.Text) == true )
-            {
-                Linfo.ForeColor = System.Drawing.Color.Red;
-                Linfo.Text = "Los campos son obligatorios";
-            }
-            else
-            {
-                string fecha = Cfecha.SelectedDate.ToShortDateString();
-                sql = "insert into REUNION (REU_CODIGO,REU_FPROP,COM_CODIGO, REU_TITULO, REU_DESCRIPCION) VALUES(reunionid.nextval,TO_DATE( '"+fecha+"', 'DD-MM-YYYY'),'"+com+"', '"+TBnombre.Text+"',  '"+TBdescrip.Text+"')";
-                texto = "Datos guardados satisfactoriamente";
-                Ejecutar(texto, sql);
-               
-            }
-
-        }
-        
+        string fecha = DateTime.Now.ToString("dd/MM/yyyy, HH:mm:ss");
+        sql = "insert into REUNION (REU_CODIGO,REU_FPROP,COM_CODIGO, REU_ESTADO) VALUES(reunionid.nextval,TO_DATE( '"+fecha+ "', 'DD-MM-YYYY HH24:MI:SS'),'" + com+"', 'ACTIVO')";
+        Ejecutar("Datos guardados satisfactoriamente", sql);
     }
     private void Ejecutar(string texto, string sql)
     {
@@ -85,12 +51,6 @@ public partial class Calendario : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = info;
         }
-       
-        TBnombre.Text = "";
-        TBdescrip.Text = "";
-       
-
     }
 
-   
 }

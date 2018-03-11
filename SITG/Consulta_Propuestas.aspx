@@ -12,31 +12,21 @@
                             <asp:Table ID="Tconsulta" runat="server" HorizontalAlign="center">
                                 <asp:TableRow>
                                     <asp:TableCell>
-                                        <asp:Label ID="Label1" runat="server" Text="programa:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
-                                        <asp:DropDownList ID="DDLconsultaPrograma" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLconsultaPrograma_SelectedIndexChanged" AutoPostBack="true">
-                                        </asp:DropDownList>
+                                        <asp:Label ID="Lprog" runat="server" Text="programa:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                        <asp:DropDownList ID="DDLconsultaPrograma" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLconsultaPrograma_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                                     </asp:TableCell>
-                                  
-
+                                 
                                    <asp:TableCell>
-                                        <asp:Label ID="Label2" runat="server" Text="linea de profundización:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
-                                        <asp:DropDownList ID="DDLconsultaLinea" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" AutoPostBack="true" OnSelectedIndexChanged="DDLconsultaLinea_SelectedIndexChanged">
-                                        </asp:DropDownList>
+                                        <asp:Label ID="Llprof" runat="server" Text="linea de profundización:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                        <asp:DropDownList ID="DDLconsultaLinea" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" AutoPostBack="true" OnSelectedIndexChanged="DDLconsultaLinea_SelectedIndexChanged"></asp:DropDownList>
                                     </asp:TableCell>
                                   
-                            
                                      <asp:TableCell>
-                                         <asp:Label ID="Label3" runat="server" Text="tema:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
-                                        <asp:DropDownList ID="DDLconsultaTema" class="btn btn-secondary btn-lg dropdown-toggle" runat="server">
-                                        </asp:DropDownList>
+                                         <asp:Label ID="Ltema" runat="server" Text="tema:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                        <asp:DropDownList ID="DDLconsultaTema" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList>
                                     </asp:TableCell>
 
-                                    
-                                     <asp:TableCell>
-                                          <asp:Button ID="Btbuscar" OnClick="buscar" runat="server" Text="Buscar"  CssClass="btn btn-default"></asp:Button>
-                                            </asp:TableCell>
-                                  
-                                  
+                                     <asp:TableCell><asp:Button ID="Btbuscar" OnClick="buscar" runat="server" Text="Buscar"  CssClass="btn btn-default"></asp:Button></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>
                         </div>
@@ -75,7 +65,6 @@
                             if (tecla == 13) return false;
                         }
                     </script>
-
 
                 </ContentTemplate>
             </asp:UpdatePanel>

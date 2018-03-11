@@ -2,9 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-
-
-
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
@@ -30,8 +27,10 @@ public partial class ActaReunion : System.Web.UI.Page
             Response.Redirect("Default.aspx");
         }
         if (!IsPostBack){
+            Page.Form.Attributes.Add("enctype", "multipart/form-data");
+
             DDLreu.Items.Clear();
-            string sql = "SELECT reu_codigo FROM reunion WHERE reu_estado='ACTIVO'";
+            string sql = "SELECT r.reu_codigo FROM reunion r, profesor p WHERE r.reu_estado='ACTIVO' AND r.COM_CODIGO = p.COM_CODIGO and p.USU_USERNAME = '"+ Session["id"] + "'";
             DDLreu.Items.AddRange(con.cargarDDLid(sql));
             DDLreu.Items.Insert(0, "Seleccione");
             CargarAsistente();
@@ -45,18 +44,51 @@ public partial class ActaReunion : System.Web.UI.Page
             torden.Columns.Add("ORDEN", typeof(System.String));
             Session.Add("Orden", torden);
         }
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVactas);
     }
 
+    /*Metodos que manejan el fronted en el acta*/
     protected void LBgenerar_Click(object sender, EventArgs e)
     {
         Linfo.Text = "";
+        SubirActa.Visible = false;
+        Ingreso.Visible = true;
+        Asistio.Value = "";
+        Noasistio.Value = "";
+        ConsultarActa.Visible = false;
+        TBhasta.Text = "";
+        TBdesde.Text = "";
     }
     protected void LBconsultar_Click(object sender, EventArgs e)
     {
         Ingreso.Visible = false;
+        SubirActa.Visible = false;
+        ConsultarActa.Visible = true;
+        Asistio.Value = "";
+        Noasistio.Value = "";
         Linfo.Text = "";
+        TBhasta.Text = "";
+        TBdesde.Text = "";
+        GVactas.Visible = false;
+    }
+    protected void LBsubir_Click(object sender, EventArgs e)
+    {
+        DDLreunion2.Items.Clear();
+        string sql = "SELECT r.reu_codigo FROM reunion r, profesor p WHERE r.reu_estado='ACTIVO' AND r.COM_CODIGO = p.COM_CODIGO and p.USU_USERNAME = '" + Session["id"] + "'";
+        DDLreunion2.Items.AddRange(con.cargarDDLid(sql));
+        DDLreunion2.Items.Insert(0, "Seleccione");
+        Ingreso.Visible = false;
+        Linfo.Text = "";
+        Asistio.Value = "";
+        Noasistio.Value = "";
+        SubirActa.Visible = true;
+        ConsultarActa.Visible = false;
+        TBhasta.Text = "";
+        TBdesde.Text = "";
     }
 
+    /*Metodos que consultan los miembros del comite*/
     private void CargarAsistente()
     {
         string sql = "";
@@ -88,7 +120,7 @@ public partial class ActaReunion : System.Web.UI.Page
     }
     protected void GVasistente_RowDataBound(object sender, System.Web.UI.WebControls.GridViewRowEventArgs e){}
 
-
+    /*Metodos que agregan el orden del dia*/
     protected void Agregar_Click(object sender, EventArgs e)
     {
         if (string.IsNullOrEmpty(TBnombre.Text) == true || string.IsNullOrEmpty(TBcargo.Text)==true){
@@ -127,18 +159,9 @@ public partial class ActaReunion : System.Web.UI.Page
         TBorden.Text = "";
     }
 
-    protected void Bgenerar_Click(object sender, EventArgs e)
+    /*Evento del boton limpiar*/
+    protected void Bcancelar_Click(object sender, EventArgs e)
     {
-        if (DDLreu.SelectedIndex != 0){
-            Thread threadGetFile = new Thread(new ThreadStart(getfile));
-            threadGetFile.ApartmentState = ApartmentState.STA;
-            threadGetFile.Start();
-        }else{
-            Linfo.Text = "Escoja una reunion";
-        }
-        
-    }
-    protected void Bcancelar_Click(object sender, EventArgs e){
         torden = (System.Data.DataTable)(Session["Orden"]);
         torden.Clear();
         table = (System.Data.DataTable)(Session["Tabla"]);
@@ -151,7 +174,8 @@ public partial class ActaReunion : System.Web.UI.Page
         Linfo.Text = "";
         GVagreinte.DataBind();
         GVorden.DataBind();
-        foreach (GridViewRow row in GVasistente.Rows){
+        foreach (GridViewRow row in GVasistente.Rows)
+        {
             System.Web.UI.WebControls.CheckBox check = row.FindControl("CBasitio") as System.Web.UI.WebControls.CheckBox;
             check.Checked = false;
         }
@@ -159,7 +183,19 @@ public partial class ActaReunion : System.Web.UI.Page
         Asistio.Value = "";
         Noasistio.Value = "";
     }
-
+  
+    /*Metodos que realizan el proceso de generar el acta*/
+    protected void Bgenerar_Click(object sender, EventArgs e)
+    {
+        if (DDLreu.SelectedIndex != 0){
+            Thread threadGetFile = new Thread(new ThreadStart(getfile));
+            threadGetFile.ApartmentState = ApartmentState.STA;
+            threadGetFile.Start();
+        }else{
+            Linfo.Text = "Eliga una reunion";
+        }
+        
+    }
     static void ThreadMethod()
     {
         OpenFileDialog dlg = new OpenFileDialog();
@@ -505,9 +541,163 @@ public partial class ActaReunion : System.Web.UI.Page
                 writer.Close();
 
             }
+    }
 
-        
+    /*Metodos que se utilizan para cargar el acta*/
+    protected void Bsubir_Click(object sender, EventArgs e)
+    {
+        if (DDLreunion2.SelectedIndex.Equals(0)){
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Se requiere que escoja una reunion";
+        }else {
+            if (FUdocumento.HasFile){
+                string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
+                string contentType = FUdocumento.PostedFile.ContentType;
+
+                using (Stream fs = FUdocumento.PostedFile.InputStream){
+                    using (BinaryReader br = new BinaryReader(fs)){
+                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                        OracleConnection conn = con.crearConexion();
+                        if (conn != null) {
+                            string query = "update REUNION set reu_acta=:Data, reu_nomarchivo=:Nomarchivo, reu_tipo=:Tipo, reu_estado='Finalizada' where reu_codigo='"+ DDLreunion2.Items[DDLreunion2.SelectedIndex].Value.ToString() + "'";
+                            using (OracleCommand cmd = new OracleCommand(query)){
+                                cmd.Connection = conn;
+                                cmd.Parameters.Add(":Data", bytes);
+                                cmd.Parameters.Add(":Nomarchivo", filename);
+                                cmd.Parameters.Add(":Tipo", contentType);
+                                cmd.ExecuteNonQuery();
+                                conn.Close();
+                            }
+                        }
+                    }
+                }
+                //Response.Redirect(Request.Url.AbsoluteUri);
+                Linfo.ForeColor = System.Drawing.Color.Green;
+                Linfo.Text = "Acta guardada satisfatoriamente";
+                DDLreunion2.Items.Clear();
+                string sql = "SELECT r.reu_codigo FROM reunion r, profesor p WHERE r.reu_estado='ACTIVO' AND r.COM_CODIGO = p.COM_CODIGO and p.USU_USERNAME = '" + Session["id"] + "'";
+                DDLreunion2.Items.AddRange(con.cargarDDLid(sql));
+                DDLreunion2.Items.Insert(0, "Seleccione");
+            } else {
+                Linfo.Text = "Escoja un documento para subir";
+            }
+        }
+    }
+    protected void Blimpiar_Click(object sender, EventArgs e)
+    {
+        DDLreunion2.SelectedIndex = 0;
+        Linfo.Text = "";
+    }
+
+    /*Metodos que se utilizan para la consulta de las actas por un rango de fecha*/
+    protected void IBdesde_Click(object sender, ImageClickEventArgs e)
+    {
+        if (Cdesde.Visible == false){
+            Cdesde.Visible = true;
+        }else{
+            Cdesde.Visible = false;
+        }      
+    }
+    protected void IBhasta_Click(object sender, ImageClickEventArgs e)
+    {
+        if (Chasta.Visible == false){
+            Chasta.Visible = true;
+        }else {
+            Chasta.Visible = false;
+        }
+    }
+    protected void Cdesde_SelectionChanged(object sender, EventArgs e)
+    {
+        TBdesde.Text = Cdesde.SelectedDate.ToShortDateString();
+        Cdesde.Visible = false;
+    }
+    protected void Chasta_SelectionChanged(object sender, EventArgs e)
+    {
+        TBhasta.Text = Chasta.SelectedDate.ToShortDateString();
+        Chasta.Visible = false;
+    }
+    protected void BbuscarAct_Click(object sender, EventArgs e)
+    {
+        if(string.IsNullOrEmpty(TBdesde.Text) == true) {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Debe elegir una fecha de inicio";
+        }else {
+            CargarActas();
+        }
+    }
+    private void CargarActas()
+    {
+        string fhasta;
+        if (string.IsNullOrEmpty(TBhasta.Text) == true){
+            fhasta = DateTime.Now.ToString("dd/MM/yyyy");
+        }else{
+            fhasta = TBhasta.Text;
+        }
+        try{
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null){
+                string sql = "SELECT r.REU_CODIGO, TO_CHAR(r.REU_FREAL,'DD/MM/YY') AS FECHA from reunion r , profesor p" +
+                    " where r.REU_FREAL BETWEEN TO_DATE('" + TBdesde.Text + "', 'DD/MM/YYYY')  and TO_DATE('" + fhasta + "', 'DD/MM/YYYY')  AND r.REU_ESTADO='Finalizada'" +
+                    "and p.COM_CODIGO= r.COM_CODIGO and p.USU_USERNAME='"+ Session["id"] + "' ORDER BY r.REU_CODIGO";
+                cmd = new OracleCommand(sql, conn);
+                 cmd.CommandType = CommandType.Text;
+                 using (OracleDataReader reader = cmd.ExecuteReader()) {
+                     DataTable dataTable = new DataTable();
+                     dataTable.Load(reader);
+                     GVactas.DataSource = dataTable;
+                     GVactas.Visible = true;
+                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                     Linfo.ForeColor = System.Drawing.Color.Red;
+                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
+                 }
+                GVactas.DataBind();
+            }
+            conn.Close();
+        } catch (Exception ex) {
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }        
+    }
+    protected void DownloadFile(object sender, EventArgs e)
+    {
+        int id = int.Parse((sender as LinkButton).CommandArgument);
+        byte[] bytes;
+        string fileName = "", contentype = "";
+        string sql = "select REU_NOMARCHIVO, REU_ACTA, REU_TIPO FROM REUNION WHERE REU_CODIGO=" + id + "";
+
+        OracleConnection conn = con.crearConexion();
+        if (conn != null)
+        {
+            using (OracleCommand cmd = new OracleCommand(sql, conn))
+            {
+                cmd.CommandText = sql;
+                using (OracleDataReader drc1 = cmd.ExecuteReader())
+                {
+                    drc1.Read();
+                    contentype = drc1["REU_TIPO"].ToString();
+                    fileName = drc1["REU_NOMARCHIVO"].ToString();
+                    bytes = (byte[])drc1["REU_ACTA"];
+
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.Charset = "";
+                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                    Response.ContentType = contentype;
+                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+
+                }
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
+            }
+        }
 
     }
+    protected void GVactas_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GVactas.PageIndex = e.NewPageIndex;
+        CargarActas();
+    }
+    protected void GVactas_RowDataBound(object sender, GridViewRowEventArgs e){}
 
 }

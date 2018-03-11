@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" EnableEventValidation="false" AutoEventWireup="true" CodeFile="PeticionDir.aspx.cs" Inherits="PeticionDir" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" EnableEventValidation="false" AutoEventWireup="true" CodeFile="Peticiones.aspx.cs" Inherits="PeticionDir" %>
 
 <asp:Content ID="PeticionDir" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
@@ -7,7 +7,16 @@
             <asp:UpdatePanel ID="UPpeticion_dir" runat="server">
                 <ContentTemplate>
                     <div class="container-fluid">
-                        
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul class="breadcrumb">
+                                    <li><asp:LinkButton ID="LBPeticion_Dir" runat="server" OnClick="LBPeticion_Dir_Click" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Peticion Director </asp:LinkButton></li>
+                                    <li><asp:LinkButton ID="LBPeticion_Est" runat="server" OnClick="LBPeticion_Est_Click" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Peticiones Estudiante </asp:LinkButton></li>
+                                </ul>
+                            </div>
+                        </div>
+
                         <div id="Regresar" runat="server" visible="false" class="row">
                             <asp:Table ID="TBregresar" runat="server" HorizontalAlign="center">
                                 <asp:TableRow>
@@ -74,7 +83,60 @@
                             </asp:GridView>    
                         </div>
 
+
+                     <div id="PetiEstudiante" runat="server" visible="false" class="row">
+                      <asp:Table ID="TSolicitar" runat="server" HorizontalAlign="Center" >                
+                          <asp:TableRow>
+                             <asp:TableCell><asp:Label ID="Lsol" runat="server" Text="Tipo: " ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
+                             <asp:TableCell><asp:DropDownList ID="DDLsol" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" style="width:700px;" AutoPostBack="true" OnSelectedIndexChanged="DDLsol_SelectedIndexChanged">
+                                       <asp:ListItem Value="0" Text="Seleccione"/>
+                                       <asp:ListItem Value="1" Text="Cambio Propuesta" />
+                                       <asp:ListItem Value="2" Text="Abandonar Propuesta" />
+                                       <asp:ListItem Value="3" Text="Ingresar Integrante" />
+                            </asp:DropDownList></asp:TableCell>          
+                            <asp:TableCell><asp:Button ID="Bbuscar" runat="server" Text="Consultar" OnClick="Bbuscar_Click" class="btn btn-default"/></asp:TableCell>
+                          </asp:TableRow> 
+                       </asp:Table>
+                     </div>
+
+                     <div id="ConsultaPeti" runat="server" visible="false" class="row" >                  
+                        <asp:GridView ID="GVconsulta" runat="server"  AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
+                           AutoGenerateColumns="False" CssClass="table table-bordered bs-table"  OnRowDataBound="GVconsulta_RowDataBound"
+                            OnRowUpdating="GVconsulta_RowUpdating" OnRowEditing="GVconsulta_RowEditing" OnRowCancelingEdit="GVconsulta_RowCancelingEdit">                   
+                            <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" /> 
+                            <RowStyle BackColor="White" />
+                            <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                            <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                            <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                            <EmptyDataTemplate> ¡No tienes peticiones con el parametro seleccionado!  </EmptyDataTemplate>
+                            <Columns>
+                                <asp:BoundField DataField="SOLE_ID" HeaderText="ID" />
+                                <asp:BoundField DataField="SOLE_FECHA" HeaderText="FECHA" />
+                                <asp:BoundField DataField="SOLE_MOTIVO" HeaderText="MOTIVO" />
+                                <asp:BoundField DataField="PROP_TITULO" HeaderText="TITULO" />
+                                <asp:BoundField DataField="ESTUDIANTE" HeaderText="ESTUDIANTE" />
+                                <asp:TemplateField HeaderText="ESTADO">
+                                    <EditItemTemplate>
+                                        <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
+                                            <asp:ListItem Value="Aceptada">ACEPTAR</asp:ListItem>
+                                            <asp:ListItem Value="Rechazada">RECHAZAR</asp:ListItem>
+                                        </asp:DropDownList>
+                                    </EditItemTemplate>
+                                    <ItemTemplate><asp:Label ID="Lestado" runat="server" Text='<%# Bind("SOLE_ESTADO") %>'></asp:Label></ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Modificar">
+                                    <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/></ItemTemplate>
+                                    <EditItemTemplate>
+                                        <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-default"/>
+                                        <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-default" />
+                                    </EditItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
+                    </div>
+
                         <asp:Label ID="Linfo" runat="server" Text="" ForeColor="red" Font-Bold="True"></asp:Label>
+                        <asp:HiddenField ID="Tipo" runat="server" Value=""/>
                     </div>
 
                     <script>

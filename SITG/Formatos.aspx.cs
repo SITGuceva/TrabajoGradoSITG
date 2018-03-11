@@ -20,6 +20,11 @@ public partial class Formatos : System.Web.UI.Page
             Response.Redirect("Default.aspx");
         }
         widestData = 0;
+        if (!IsPostBack){
+           Page.Form.Attributes.Add("enctype", "multipart/form-data"); 
+         }
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVformatos);
     }
 
     /*Metodos de crear-consultar que manejan la parte del fronted*/
@@ -31,7 +36,6 @@ public partial class Formatos : System.Web.UI.Page
     }
     protected void Consultar(object sender, EventArgs e)
     {
-
         Ingreso.Visible = false;
         ConsultaFormat.Visible = true;
         Linfo.Text = "";
@@ -41,36 +45,41 @@ public partial class Formatos : System.Web.UI.Page
     /*Metodos que realizan el guardar */
     protected void Aceptar(object sender, EventArgs e)
     {
-            if (string.IsNullOrEmpty(TBnom.Text) == true) {
-                Linfo.ForeColor = System.Drawing.Color.Red;
-                Linfo.Text = "Los campos son obligatorios";
-            } else{
+        if (string.IsNullOrEmpty(TBnom.Text) == true)
+        {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Los campos son obligatorios";
+        }else{
+            if (FUdocumento.HasFile) {
                 string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
                 string contentType = FUdocumento.PostedFile.ContentType;
-                
                 using (Stream fs = FUdocumento.PostedFile.InputStream){
                     using (BinaryReader br = new BinaryReader(fs)) {
                         byte[] bytes = br.ReadBytes((Int32)fs.Length);
                         OracleConnection conn = con.crearConexion();
-                        if (conn != null){
-                            string query = "insert into FORMATO values (formatoid.nextval ,:For_titulo , :For_documento, : For_nomarchivo, :For_tipo)";
-                            using (OracleCommand cmd = new OracleCommand(query)){
+                        if (conn != null) {
+                            string query = "insert into FORMATO values (formatoid.nextval ,:For_titulo , :Data, :For_nomarchivo, :For_tipo)";
+                            using (OracleCommand cmd = new OracleCommand(query)) {
                                 cmd.Connection = conn;
-                                cmd.Parameters.Add(":Prop_titulo", TBnom.Text);
+                                cmd.Parameters.Add(":For_titulo", TBnom.Text);
                                 cmd.Parameters.Add(":Data", bytes);
-                                cmd.Parameters.Add(":Prop_nomarchivo", filename);
-                                cmd.Parameters.Add(":Prop_tipo", contentType);
+                                cmd.Parameters.Add(":For_documento", filename);
+                                cmd.Parameters.Add(":For_tipo", contentType);
                                 cmd.ExecuteNonQuery();
                                 conn.Close();
                             }
                         }
                     }
                 }
-                Response.Redirect(Request.Url.AbsoluteUri);
+                // Response.Redirect(Request.Url.AbsoluteUri);   
                 Linfo.ForeColor = System.Drawing.Color.Green;
                 Linfo.Text = "Formato guardado satisfatoriamente";
             }
-        
+            else{
+                Linfo.ForeColor = System.Drawing.Color.Red;
+                Linfo.Text = "Debe elegir un archivo";
+            }
+        }
     }
    
     /*Evento del boton limpiar*/
@@ -89,39 +98,36 @@ public partial class Formatos : System.Web.UI.Page
         string sql = "select FOR_NOMARCHIVO, FOR_DOCUMENTO, FOR_TIPO FROM FORMATO WHERE FOR_ID=" + id + "";
 
         OracleConnection conn = con.crearConexion();
-        if (conn != null){
+        if (conn != null){ 
             using (OracleCommand cmd = new OracleCommand(sql, conn)){
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader()){
-                    drc1.Read();
-
-                    contentype = drc1["FOR_TIPO"].ToString();
-                    fileName = drc1["FOR_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["FOR_DOCUMENTO"];
-
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
+                cmd.CommandText = sql;             
+                 using (OracleDataReader drc1 = cmd.ExecuteReader()){
+                     drc1.Read();
+                     contentype = drc1["FOR_TIPO"].ToString();
+                     fileName = drc1["FOR_NOMARCHIVO"].ToString();
+                     bytes = (byte[])drc1["FOR_DOCUMENTO"];
+                    
+                     Response.Clear();
+                     Response.Buffer = true;
+                     Response.Charset = "";
+                     Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                     Response.ContentType = contentype;
+                     Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                    
+                 }
+                 Response.BinaryWrite(bytes);
+                 Response.Flush();
+                 Response.End();
             }
         }
-
+        
     }
     private void ResultadoConsulta()
     {
-        try
-        {
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
+            if (conn != null){
                 string sql = "SELECT FOR_ID, FOR_TITULO FROM FORMATO ORDER BY FOR_ID";
 
                 cmd = new OracleCommand(sql, conn);
@@ -149,25 +155,25 @@ public partial class Formatos : System.Web.UI.Page
         ResultadoConsulta();
     }
     protected void GVformatos_RowDataBound(object sender, GridViewRowEventArgs e) {
-        System.Data.DataRowView drv;
-        drv = (System.Data.DataRowView)e.Row.DataItem;
-        if (e.Row.RowType == DataControlRowType.DataRow)
-        {
-            if (drv != null)
-            {
-                String catName = drv[1].ToString();
-                Response.Write(catName + "/");
+        /* System.Data.DataRowView drv;
+         drv = (System.Data.DataRowView)e.Row.DataItem;
+         if (e.Row.RowType == DataControlRowType.DataRow)
+         {
+             if (drv != null)
+             {
+                 String catName = drv[1].ToString();
+                 Response.Write(catName + "/");
 
-                int catNameLen = catName.Length;
-                if (catNameLen > widestData)
-                {
-                    widestData = catNameLen;
-                    GVformatos.Columns[2].ItemStyle.Width =widestData * 10;
-                    GVformatos.Columns[2].ItemStyle.Wrap = false;
-                }
+                 int catNameLen = catName.Length;
+                 if (catNameLen > widestData)
+                 {
+                     widestData = catNameLen;
+                     GVformatos.Columns[2].ItemStyle.Width =widestData * 10;
+                     GVformatos.Columns[2].ItemStyle.Wrap = false;
+                 }
 
-            }
-        }
+             }
+         }*/
     }
     protected void GVformatos_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
@@ -211,4 +217,7 @@ public partial class Formatos : System.Web.UI.Page
             }
         }
     }
+
+
+  
 }

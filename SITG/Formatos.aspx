@@ -4,7 +4,7 @@
     <div class="panel panel-default">
         <div class="panel-heading">Universidad - Formatos</div>
         <div class="panel-body">
-           
+           <asp:UpdatePanel runat="server" ID="UPformato"> <ContentTemplate>
             <div class="container-fluid">
                
                 <div class="row">
@@ -30,7 +30,7 @@
                    
                     <asp:Table ID="botones" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" /></asp:TableCell>
+                            <asp:TableCell><asp:Button  ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" /></asp:TableCell>
                             <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
@@ -40,7 +40,7 @@
                      <asp:GridView ID="GVformatos" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                          OnPageIndexChanging="GVformatos_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" 
                          OnRowDataBound="GVformatos_RowDataBound" PageSize="8" OnRowUpdating="GVformatos_RowUpdating" OnRowEditing="GVformatos_RowEditing"
-                         OnRowCancelingEdit="GVformatos_RowCancelingEdit" caption="FORMATOS" captionalign="Top" OnRowDeleting="GVformatos_RowDeleting">
+                         OnRowCancelingEdit="GVformatos_RowCancelingEdit" caption="FORMATOS" captionalign="Top" OnRowDeleting="GVformatos_RowDeleting" >
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
                         <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
@@ -56,7 +56,7 @@
                             <asp:BoundField DataField="FOR_TITULO" HeaderText="Titulo" />
                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Documento">
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="lnkDownload" runat="server" Text="Download" OnClick="DownloadFile" CommandArgument='<%# Eval("FOR_ID") %>'></asp:LinkButton>
+                                    <asp:LinkButton ID="lnkDownload" ClientIDMode="AutoID" runat="server" Text="Download" OnClick="DownloadFile" CommandArgument='<%# Eval("FOR_ID") %>' ></asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Modificar">
@@ -74,7 +74,12 @@
                 </div>
              
                 <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True" ></asp:Label>                    
-                </div>         
+                </div>   
+               </ContentTemplate>
+               <Triggers>
+                   <asp:PostBackTrigger ControlID="Bacpetar" />  
+               </Triggers>
+               </asp:UpdatePanel>
         </div>
     </div>
  
