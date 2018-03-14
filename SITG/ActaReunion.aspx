@@ -81,15 +81,44 @@
                             <asp:BoundField DataField="CARGO" HeaderText="Cargo" />                                   
                         </Columns>
                      </asp:GridView>
+                      
+                    <br>
+                    <br>
+
+                     <asp:Table ID="Tordendia" runat="server" HorizontalAlign="Center">
+                        <asp:TableRow>
+                         <asp:TableHeaderCell><asp:Label ID="ltituloOrden" runat="server" Text="---ORDEN DEL DÍA---" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableHeaderCell>
+                       </asp:TableRow>
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="LrevisarP" runat="server" Text="Revisión de Propuestas de trabajos de grado" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:CheckBox ID="CBpropuesta" runat="server" Text=""  AutoPostBack="true" /></asp:TableCell>
+                        </asp:TableRow> 
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="LasginarA" runat="server" Text="Asignar jurados para anteproyectos de grado" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:CheckBox ID="CBanteproyecto" runat="server" Text=""  AutoPostBack="true" /></asp:TableCell>
+                         </asp:TableRow>
+                          <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Lcaso" runat="server" Text="Analizar casos particulares" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:CheckBox ID="CBcaso" runat="server" Text=""  AutoPostBack="true" /></asp:TableCell>
+                         </asp:TableRow>
+                        
+                    </asp:Table>
+
+                     <br>
 
                     <asp:Table ID="Torden" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lorden" runat="server" Text="Orden del Dia:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                         <asp:TableHeaderCell><asp:Label ID="Label1" runat="server" Text="CASO PARTICULAR" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableHeaderCell>
+                       </asp:TableRow>
+                        <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Lorden" runat="server" Text="Título del caso:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:TextBox ID="TBorden" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Ldescripcion" runat="server" Text="Descripción:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><textarea ID="TAdes" runat="server" CssClass="form-control"></textarea></asp:TableCell>  
                             <asp:TableCell><asp:Button ID="BagregarOrden" runat="server" Text="Agregar" OnClick="BagregarOrden_Click" class="btn btn-default" /></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
-
+                    <br>
                     <asp:GridView  ID="GVorden" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False" CssClass="table table-bordered bs-table"  PageSize="6">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
@@ -99,7 +128,8 @@
                         <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
                         <Columns>
-                            <asp:BoundField DataField="ORDEN" HeaderText="ORDEN DEL DIA" />                                   
+                            <asp:BoundField DataField="ORDEN" HeaderText="TÍTULO CASO ESPECIAL" />    
+                            <asp:BoundField DataField="DESCRIPCION" HeaderText="DESCRIPCIÓN" />    
                         </Columns>
                      </asp:GridView>
 

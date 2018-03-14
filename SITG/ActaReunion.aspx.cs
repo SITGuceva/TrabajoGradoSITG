@@ -19,6 +19,7 @@ public partial class ActaReunion : System.Web.UI.Page
     System.Data.DataRow row;
     DataRow rows;
     DataTable torden;
+
    
 
     protected void Page_Load(object sender, EventArgs e)
@@ -42,6 +43,7 @@ public partial class ActaReunion : System.Web.UI.Page
 
             torden = new DataTable("TOrden");
             torden.Columns.Add("ORDEN", typeof(System.String));
+            torden.Columns.Add("DESCRIPCION", typeof(System.String));
             Session.Add("Orden", torden);
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
@@ -145,18 +147,23 @@ public partial class ActaReunion : System.Web.UI.Page
     {
         if (string.IsNullOrEmpty(TBorden.Text) == true){
             Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "Ingrese una actividad!!";
+            Linfo.Text = "Ingrese una actividad";
         }else{
             torden = (System.Data.DataTable)(Session["Orden"]);
             rows = torden.NewRow();
             rows["ORDEN"] = TBorden.Text;
+            rows["DESCRIPCION"] = TAdes.Value;
             torden.Rows.Add(rows);
+
+
+            
 
             GVorden.DataSource = torden;
             GVorden.DataBind();
             GVorden.Visible = true;
         }
         TBorden.Text = "";
+        TAdes.Value = "";
     }
 
     /*Evento del boton limpiar*/
@@ -172,6 +179,7 @@ public partial class ActaReunion : System.Web.UI.Page
         TBobj.Text = "";
         TBlugar.Text = "";
         Linfo.Text = "";
+        TAdes.Value = "";
         GVagreinte.DataBind();
         GVorden.DataBind();
         foreach (GridViewRow row in GVasistente.Rows)
@@ -426,14 +434,45 @@ public partial class ActaReunion : System.Web.UI.Page
                 PdfPCell cell17 = new PdfPCell(new Phrase("Orden del día"));
                 cell17.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
                 table12.AddCell(cell17);
-                torden = (System.Data.DataTable)(Session["Orden"]);
-                DataRow[] recorrer = torden.Select(null, null, DataViewRowState.CurrentRows);
-                foreach (DataRow row in recorrer){
-                    PdfPCell cell18 = new PdfPCell(new Phrase(row["ORDEN"].ToString()));
-                    cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
-                    table12.AddCell(cell18);
-                }
-                table12.WidthPercentage = 100f;
+
+            /* ANTES DE LOS CAMBIOS ( ORDEN DEL DIA SIEMPRE DEFINIDA)
+            torden = (System.Data.DataTable)(Session["Orden"]);
+            DataRow[] recorrer = torden.Select(null, null, DataViewRowState.CurrentRows);
+            foreach (DataRow row in recorrer){
+                PdfPCell cell18 = new PdfPCell(new Phrase(row["ORDEN"].ToString()));
+                cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
+                table12.AddCell(cell18);
+            }
+        */
+
+
+            if (CBpropuesta.Checked) { 
+
+                PdfPCell cell18 = new PdfPCell(new Phrase("Revisión de Propuestas de trabajos de grado"));
+                cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
+                table12.AddCell(cell18);
+
+            }
+
+            if (CBanteproyecto.Checked)
+            {
+
+                PdfPCell cell18 = new PdfPCell(new Phrase("Asignar los jurados para la lectura de anteproyectos de grado"));
+                cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
+                table12.AddCell(cell18);
+
+            }
+
+            if (CBcaso.Checked)
+            {
+
+                PdfPCell cell18 = new PdfPCell(new Phrase("Analizar casos particulares"));
+                cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
+                table12.AddCell(cell18);
+
+            }
+
+            table12.WidthPercentage = 100f;
                 doc.Add(table12);
 
                 /*doc.NewPage();
@@ -442,14 +481,15 @@ public partial class ActaReunion : System.Web.UI.Page
                 img.SetAbsolutePosition(0, 800);
                 doc.Add(img);
                 doc.Add(saltoDeLinea1);*/
-
+                doc.Add(saltoDeLinea1);
                 Paragraph titulo7 = new Paragraph("Desarrollo del orden del día");
                 titulo7.Alignment = 1;
                 doc.Add(titulo7);
 
+
+            if (CBpropuesta.Checked)
+            {
                 doc.Add(saltoDeLinea1);
-                Paragraph texto2 = new Paragraph("Descripción del desarrollo de los puntos establecidos en el orden del día.");
-                doc.Add(texto2);
                 Paragraph texto3 = new Paragraph("Revision propuesta de trabajo de grado");
                 doc.Add(texto3);
                 doc.Add(saltoDeLinea1);
@@ -472,59 +512,120 @@ public partial class ActaReunion : System.Web.UI.Page
                 table13.AddCell(cell23);
 
 
-            OracleConnection conn = con.crearConexion();
-            OracleCommand cmd = null;
-            if (conn != null)
-            {
-                string prop = "select  p.PROP_TITULO, p.PROP_ESTADO,p.PROP_CODIGO from propuesta p, revision_propuesta r where r.PROP_CODIGO = p.PROP_CODIGO and r.REU_CODIGO='" + DDLreu.Items[DDLreu.SelectedIndex].Value.ToString() + "'";
-                cmd = new OracleCommand(prop, conn);
-                cmd.CommandType = CommandType.Text;
-                OracleDataReader drc1 = cmd.ExecuteReader();
-                if (drc1.HasRows){
-                    while (drc1.Read()){
-                        PdfPCell cell24 = new PdfPCell(new Phrase(drc1[2].ToString()));
-                        cell24.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                        table13.AddCell(cell24);
+                OracleConnection conn = con.crearConexion();
+                OracleCommand cmd = null;
+                if (conn != null)
+                {
+                    string prop = "select  p.PROP_TITULO, p.PROP_ESTADO,p.PROP_CODIGO from propuesta p, revision_propuesta r where r.PROP_CODIGO = p.PROP_CODIGO and r.REU_CODIGO='" + DDLreu.Items[DDLreu.SelectedIndex].Value.ToString() + "'";
+                    cmd = new OracleCommand(prop, conn);
+                    cmd.CommandType = CommandType.Text;
+                    OracleDataReader drc1 = cmd.ExecuteReader();
+                    if (drc1.HasRows)
+                    {
+                        while (drc1.Read())
+                        {
+                            PdfPCell cell24 = new PdfPCell(new Phrase(drc1[2].ToString()));
+                            cell24.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                            table13.AddCell(cell24);
 
-                        prop = "select  CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) from estudiante e, propuesta p, usuario u " +
-                               "where u.USU_USERNAME = e.USU_USERNAME and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_CODIGO = '" + drc1[2] + "' ";
-                        List<string> lintegra = con.consulta(prop, 1, 0);
-                        for (int intre = 0; intre < lintegra.Count; intre++) {
-                            PdfPCell cell25 = new PdfPCell(new Phrase(lintegra[intre].ToString()));
-                            cell25.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                            table13.AddCell(cell25);
-                        }
-
-                        PdfPCell cell26 = new PdfPCell(new Phrase(drc1[0].ToString()));
-                        cell26.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                        table13.AddCell(cell26);
-
-                        PdfPCell cell27 = new PdfPCell(new Phrase(drc1[1].ToString()));
-                        cell27.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                        table13.AddCell(cell27);
-
-                        string observaciones = "";
-                        if (drc1[1].Equals("APROBADO")) { observaciones = "Ninguna"; }
-                        else if (drc1[1].Equals("RECHAZADO")){
-                            prop = "select OBS_DESCRIPCION from observacion where PROP_CODIGO='" + drc1[2] + "'";
-                            List<string> lobs = con.consulta(prop, 1, 0);
-                            for (int ob = 0; ob < lobs.Count; ob++){
-                                observaciones += lobs[ob] + " ";
+                            prop = "select  CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) from estudiante e, propuesta p, usuario u " +
+                                   "where u.USU_USERNAME = e.USU_USERNAME and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_CODIGO = '" + drc1[2] + "' ";
+                            List<string> lintegra = con.consulta(prop, 1, 0);
+                            for (int intre = 0; intre < lintegra.Count; intre++)
+                            {
+                                PdfPCell cell25 = new PdfPCell(new Phrase(lintegra[intre].ToString()));
+                                cell25.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                                table13.AddCell(cell25);
                             }
-                        }
 
-                        PdfPCell cell28 = new PdfPCell(new Phrase(observaciones));
-                        cell28.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                        table13.AddCell(cell28);
+                            PdfPCell cell26 = new PdfPCell(new Phrase(drc1[0].ToString()));
+                            cell26.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                            table13.AddCell(cell26);
+
+                            PdfPCell cell27 = new PdfPCell(new Phrase(drc1[1].ToString()));
+                            cell27.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                            table13.AddCell(cell27);
+
+                            string observaciones = "";
+                            if (drc1[1].Equals("APROBADO")) { observaciones = "Ninguna"; }
+                            else if (drc1[1].Equals("RECHAZADO"))
+                            {
+                                prop = "select OBS_DESCRIPCION from observacion where PROP_CODIGO='" + drc1[2] + "'";
+                                List<string> lobs = con.consulta(prop, 1, 0);
+                                for (int ob = 0; ob < lobs.Count; ob++)
+                                {
+                                    observaciones += lobs[ob] + " ";
+                                }
+                            }
+
+                            PdfPCell cell28 = new PdfPCell(new Phrase(observaciones));
+                            cell28.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                            table13.AddCell(cell28);
+                        }
                     }
+                    drc1.Close();
                 }
-                drc1.Close();
-            }
                 table13.WidthPercentage = 100f;
                 doc.Add(table13);
-   
+
+            }
+
+
+
+            if (CBanteproyecto.Checked)
+            {
                 doc.Add(saltoDeLinea1);
-                Paragraph texto4 = new Paragraph("Siendo las ____"+ DateTime.Now.ToString("HH:mm") + "__ horas el presidente dio por terminada  la reunión, se procedió a firmar la presente Acta la cual fue aprobada en sesión verificada el "+list3[0]+":");
+                Paragraph texto50 = new Paragraph("Asignar los jurados para la lectura de anteproyectos de grado");
+                doc.Add(texto50);
+                doc.Add(saltoDeLinea1);
+                //Tabla 13 Orden del dia
+                PdfPTable table50 = new PdfPTable(5);
+                PdfPCell cell50 = new PdfPCell(new Phrase("Código"));
+                PdfPCell cell51 = new PdfPCell(new Phrase("Estudiantes"));
+                PdfPCell cell52 = new PdfPCell(new Phrase("Nombre Anteproyecto"));
+                PdfPCell cell53 = new PdfPCell(new Phrase("Jurado"));
+                PdfPCell cell54 = new PdfPCell(new Phrase("Revisor"));
+                cell50.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table50.AddCell(cell50);
+                cell51.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table50.AddCell(cell51);
+                cell52.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table50.AddCell(cell52);
+                cell53.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table50.AddCell(cell53);
+                cell54.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table50.AddCell(cell54);
+
+
+                table50.WidthPercentage = 100f;
+                doc.Add(table50);
+
+            }
+
+
+            if (CBcaso.Checked)
+            {
+                doc.Add(saltoDeLinea1);
+                Paragraph texto60 = new Paragraph("Casos particulares");
+                doc.Add(texto60);
+                doc.Add(saltoDeLinea1);
+                //Tabla 13 Orden del dia
+                PdfPTable table60 = new PdfPTable(2);
+                PdfPCell cell60 = new PdfPCell(new Phrase("Título del caso"));
+                PdfPCell cell61 = new PdfPCell(new Phrase("Descripción"));
+                cell60.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table60.AddCell(cell60);
+                cell61.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                table60.AddCell(cell61);
+
+                table60.WidthPercentage = 100f;
+                doc.Add(table60);
+
+            }
+
+
+            doc.Add(saltoDeLinea1);
+                Paragraph texto4 = new Paragraph("Siendo las "+ DateTime.Now.ToString("HH:mm") + " horas el presidente dio por terminada  la reunión, se procedió a firmar la presente Acta la cual fue aprobada en sesión verificada el "+list3[0]+":");
                 doc.Add(texto4);
                 doc.Add(saltoDeLinea1);
 
@@ -542,6 +643,8 @@ public partial class ActaReunion : System.Web.UI.Page
 
             }
     }
+
+
 
     /*Metodos que se utilizan para cargar el acta*/
     protected void Bsubir_Click(object sender, EventArgs e)
