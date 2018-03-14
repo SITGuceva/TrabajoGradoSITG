@@ -9,64 +9,61 @@ using System.Web.UI.WebControls;
 public partial class PropuestaAsignada : Conexion
 {
     Conexion con = new Conexion();
-    String CodigoPropuesta; //Recoge el codigo de la propuesta para consultarla posteriormente
-    String TituloPropuesta; //Recoge el titulo de la propuesta para consultarla posteriormente
-    String EstadoPropuesta; //Recoge el titulo de la propuesta para consultarla posteriormente
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
+        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         } else if (!IsPostBack) {
-            EstadoPropuestaP.Visible = false;
-            BTregresar.Visible = false;
             CargarPropuestas();
         }
-        
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVConsultaContenidoP);
     }
 
-  
     /*Evento del boton seleccionar nueva propuesta*/
     protected void Nueva(object sender, EventArgs e)
     {
+        CargarPropuestas();
+        ResultadoPropuesta.Visible = true;
         Ingreso.Visible = false;
         ResultadoObservacion.Visible = false;
-        ResultadoPropuesta.Visible = true;
-        CargarPropuestas();
         ConsultaContenidoP.Visible = false;
         Integrantes.Visible = false;
-        Ingreso.Visible = false;
         ObservacionComite.Visible = false;
         LBMisObservaciones.Visible = false;
         ObservacionComite.Visible = false;
-        TCodigoP.Visible = false;
-        TTituloP.Visible = false;
-        TituloP.Visible = false;
-        CodigoP.Visible = false;
-        EstadoPropuestaP.Visible = false;
         BTregresar.Visible =false;
+        Metodo.Value = "";
+        Estado.Value = "";
     }
 
     /*Metodos para agregar observaciones y descargar el documento*/
     protected void Agregar_observacion(object sender, EventArgs e)
     {
-        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Text + "','Director', '"+CodigoP.Text+"')";
-        Ejecutar("Observacion ingresada correctamente", sql);
-        TBdescripcion.Text = "";
-        CargarObservaciones();
+        if (string.IsNullOrEmpty(TBdescripcion.InnerText) == true) {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "No se puede agregar una observación si se encuentra vacia.";
+        } else {
+            string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+            string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Value + "','Director', '"+ Metodo.Value + "')";
+            Ejecutar("", sql);
+            TBdescripcion.Value = "";
+            CargarObservaciones();
+            Linfo.Text = "";
+        }
     }
    //Metodo que agrega una observación a la base de datos
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
         if (info.Equals("Funciono")){
-           
+            Linfo.ForeColor = System.Drawing.Color.Green;
+            Linfo.Text = texto;
         } else  {
-
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = info;
         }
-
     }
 
     /*Metodos para la consulta de las propuestas asignadas al director*/
@@ -83,44 +80,35 @@ public partial class PropuestaAsignada : Conexion
 
             int index = Convert.ToInt32(e.CommandArgument);
             GridViewRow row = GVpropuesta.Rows[index];
-            Metodo.Value = row.Cells[0].Text; //obtiene el codigo de propuesta en la tabla
-            CodigoPropuesta = Metodo.Value;
-            Metodo.Value = row.Cells[1].Text; //obtiene el titulo de la propuesta en la tabla
-            TituloPropuesta = Metodo.Value;
-            Metodo.Value = row.Cells[2].Text; //obtiene el titulo de la propuesta en la tabla
-            EstadoPropuesta = Metodo.Value;
+            ResultadoPropuesta.Visible = false;
+
+            Metodo.Value = row.Cells[0].Text; 
+            Estado.Value = row.Cells[2].Text; //obtiene el titulo de la propuesta en la tabla
             ResultadoContenidoP();
             ConsultaContenidoP.Visible = true;
-            ResultadoPropuesta.Visible = false;
-            ResultadoObservacion.Visible=true;
-            CargarObservaciones();
-            LBMisObservaciones.Visible = true;
             ObservacionComite.Visible = true;
             CargarObservacionesCom();
             CargarIntegrantes();
             Integrantes.Visible = true;
-            TCodigoP.Visible = true;
-            TTituloP.Visible = true;
-            TituloP.Visible = true;
-            CodigoP.Visible = true;
             BTregresar.Visible = true;
-            //Activo ingresar observaciones siempre y cuando la propuesta haya sido rechazada
-            if (EstadoPropuesta.Equals("RECHAZADO"))
-            {
-                Ingreso.Visible = true;
-            }
+            Linfo.Text = "";
 
+            //Activo ingresar observaciones siempre y cuando la propuesta haya sido rechazada
+            if (Estado.Value.Equals("Rechazado")){
+                Ingreso.Visible = true;
+                ResultadoObservacion.Visible = true;
+                CargarObservaciones();
+            }
         }
     }
     public void CargarPropuestas()
     {
        string sql = "";
-        List<ListItem> list = new List<ListItem>();
         try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                sql = "select distinct p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado  from propuesta p, usuario u, solicitud_dir s where s.USU_USERNAME='" + Session["id"] + "' and p.PROP_CODIGO = s.prop_codigo and sol_estado='Aprobado'";
+                sql = "select distinct p.prop_codigo, p.prop_titulo, TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA , INITCAP(p.PROP_ESTADO) as ESTADO from propuesta p, usuario u, solicitud_dir s where s.USU_USERNAME='" + Session["id"] + "' and p.PROP_CODIGO = s.prop_codigo and sol_estado='APROBADO'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -129,13 +117,13 @@ public partial class PropuestaAsignada : Conexion
                     dataTable.Load(reader);
                     GVpropuesta.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
-                  
+                    Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVpropuesta.DataBind();
             }
             conn.Close();
         }catch (Exception ex) {
-           
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
 
@@ -198,7 +186,7 @@ public partial class PropuestaAsignada : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-               string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='"+ CodigoP.Text + "' and OBS_REALIZADA='Director'";
+               string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='"+ Metodo.Value + "' and OBS_REALIZADA='Director'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -217,7 +205,7 @@ public partial class PropuestaAsignada : Conexion
         }
     }
 
-
+    /*Metodos que visualizan los integrantes de la propuesta*/
     protected void GVintegrantes_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void CargarIntegrantes()
     {
@@ -229,7 +217,7 @@ public partial class PropuestaAsignada : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "select CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) as integrantes from estudiante e, usuario u  where e.prop_codigo = '" + CodigoP.Text + "' and u.usu_username = e.usu_username";
+                sql = "select CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) as integrantes from estudiante e, usuario u  where e.prop_codigo = '" + Metodo.Value + "' and u.usu_username = e.usu_username";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -249,17 +237,13 @@ public partial class PropuestaAsignada : Conexion
         }
     }
 
-
-
     /*Metodos para la consulta-modificar-eliminar de las observaciones */
     protected void GVObservacionComite_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         GVObservacionComite.PageIndex = e.NewPageIndex;
         CargarObservacionesCom();
     }
-    protected void GVObservacionComite_RowDataBound(object sender, GridViewRowEventArgs e) { }
- 
-    
+    protected void GVObservacionComite_RowDataBound(object sender, GridViewRowEventArgs e) { }   
     public void CargarObservacionesCom()
     {
         List<ListItem> list = new List<ListItem>();
@@ -269,7 +253,7 @@ public partial class PropuestaAsignada : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='" + CodigoP.Text + "' and OBS_REALIZADA='Comite'";
+                string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='" + Metodo.Value + "' and OBS_REALIZADA='Comite'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -291,30 +275,7 @@ public partial class PropuestaAsignada : Conexion
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    /*Metodos que consulta el contenido de la propuesta*/
     protected void GVConsultaContenidoP_RowDataBound(object sender, GridViewRowEventArgs e) { }
     protected void GVConsultaContenidoP_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
@@ -323,21 +284,13 @@ public partial class PropuestaAsignada : Conexion
     }
     private void ResultadoContenidoP()
     {
-        TCodigoP.Text = "Código de la propuesta: ";
-        CodigoP.Text = CodigoPropuesta;
-        TTituloP.Text = "Título de la propuesta: ";
-        TituloP.Text = TituloPropuesta;
-        EstadoPropuestaP.Text = EstadoPropuesta;
-        LlamarInfo();
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-                string sql = "select p.PROP_JUSTIFICACION, p.PROP_OBJETIVOS, l.LPROF_NOMBRE, t.TEM_NOMBRE  ,p.PROP_BIBLIOGRAFIA  from propuesta p, lin_profundizacion l, tema t " +
-                    "where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO  and p.PROP_CODIGO = '" + CodigoPropuesta + "'";
+                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LPROF_NOMBRE, t.TEM_NOMBRE from propuesta p, lin_profundizacion l, tema t " +
+                    "where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO  and p.PROP_CODIGO = '" + Metodo.Value + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -354,14 +307,37 @@ public partial class PropuestaAsignada : Conexion
         catch (Exception ex)
         {
         }
-    }
-
-
-    private void LlamarInfo()
+    }  
+    protected void DownloadFile(object sender, EventArgs e)
     {
-
-        InformacionP.Visible = true;
-
+        int id = int.Parse((sender as LinkButton).CommandArgument);
+        byte[] bytes;
+        string fileName = "", contentype = "";
+        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
+        OracleConnection conn = crearConexion();
+        if (conn != null)
+        {
+            using (OracleCommand cmd = new OracleCommand(sql, conn))
+            {
+                cmd.CommandText = sql;
+                using (OracleDataReader drc1 = cmd.ExecuteReader())
+                {
+                    drc1.Read();
+                    contentype = drc1["PROP_TIPO"].ToString();
+                    fileName = drc1["PROP_NOMARCHIVO"].ToString();
+                    bytes = (byte[])drc1["PROP_DOCUMENTO"];
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.Charset = "";
+                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                    Response.ContentType = contentype;
+                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                }
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
+            }
+        }
 
     }
 

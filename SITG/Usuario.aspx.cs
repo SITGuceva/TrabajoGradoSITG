@@ -130,10 +130,8 @@ public partial class Estudiante : Conexion
         DDLrol.SelectedIndex = 0;
        
     }
+   
     //METODOS QUE REALIZAN LAS OPERACIONES DE CONSULTA   
-
-
-
 
     //////////////////////////////////////////////////////////////////////////////////////////////////
     /*Metodos para la consulta de las observaciones*/
@@ -146,22 +144,14 @@ public partial class Estudiante : Conexion
 
     protected void LlamarTablaRoles()/*Tabla para la consulta*/
     {
-
         string sql = "";
-      
-        try
-        {
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-
-                if (DDLconsulta.Items[DDLconsulta.SelectedIndex].Value.ToString().Equals("TODOS"))
-                {
+            if (conn != null){
+                if (DDLconsulta.Items[DDLconsulta.SelectedIndex].Value.ToString().Equals("TODOS")){
                     sql = "SELECT * FROM USUARIO";
-                }
-                else
-                {
+                } else {
 
                     sql = "SELECT U.USU_USERNAME, U.USU_NOMBRE, U.USU_APELLIDO, U.USU_TELEFONO, U.USU_DIRECCION, U.USU_CORREO, U.USU_ESTADO FROM USUARIO U, USUARIO_ROL UR WHERE U.USU_USERNAME=UR.USU_USERNAME AND UR.ROL_ID='" + DDLconsulta.Items[DDLconsulta.SelectedIndex].Value.ToString() + "'";
 

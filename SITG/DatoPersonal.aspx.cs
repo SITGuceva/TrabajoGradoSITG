@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -18,9 +19,24 @@ public partial class DatoPersonal : Conexion
             Response.Redirect("Default.aspx");
         }else{
             if (!IsPostBack){
+                Page.Form.Attributes.Add("enctype", "multipart/form-data");
                 Buscar();
             }
+            validarol();
         } 
+    }
+
+    private void validarol()
+    {
+        string rol = Session["rol"].ToString().Trim();
+        String[] ciclo = rol.Split(' ');
+        foreach (var cadena in ciclo)
+        {
+            if (cadena.Equals("DOC")){
+                HVdoc.Visible = true;
+                break;
+            }else { HVdoc.Visible = false; }
+        }
     }
 
     private void Buscar()
@@ -39,27 +55,55 @@ public partial class DatoPersonal : Conexion
 
     protected void Aceptar(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(TBnombre.Text) == true || string.IsNullOrEmpty(TBapellido.Text) == true || string.IsNullOrEmpty(TBtelefono.Text) == true || string.IsNullOrEmpty(TBdireccion.Text) == true || string.IsNullOrEmpty(TBcorreo.Text) == true)
-        {
+        if (string.IsNullOrEmpty(TBnombre.Text) == true || string.IsNullOrEmpty(TBapellido.Text) == true || string.IsNullOrEmpty(TBtelefono.Text) == true || string.IsNullOrEmpty(TBdireccion.Text) == true || string.IsNullOrEmpty(TBcorreo.Text) == true) {
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Los campos son obligatorios";
-        }
-        else
-        {
-            string sql = "UPDATE USUARIO SET USU_NOMBRE='"+TBnombre.Text+"', USU_APELLIDO='"+TBapellido.Text+"', USU_TELEFONO='"+TBtelefono.Text+"', USU_DIRECCION='"+TBdireccion.Text+"', USU_CORREO='"+TBcorreo.Text+"'WHERE USU_USERNAME='"+Lanscod.Text+"'";
-            string info = con.IngresarBD(sql);
-            if (info.Equals("Funciono")){
-                Linfo.ForeColor = System.Drawing.Color.Green;
-                Linfo.Text = "Datos Modificados Satisfactoriamente";
-                Session["Usuario"] = TBnombre.Text + " " + TBapellido.Text;
-                Buscar();
-            }else{
-                Linfo.ForeColor = System.Drawing.Color.Red;
-                Linfo.Text = info;
-            }
+        } else{
+            if (HVdoc.Visible) {
+                if (FUdocumento.HasFile){
+                    string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
+                    string contentType = FUdocumento.PostedFile.ContentType;
+                    using (Stream fs = FUdocumento.PostedFile.InputStream){
+                        using (BinaryReader br = new BinaryReader(fs)) {
+                            byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                            OracleConnection conn = con.crearConexion();
+                            if (conn != null) {
+                                string query = "update PROFESOR set prof_documento= :Data, prof_nomarchivo= :Prof_nomarchivo,prof_tipo= :Prof_tipo where usu_username='"+ Session["id"] + "'";
+                                using (OracleCommand cmd = new OracleCommand(query)){
+                                    cmd.Connection = conn;
+                                    cmd.Parameters.Add(":Data", bytes);
+                                    cmd.Parameters.Add(":Prof_nomarchivo", filename);
+                                    cmd.Parameters.Add(":Prof_tipo", contentType);
+                                    cmd.ExecuteNonQuery();
+                                    conn.Close();
+                                }
+                            }
+                        }
+                    }
+                    string sql = "UPDATE USUARIO SET USU_NOMBRE='" + TBnombre.Text + "', USU_APELLIDO='" + TBapellido.Text + "', USU_TELEFONO='" + TBtelefono.Text + "', USU_DIRECCION='" + TBdireccion.Text + "', USU_CORREO='" + TBcorreo.Text + "'WHERE USU_USERNAME='" + Lanscod.Text + "'";
+                    Ejecutar("Datos Modificados Satisfactoriamente", sql);
+                }
+                else {
+                    Linfo.ForeColor = System.Drawing.Color.Red;
+                    Linfo.Text = "Debe elegir un archivo";
+                }
+            } else {
+                string sql = "UPDATE USUARIO SET USU_NOMBRE='" + TBnombre.Text + "', USU_APELLIDO='" + TBapellido.Text + "', USU_TELEFONO='" + TBtelefono.Text + "', USU_DIRECCION='" + TBdireccion.Text + "', USU_CORREO='" + TBcorreo.Text + "'WHERE USU_USERNAME='" + Lanscod.Text + "'";
+                Ejecutar("Datos Modificados Satisfactoriamente", sql);
+            }   
         }
     }
-
+    private void Ejecutar(string texto, string sql)
+    {
+        string info = con.IngresarBD(sql);
+        if (info.Equals("Funciono")) {
+            Linfo.ForeColor = System.Drawing.Color.Green;
+            Linfo.Text = texto;
+        } else{
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = info;
+        }
+    }
     protected void Limpiar(object sender, EventArgs e)
     {
         TBnombre.Text = "";

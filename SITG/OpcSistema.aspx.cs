@@ -15,6 +15,7 @@ public partial class OpcSistema : Conexion
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         }
+        DDLcategoria.Items.Clear();
         string sql = "SELECT CATS_ID, CATS_NOMBRE FROM CATEGORIA_SISTEMA";
         DDLcategoria.Items.AddRange(con.cargardatos(sql));
     }
@@ -59,7 +60,7 @@ public partial class OpcSistema : Conexion
             }
             else
             {
-                sql = "insert into OPCION_SISTEMA (OPCS_ID,OPCS_NOMBRE,CATS_ID,OPCS_URL) VALUES(OPCSID.nextval, '" + TBnombre.Text + "', '" + DDLcategoria.Items[DDLcategoria.SelectedIndex].Value.ToString() + "', '" + TBurl.Text + "')";
+                sql = "insert into OPCION_SISTEMA (OPCS_ID,OPCS_NOMBRE,CATS_ID,OPCS_URL) VALUES(OPCSID.nextval, '" + TBnombre.Text + "', '" + DDLcategoria.Items[DDLcategoria.SelectedIndex].Value + "', '" + TBurl.Text + "')";
 
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);

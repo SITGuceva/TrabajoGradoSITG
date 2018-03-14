@@ -34,13 +34,13 @@
                                 </asp:TableRow>
                                 <asp:TableRow>
                                     <asp:TableCell><asp:Label ID="Ltelefono" runat="server" Text="Telefono:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
-                                    <asp:TableCell><asp:TextBox ID="TBtelefono" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                                    <asp:TableCell><asp:TextBox ID="TBtelefono" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox></asp:TableCell>
                                     <asp:TableCell><asp:Label ID="Ldireccion" runat="server" Text="Dirección:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:TextBox ID="TBdireccion" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
                                 </asp:TableRow>
                                 <asp:TableRow>
                                     <asp:TableCell><asp:Label ID="Lcorreo" runat="server" Text="Correo:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
-                                    <asp:TableCell><asp:TextBox ID="TBcorreo" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                                    <asp:TableCell><asp:TextBox ID="TBcorreo" runat="server" CssClass="form-control" TextMode="Email"></asp:TextBox></asp:TableCell>
                                     <asp:TableCell><asp:Label ID="Lrol" runat="server" Text="Rol:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:DropDownList ID="DDLrol" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLrol_SelectedIndexChanged" AutoPostBack="true">
                                             <asp:ListItem Value="NULL" Text="NINGUNO"></asp:ListItem>

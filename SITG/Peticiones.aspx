@@ -17,17 +17,7 @@
                             </div>
                         </div>
 
-                        <div id="Regresar" runat="server" visible="false" class="row">
-                            <asp:Table ID="TBregresar" runat="server" HorizontalAlign="center">
-                                <asp:TableRow>
-                                    <asp:TableCell><asp:Button ID="BTregresar" OnClick="regresar" runat="server" Text="Regresar a Peticiones" CssClass="btn btn-default"></asp:Button> </asp:TableCell>
-                                </asp:TableRow>
-                            </asp:Table>
-                        </div>
-
-                        <br>
-
-                        <div id="TPeticiones" runat="server" visible="false" class="row">
+                        <div id="TPeticiones" runat="server" visible="false" class="row" style="overflow-x: auto">
                             <asp:GridView ID="GVpeticion" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"  OnPageIndexChanging="GVpeticion_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table"
                                 OnRowDataBound="GVpeticion_RowDataBound" PageSize="8" OnRowCommand="GVpeticion_RowCommand">
                                 <AlternatingRowStyle BackColor="White" />
@@ -41,9 +31,9 @@
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                                 <EmptyDataTemplate>¡No hay peticiones de director pendientes!</EmptyDataTemplate>
                                 <Columns>
-                                    <asp:BoundField DataField="SOL_ID" HeaderText="Código de la petición" />
+                                    <asp:BoundField DataField="SOL_ID" HeaderText="Id" />
                                     <asp:BoundField DataField="SOL_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="PROP_CODIGO" HeaderText="Código de propuesta" />
+                                    <asp:BoundField DataField="PROP_TITULO" HeaderText="Propuesta" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director solicitante" />
                                     <asp:TemplateField HeaderText="Estado">
                                         <ItemTemplate>
@@ -63,7 +53,7 @@
                         </div>
 
 
-                        <div id="Tinfprof" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
+                        <div id="Tinfprof" runat="server" style="overflow-x: auto" visible="false" class="row">
                              <asp:GridView ID="GVinfprof" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"  AutoGenerateColumns="False"  CssClass="table table-bordered bs-table" OnRowDataBound="GVinfprof_RowDataBound" >
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
@@ -76,9 +66,12 @@
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                                 <EmptyDataTemplate> ¡No hay informacion del profesor! </EmptyDataTemplate>
                                 <Columns>
+                                    <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" />
                                     <asp:BoundField DataField="USU_TELEFONO" HeaderText="Telefono" />
-                                    <asp:BoundField DataField="USU_DIRECCION" HeaderText="Direccion" />
                                     <asp:BoundField DataField="USU_CORREO" HeaderText="Correo" />
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de Vida">
+                                        <ItemTemplate> <asp:LinkButton ID="lnkDownload" ClientIDMode="AutoID" runat="server" Text="Download" OnClick="DownloadFile" CommandArgument='<%# Eval("USU_USERNAME") %>' ></asp:LinkButton> </ItemTemplate>
+                                    </asp:TemplateField>
                                 </Columns>
                             </asp:GridView>    
                         </div>
@@ -99,7 +92,7 @@
                        </asp:Table>
                      </div>
 
-                     <div id="ConsultaPeti" runat="server" visible="false" class="row" >                  
+                     <div id="ConsultaPeti" runat="server" visible="false" class="row" style="overflow-x: auto" >                  
                         <asp:GridView ID="GVconsulta" runat="server"  AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                            AutoGenerateColumns="False" CssClass="table table-bordered bs-table"  OnRowDataBound="GVconsulta_RowDataBound"
                             OnRowUpdating="GVconsulta_RowUpdating" OnRowEditing="GVconsulta_RowEditing" OnRowCancelingEdit="GVconsulta_RowCancelingEdit">                   
@@ -135,6 +128,8 @@
                         </asp:GridView>
                     </div>
 
+                          
+                        <asp:ImageButton id="IBregresar" OnClick="regresar" runat="server" ImageUrl="/Images/flecha.png" ToolTip="Regresar" ImageAlign="Baseline" Visible="false"></asp:ImageButton>
                         <asp:Label ID="Linfo" runat="server" Text="" ForeColor="red" Font-Bold="True"></asp:Label>
                         <asp:HiddenField ID="Tipo" runat="server" Value=""/>
                     </div>

@@ -35,23 +35,38 @@
                                     <asp:TableCell><asp:Label ID="Lcorreo" runat="server" Text="Correo:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:TextBox ID="TBcorreo" runat="server" CssClass="form-control" TextMode="Email"></asp:TextBox></asp:TableCell>                                   
                                 </asp:TableRow>
-                            </asp:Table>
-                       
-                            <asp:Table ID="TBotones" runat="server" HorizontalAlign="Center">
+                            </asp:Table>                     
+                        </div>
+
+                        <div id="HVdoc" runat="server" visible="false" >
+                            <asp:Table ID="Thv" runat="server" HorizontalAlign="Center">
                                 <asp:TableRow>
-                                    <asp:TableCell>
-                                        <asp:Button ID="LBacpetar" runat="server" OnClick="Aceptar" Text="Guardar Cambios" class="btn btn-default" />
-                                    </asp:TableCell>
-                                    <asp:TableCell>
-                                        <asp:Button ID="LBcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" />
-                                    </asp:TableCell>
+                                    <asp:TableCell><asp:Label ID="Ldocumento" runat="server" Text="Hoja de Vida:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:FileUpload ID="FUdocumento" runat="server" class="btn btn-default image-preview-input" /></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>
                         </div>
 
+                        <div id="botones" runat="server" visible="true">
+                            <asp:Table ID="TBotones" runat="server" HorizontalAlign="Center">
+                                <asp:TableRow>
+                                    <asp:TableCell>
+                                        <asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar Cambios" class="btn btn-default" />
+                                    </asp:TableCell>
+                                    <asp:TableCell>
+                                        <asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" />
+                                    </asp:TableCell>
+                                </asp:TableRow>
+                            </asp:Table>
+                         </div>
+
+
                         <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
                     </div>
                 </ContentTemplate>
+                <Triggers>
+                   <asp:PostBackTrigger ControlID="Bacpetar" />  
+               </Triggers>
             </asp:UpdatePanel>
         </div>
     </div>

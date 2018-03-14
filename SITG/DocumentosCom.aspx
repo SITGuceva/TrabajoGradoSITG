@@ -1,32 +1,37 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" EnableEventValidation="false" AutoEventWireup="true" CodeFile="Consulta_Propuestas.aspx.cs" Inherits="Consulta_Propuestas" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="DocumentosCom.aspx.cs" Inherits="DocumentosCom" %>
 
-<asp:Content ID="ConsultaPropuesta" ContentPlaceHolderID="MainContent" runat="Server" >
+<asp:Content ID="Documentoscom" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Documentos - Consultar Propuestas</div>
+        <div class="panel-heading">Gestionar Documentos - Documentos</div>
         <div class="panel-body">
-            <asp:UpdatePanel ID="UPconsulta_propuestas" runat="server">
+            <asp:UpdatePanel ID="UPdocumentoscom" runat="server">
                 <ContentTemplate>
                     <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <ul class="breadcrumb">
+                                    <li><asp:LinkButton ID="LBpropuesta" runat="server" OnClick="LBpropuesta_Click" ForeColor="Black"><span class="glyphicons glyphicons-notes-2"></span>Propuesta </asp:LinkButton></li>
+                                    <li> <asp:LinkButton ID="LBanteproyecto" runat="server" OnClick="LBanteproyecto_Click" ForeColor="Black"><span class="glyphicons glyphicons-article"></span>Anteproyecto </asp:LinkButton></li>                         
+                                    <li> <asp:LinkButton ID="LBproyecto" runat="server" OnClick="LBproyecto_Click" ForeColor="Black"><span class="glyphicons glyphicons-book"></span>Proyecto </asp:LinkButton></li>                         
+                                </ul>
+                            </div>
+                        </div>
 
-                        <div id="Ingreso" runat="server" visible="true" class="row">
+                        <div id="Ingreso" runat="server" visible="false" class="row">
                             <asp:Table ID="Tconsulta" runat="server" HorizontalAlign="center">
-                                <asp:TableRow>
-                                    <asp:TableCell>
-                                        <asp:Label ID="Lprog" runat="server" Text="programa:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
-                                        <asp:DropDownList ID="DDLconsultaPrograma" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLconsultaPrograma_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
-                                    </asp:TableCell>
-                                 
+                                <asp:TableRow>                                 
                                    <asp:TableCell>
                                         <asp:Label ID="Llprof" runat="server" Text="linea de Investigación:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
-                                        <asp:DropDownList ID="DDLconsultaLinea" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" AutoPostBack="true" OnSelectedIndexChanged="DDLconsultaLinea_SelectedIndexChanged"></asp:DropDownList>
+                                        <asp:DropDownList ID="DDLconsultaLinea" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" ></asp:DropDownList>
                                     </asp:TableCell>
-                                  
                                      <asp:TableCell>
-                                         <asp:Label ID="Ltema" runat="server" Text="tema:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
-                                        <asp:DropDownList ID="DDLconsultaTema" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList>
-                                    </asp:TableCell>
-
-                                     <asp:TableCell><asp:Button ID="Btbuscar" OnClick="buscar" runat="server" Text="Buscar"  CssClass="btn btn-default"></asp:Button></asp:TableCell>
+                                         <asp:Label ID="Lestado" runat="server" Text="Estado:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                        <asp:DropDownList ID="DDLestado" class="btn btn-secondary btn-lg dropdown-toggle" runat="server">
+                                            <asp:ListItem Value="0" Text="Seleccione"/>
+                                            <asp:ListItem Value="1" Text="Aprobado" />
+                                            <asp:ListItem Value="2" Text="Rechazado" />
+                                        </asp:DropDownList> </asp:TableCell>
+                                     <asp:TableCell><asp:Button ID="Btbuscar" OnClick="Btbuscar_Click" runat="server" Text="Buscar"  CssClass="btn btn-default"></asp:Button></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>
                         </div>
@@ -47,8 +52,7 @@
                                 <Columns>
                                     <asp:BoundField DataField="PROP_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="PROP_TITULO" HeaderText="Título" />
-                                    <asp:BoundField DataField="PROP_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="PROP_ESTADO" HeaderText="Estado de la propuesta" />
+                                    <asp:BoundField DataField="FECHA" HeaderText="Fecha" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
                                     <asp:BoundField DataField="ESTADO" HeaderText="Estado director" />
                                 </Columns>
@@ -62,7 +66,3 @@
         </div>
     </div>
 </asp:Content>
-
-
-
-

@@ -47,11 +47,11 @@ public partial class _Default : Page{
                         Session["usuario"] = null;
                         Session["rol"] = null;
                         Session["id"] = null;
-                        Lerror.Text = "El Usuario No Se Encuentra Activo!!";
+                        Lerror.Text = "El usuario no se encuentra activo.";
                     }
                     
                 }else{                   
-                    Lerror.Text = "Usuario o Contraseña Incorrecta!!";
+                    Lerror.Text = "Usuario o contraseña incorrecta";
                     UserName.Text = "";
                 }
             }

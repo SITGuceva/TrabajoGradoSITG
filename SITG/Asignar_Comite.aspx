@@ -39,7 +39,7 @@
                              <br>
                         </div>
 
-                        <div id="ResultadoUsuario" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
+                        <div id="ResultadoUsuario" runat="server" style="overflow-x: auto" visible="false" class="row">
                             <asp:GridView ID="GVusuario" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVusuario_PageIndexChanging" AutoGenerateColumns="False"
                                 CssClass="table table-bordered bs-table" OnRowDataBound="GVusuario_RowDataBound" PageSize="8">
                                 <AlternatingRowStyle BackColor="White" />
@@ -57,7 +57,7 @@
                         </div>
 
                         
-                        <div id="ResultadoComite" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
+                        <div id="ResultadoComite" runat="server" style="overflow-x: auto" visible="false" class="row">
                             <asp:GridView ID="GVcomite" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"
                                 AutoGenerateColumns="False" CssClass="table table-bordered bs-table"  OnRowDataBound="GVcomite_RowDataBound" PageSize="8">
                                 <AlternatingRowStyle BackColor="White" />
@@ -74,7 +74,7 @@
                             </asp:GridView>                          
                         </div>
 
-                        <div id="Miembros" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
+                        <div id="Miembros" runat="server"  style="overflow-x: auto" visible="false" class="row">
                             <asp:GridView ID="GVmiembros" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"  OnPageIndexChanging="GVmiembros_PageIndexChanging"
                                 AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVmiembros_RowDataBound" PageSize="8" OnRowDeleting="GVmiembros_RowDeleting">
                                 <AlternatingRowStyle BackColor="White" />

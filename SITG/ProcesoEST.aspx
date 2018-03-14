@@ -22,8 +22,8 @@
                         </div>
 
                         <br>
-                         <asp:Label ID="LBpropuesta" runat="server" Text=" Propuesta: " ForeColor="black" Font-Bold="True"></asp:Label>
-                        <div id="TablaResultado" runat="server" visible="false" class="row">
+                        <asp:Label ID="LBpropuesta" runat="server" Text=" Propuesta: " ForeColor="black" Font-Bold="True"></asp:Label>
+                        <div id="TablaResultado" runat="server" visible="false" class="row" style="overflow-x: auto">
                             <asp:GridView ID="GVgepropuesta" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                                 AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVgepropuesta_RowDataBound">
                                 <AlternatingRowStyle BackColor="White" />
@@ -35,31 +35,21 @@
                                 <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                                 <EditRowStyle BackColor="#ffffcc" />
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                                <EmptyDataTemplate>
-                                    El estudiante aún no ha subido ninguna propuesta o el comite no tiene permiso para ver esta información  
-                                </EmptyDataTemplate>
+                                <EmptyDataTemplate> El estudiante aún no ha subido ninguna propuesta o el comite no tiene permiso para ver esta información.</EmptyDataTemplate>
                                 <Columns>
                                     <asp:BoundField DataField="PROP_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="PROP_TITULO" HeaderText="Título" />
                                     <asp:BoundField DataField="PROP_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="PROP_ESTADO" HeaderText="Estado propuesta" />
+                                    <asp:BoundField DataField="PROP_ESTADO" HeaderText="Estado" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
                                     <asp:BoundField DataField="ESTADO" HeaderText="Estado director" />
-
-                                  
                                 </Columns>
                             </asp:GridView>
-
-                            <asp:HiddenField ID="Metodo" runat="server" Value="" />
-
                         </div>
 
                     <asp:Label ID="Linfo" runat="server" Text="" ForeColor="red" Font-Bold="True"></asp:Label>
                     </div>
-
-
-                </ContentTemplate>
-            </asp:UpdatePanel>
+                </ContentTemplate></asp:UpdatePanel>
         </div>
     </div>
 </asp:Content>

@@ -24,15 +24,17 @@ public partial class Propuesta : Conexion
         RevisarRechaza();
         SolicitudHecha();
 
-        string sql = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido)from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
-        DDLlista.Items.AddRange(con.cargardatos(sql));
-
         if (!Page.IsPostBack){
+            Page.Form.Attributes.Add("enctype", "multipart/form-data");
+
             table = new System.Data.DataTable();
             table.Columns.Add("CODIGO", typeof(System.String));
             table.Columns.Add("INTEGRANTES", typeof(System.String));
             Session.Add("Tabla", table);
         }
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVconsulta);
+        scriptManager.RegisterPostBackControl(this.GVinfprof);
     }
   
     /*Metodos de consulta que se necesitan hacer antes de cargar la pagina*/
@@ -59,6 +61,7 @@ public partial class Propuesta : Conexion
                     LBSolicitar.Enabled = true;
                     LBSolicitar.ForeColor = System.Drawing.Color.Black;
                     prop_codigo = drc1.GetInt32(0);
+                    Linfo.Text = "No puede cargar mas propuestas, porque ya tiene una en tramite. Esta opción se habilitara en caso de que su propuesta sea rechazada.";
                 }
             }
             drc1.Close();
@@ -109,14 +112,13 @@ public partial class Propuesta : Conexion
                     LBSolicitar.ForeColor = System.Drawing.Color.Black;
                 }else {
                     string estado = drc1.GetString(0);
-                    if (estado.Equals("Rechazado")){
+                    if (estado.Equals("RECHAZADO")){
                         LBSolicitar.Enabled = true;
                         LBSolicitar.ForeColor = System.Drawing.Color.Black;
-                    }
-                    else
-                    {
+                    }else {
                         LBSolicitar.Enabled = false;
                         LBSolicitar.ForeColor = System.Drawing.Color.Gray;
+                        Linfo.Text += "<br/>" + "No puede realizar mas solicitudes de director, porque ya tiene una en tramite. Esta opción se habilitara si la solicitud es rechazada.";
                     }
                 }
             }
@@ -128,27 +130,29 @@ public partial class Propuesta : Conexion
     protected void SolicitarDir(object sender, EventArgs e)
     {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        string sql = "insert into solicitud_dir (SOL_ID, SOL_FECHA, SOL_ESTADO, PROP_CODIGO, USU_USERNAME) values(SOLICITUDID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'Pendiente', '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
+        string sql = "insert into solicitud_dir (SOL_ID, SOL_FECHA, PROP_CODIGO, USU_USERNAME) values(SOLICITUDID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
         string texto = "Solicitud realizada correctamente";
         Ejecutar(texto, sql);
         Solicitar.Visible = false;
+        LBSolicitar.Enabled = false;
+        LBSolicitar.ForeColor = System.Drawing.Color.Gray;
     }
 
     /*Metodos que manejar la interfaz del subir-consultar- solicitar dir- consultar dir*/
     protected void Subir_propuesta(object sender, EventArgs e)
     {
-        Ingreso.Visible = true;
-        Consulta.Visible = false;
-        Observaciones.Visible = false;
-        Solicitar.Visible = false;
-        ConsultaSolicitud.Visible = false;
-        Linfo.Text = "";
-        DDLlprof.Items.Clear();
-        string sql = "SELECT LPROF_CODIGO, LPROF_NOMBRE FROM LIN_PROFUNDIZACION WHERE LPROF_ESTADO='ACTIVO' AND PROG_CODIGO IN" +
-            " ( SELECT E.PROG_CODIGO FROM PROGRAMA P, ESTUDIANTE E WHERE P.PROG_CODIGO = E.PROG_CODIGO AND E.USU_USERNAME = '" + Session["id"] + "')";
-        DDLlprof.Items.AddRange(con.cargardatos(sql));
-        DDLlprof.Items.Insert(0, "Seleccione");
-        DDLtema.Items.Insert(0, "Seleccione");
+            Ingreso.Visible = true;
+            Consulta.Visible = false;
+            Observaciones.Visible = false;
+            Solicitar.Visible = false;
+            ConsultaSolicitud.Visible = false;
+            Linfo.Text = "";
+            DDLlprof.Items.Clear();
+            string sql = "SELECT LPROF_CODIGO, LPROF_NOMBRE FROM LIN_PROFUNDIZACION WHERE LPROF_ESTADO='ACTIVO' AND PROG_CODIGO IN" +
+                " ( SELECT E.PROG_CODIGO FROM PROGRAMA P, ESTUDIANTE E WHERE P.PROG_CODIGO = E.PROG_CODIGO AND E.USU_USERNAME = '" + Session["id"] + "')";
+            DDLlprof.Items.AddRange(con.cargardatos(sql));
+            DDLlprof.Items.Insert(0, "Seleccione");
+            DDLtema.Items.Insert(0, "Seleccione");
     }
     protected void Consulta_propuesta(object sender, EventArgs e)
     {
@@ -187,9 +191,6 @@ public partial class Propuesta : Conexion
     {      
         Linfo.Text = "";
         TAnombre.Value = "";
-        TAjusti.Value = "";
-        TAobj.Value = "";
-        TAblib.Value = "";
         RespInte.Visible = false;
         TBcodint.Text = "";
         Bintegrante.Enabled = true;
@@ -204,50 +205,98 @@ public partial class Propuesta : Conexion
         Linfo.Text = "";
         Tbotones2.Visible = false;
         DDLlista.Enabled = true;
-        Bconsulta.Enabled = true;
         DDLlista.Items.Clear();
         string sql = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido)from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
         DDLlista.Items.AddRange(con.cargardatos(sql));
         table = (System.Data.DataTable)(Session["Tabla"]);
         table.Clear();
+        Bconsulta.Visible = true;
+        Blimpiar.Visible = false;
     }
 
     /*Metodos que realizan la funcionalidad del subir propuesta*/
     protected void Guardar(object sender, EventArgs e)
     {
-        string fecha;
-        if (Metodo.Value.Equals("ACTUALIZA"))
-        {
-            fecha = DateTime.Now.ToString("yyyy/MM/dd");
-            OracleConnection conn = crearConexion();
-            if (conn != null){
-                string sql = "update  propuesta set prop_titulo='"+TAnombre.Value+"' ,prop_fecha=TO_DATE( '" + fecha + "', 'YYYY-MM-DD'),prop_estado= 'Pendiente',prop_justificacion='"+TAjusti.Value+ "',prop_objetivos= '"+TAobj.Value+ "', prop_bibliografia='"+ TAblib.Value + "' where prop_codigo='"+ codprop + "'";
+         DateTime fecha = DateTime.Today;
 
-            }
-        }else{
-            table = (System.Data.DataTable)(Session["Tabla"]);
-            DataRow[] currentRows = table.Select(null, null, DataViewRowState.CurrentRows);
-            fecha = DateTime.Now.ToString("yyyy/MM/dd");
-            OracleConnection conn = crearConexion();
-            if (conn != null){
-                string sql = "insert into propuesta (prop_codigo,prop_titulo,prop_justificacion, prop_objetivos, prop_bibliografia,tem_codigo, prop_fecha)values (propuestaid.nextval ,'"+TAnombre.Value+"' ,'"+TAjusti.Value+"', '"+TAobj.Value+"', '"+TAblib.Value+ "','" + DDLtema.Items[DDLtema.SelectedIndex].Value.ToString() + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD'))";
-                Ejecutar("1", sql);
-                if (Verificador.Value.Equals("Funciono")){
-                    sql = "UPDATE ESTUDIANTE SET PROP_CODIGO = propuestaid.currval  WHERE USU_USERNAME = '" + Session["id"] + "'";
-                    string texto = "Se subio la propuesta correctamente";
-                    Ejecutar(texto, sql);
+        if (DDLlprof.SelectedIndex.Equals(0) || DDLtema.SelectedIndex.Equals(0) || string.IsNullOrEmpty(TAnombre.Value) == true){
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Los campos son obligatorios";
+        }else if (FUdocumento.HasFile){
 
-                    foreach (DataRow row in currentRows){
-                        sql = "UPDATE ESTUDIANTE SET PROP_CODIGO=propuestaid.currval WHERE USU_USERNAME ='"+ row["CODIGO"] + "'";
-                        texto = "Se subio la propuesta correctamente";
-                        Ejecutar(texto, sql);
+            if (Metodo.Value.Equals("ACTUALIZA")){ 
+                string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
+                string contentType = FUdocumento.PostedFile.ContentType;
+                using (Stream fs = FUdocumento.PostedFile.InputStream){
+                    using (BinaryReader br = new BinaryReader(fs)){
+                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                        OracleConnection conn = crearConexion();
+                        if (conn != null){
+                            string query = "update  propuesta set prop_titulo='"+TAnombre.Value+"' ,tem_codigo='"+ DDLtema.Items[DDLtema.SelectedIndex].Value.ToString() + "',prop_fecha=:Prop_fecha, prop_estado= 'PENDIENTE',prop_documento= :Prop_documento,prop_nomarchivo= :Prop_nomarchivo, prop_tipo=:Prop_tipo where prop_codigo='" + codprop + "'";
+                            using (OracleCommand cmd = new OracleCommand(query)){
+                                 cmd.Connection = conn;
+                                 cmd.Parameters.Add(":Prop_fecha", fecha);
+                                 cmd.Parameters.Add(":Prop_documento", bytes);
+                                 cmd.Parameters.Add(":Prop_nomarchivo", filename);
+                                 cmd.Parameters.Add(":Prop_tipo", contentType);
+                                 cmd.ExecuteNonQuery();
+                                 conn.Close();
+                             }
+                        }
                     }
-                    table.Rows.Clear();
-                    GVagreinte.DataSource = table;
-                    GVagreinte.Visible = false;
-                }          
+                }
+            }else {
+                table = (System.Data.DataTable)(Session["Tabla"]);
+                DataRow[] currentRows = table.Select(null, null, DataViewRowState.CurrentRows);
+                string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
+                string contentType = FUdocumento.PostedFile.ContentType;
+                using (Stream fs = FUdocumento.PostedFile.InputStream){
+                    using (BinaryReader br = new BinaryReader(fs)) {
+                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                        OracleConnection conn = crearConexion();
+                        if (conn != null){
+                            string query = "insert into propuesta values (propuestaid.nextval ,:Prop_titulo , :Tem_codigo,:Prop_fecha, 'PENDIENTE', :Prop_documento, : Prop_nomarchivo, :Prop_tipo)";
+                            using (OracleCommand cmd = new OracleCommand(query)){
+                                cmd.Connection = conn;
+                                cmd.Parameters.Add(":Prop_titulo", TAnombre.Value);
+                                cmd.Parameters.Add(":Tem_codigo", DDLtema.Items[DDLtema.SelectedIndex].Value.ToString());
+                                cmd.Parameters.Add(":Prop_fecha", fecha);
+                                cmd.Parameters.Add(":Prop_documento", bytes);
+                                cmd.Parameters.Add(":Prop_nomarchivo", filename);
+                                cmd.Parameters.Add(":Prop_tipo", contentType);
+                                cmd.ExecuteNonQuery();
+                                conn.Close();
+                            }
+                        }
+                        string sql = "UPDATE ESTUDIANTE SET PROP_CODIGO = propuestaid.currval  WHERE USU_USERNAME = '" + Session["id"] + "'";
+                        string texto = "Se subio la propuesta correctamente";
+                        Ejecutar("1", sql);
+                        if (Verificador.Value.Equals("Funciono")){
+                            foreach (DataRow row in currentRows){
+                                sql = "UPDATE ESTUDIANTE SET PROP_CODIGO=propuestaid.currval WHERE USU_USERNAME ='" + row["CODIGO"] + "'";
+                                texto = "Se envio la propuesta correctamente";
+                                Ejecutar(texto, sql);
+                            }
+                            table.Rows.Clear();
+                            GVagreinte.DataSource = table;
+                            GVagreinte.Visible = false;
+                        }
+                    }
+                }
+                Linfo.ForeColor = System.Drawing.Color.Green;
+                Linfo.Text = "Propuesta cargada satisfatoriamente";
+                Quitar();
             }
-        }
+        } else{ 
+             Linfo.ForeColor = System.Drawing.Color.Red;
+             Linfo.Text = "Debe elegir un archivo";
+        }   
+    }
+    private void Quitar()
+    {
+        Ingreso.Visible = false;
+        LBSubir_propuesta.Enabled = false;
+        LBSubir_propuesta.ForeColor = System.Drawing.Color.Gray;
     }
     private void Ejecutar(string texto, string sql){
       string info = con.IngresarBD(sql);
@@ -268,7 +317,7 @@ public partial class Propuesta : Conexion
         String user = Session["id"].ToString();
         if (TBcodint.Text.Equals(user)){
             Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "El usuario no se puede agregar porque es ";
+            Linfo.Text = "No puede agregarse a usted mismo como integrante de esta propuesta, puesto que ya esta ligado a esta. ";
             TBcodint.Text = "";
             Bintegrante.Visible = true;
             TBcodint.Enabled = true;
@@ -336,7 +385,7 @@ public partial class Propuesta : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, p.PROP_ESTADO, p.PROP_FECHA  from propuesta p, estudiante e where p.PROP_CODIGO = e.PROP_CODIGO and e.USU_USERNAME ='" + Session["id"] + "'";
+                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LPROF_NOMBRE, t.TEM_NOMBRE,TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA ,INITCAP(p.PROP_ESTADO) as ESTADO  from propuesta p, estudiante e, lin_profundizacion l, tema t where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = e.PROP_CODIGO and e.USU_USERNAME = '" + Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -363,6 +412,35 @@ public partial class Propuesta : Conexion
             ResultadoObservaciones();
             Observaciones.Visible = true;
         }
+    }
+    protected void DownloadFile(object sender, EventArgs e)
+    {
+        int id = int.Parse((sender as LinkButton).CommandArgument);
+        byte[] bytes;
+        string fileName = "", contentype = "";
+        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
+        OracleConnection conn = crearConexion();
+        if (conn != null){
+            using (OracleCommand cmd = new OracleCommand(sql, conn)){
+                cmd.CommandText = sql;
+                using (OracleDataReader drc1 = cmd.ExecuteReader()){
+                    drc1.Read();
+                    contentype = drc1["PROP_TIPO"].ToString();
+                    fileName = drc1["PROP_NOMARCHIVO"].ToString();
+                    bytes = (byte[])drc1["PROP_DOCUMENTO"];
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.Charset = "";
+                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                    Response.ContentType = contentype;
+                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                }
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
+            }
+        }
+
     }
 
     /*Metodo para consultar las observaciones de la propuesta*/
@@ -397,44 +475,46 @@ public partial class Propuesta : Conexion
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
-
-    /*Metodo para consultar la propuesta completa*/
-    protected void GVdocumento_RowDataBound(object sender, GridViewRowEventArgs e){}
-    protected void Bpropuesta_Click(object sender, EventArgs e)
+    protected void DescargarHV(object sender, EventArgs e)
     {
-        int id = int.Parse((sender as Button).CommandArgument);
-        try{
-            OracleConnection conn = con.crearConexion();
-            OracleCommand cmd = null;
-            if (conn != null){
-               string sql = "select p.PROP_JUSTIFICACION, p.PROP_OBJETIVOS, l.LPROF_NOMBRE, t.TEM_NOMBRE  ,p.PROP_BIBLIOGRAFIA  from propuesta p, lin_profundizacion l, tema t " +
-                    "where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO  and p.PROP_CODIGO = '"+id+"'";
-
-                cmd = new OracleCommand(sql, conn);
-                cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader()){
-                    DataTable dataTable = new DataTable();
-                    dataTable.Load(reader);
-                    GVdocumento.DataSource = dataTable;                    
+        int id = int.Parse((sender as LinkButton).CommandArgument);
+        byte[] bytes;
+        string fileName = "", contentype = "";
+        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME=" + id + "";
+        OracleConnection conn = crearConexion();
+        if (conn != null) {
+            using (OracleCommand cmd = new OracleCommand(sql, conn)){
+                cmd.CommandText = sql;
+                using (OracleDataReader drc1 = cmd.ExecuteReader()) {
+                    drc1.Read();
+                    contentype = drc1["PROF_TIPO"].ToString();
+                    fileName = drc1["PROF_NOMARCHIVO"].ToString();
+                    bytes = (byte[])drc1["PROF_DOCUMENTO"];
+                    Response.Clear();
+                    Response.Buffer = true;
+                    Response.Charset = "";
+                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                    Response.ContentType = contentype;
+                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
                 }
-                GVdocumento.DataBind();
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
             }
-            conn.Close();
-        } catch (Exception ex){
-            Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
-        Documento.Visible = true;
-        
+
     }
 
     /*Metodos que sirven para buscar la informacion del profesor*/
     protected void InfProfesor(object sender, EventArgs e)
     {
         DDLlista.Enabled = false;
-        Bconsulta.Enabled = false;
+        Bconsulta.Visible = false;
         Tbotones2.Visible = true;
         CargarInfoProfesor();
         GVinfprof.Visible = true;
+        Blimpiar.Visible = true;
+        Linfo.Text = "";
     }
     private void CargarInfoProfesor()
     {
@@ -446,7 +526,7 @@ public partial class Propuesta : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "select usu_telefono, usu_direccion, usu_correo  from usuario  where usu_username='" + DDLlista.Items[DDLlista.SelectedIndex].Value + "'";
+                sql = "select usu_username, CONCAT(CONCAT(usu_nombre, ' '),usu_apellido) as NOMBRE,  usu_correo  from usuario  where usu_username='" + DDLlista.Items[DDLlista.SelectedIndex].Value + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -498,12 +578,9 @@ public partial class Propuesta : Conexion
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVsolicitud.DataBind();
-
             }
             conn.Close();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex){
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }

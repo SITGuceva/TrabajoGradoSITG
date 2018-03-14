@@ -74,8 +74,7 @@ public partial class Formatos : System.Web.UI.Page
                 // Response.Redirect(Request.Url.AbsoluteUri);   
                 Linfo.ForeColor = System.Drawing.Color.Green;
                 Linfo.Text = "Formato guardado satisfatoriamente";
-            }
-            else{
+            } else{
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Debe elegir un archivo";
             }
