@@ -116,7 +116,7 @@
                 <asp:Button ID="BTcancelar" OnClick="cancelar" runat="server" Style="background-color: lightgray" Text="Cancelar revisión" class="btn btn-default" />
             </div>
 
-             <asp:Label ID="Linfo" runat="server" Text="La propuesta ha sido revisada con exito, presione click en regresar para revisar otra propuesta" ForeColor="Green" Font-Bold="True"></asp:Label>
+             <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Green" Font-Bold="True"></asp:Label>
              <asp:Label ID="Linfo2" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
              <asp:Button ID="BTregresar" OnClick="regresar" runat="server" Text="Regresar" class="btn btn-default" />
             </div>

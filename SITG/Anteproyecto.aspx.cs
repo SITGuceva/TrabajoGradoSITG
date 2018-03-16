@@ -99,15 +99,17 @@ public partial class Anteproyecto : Conexion
     }
 
 
-    /*Metodos que manejar la interfaz del subir-consultar*/
-    protected void Subir_propuesta(object sender, EventArgs e)
+    /*Metodos que manejan la interfaz del subir-consultar*/
+    protected void Subir_anteproyecto(object sender, EventArgs e)
     {
         Ingreso.Visible = true;
         Consulta.Visible = false;
         Observaciones.Visible = false;
         Linfo.Text = "";
     }
-    protected void Consulta_propuesta(object sender, EventArgs e)
+    
+    //metodo que llama a la tabla anteproyecto
+    protected void Consulta_anteproyecto(object sender, EventArgs e)
     {
         Consulta.Visible = true;
         Ingreso.Visible = false;
@@ -116,7 +118,7 @@ public partial class Anteproyecto : Conexion
         BuscarAnteproyecto();
     }
 
-
+    //metodo que sube el anteproyecto (documento);
     protected void Guardar(object sender, EventArgs e)
     {
         DateTime fecha = DateTime.Today;
@@ -205,6 +207,7 @@ public partial class Anteproyecto : Conexion
         }
     }
 
+    /*Metodos que descarga el anteproyecto subido*/
     protected void DownloadFile(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
@@ -237,6 +240,8 @@ public partial class Anteproyecto : Conexion
         }
         
     }
+
+    /*Metodos que se encargan de consultar las observaciones que el director le hizo a la propuesta*/
     protected void GVconsulta_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e.CommandName == "buscar")
@@ -285,9 +290,5 @@ public partial class Anteproyecto : Conexion
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
-
-
-
-
 
 }

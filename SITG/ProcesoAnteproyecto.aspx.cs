@@ -35,7 +35,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
         BTterminar.Visible = false;
         BTcancelar.Visible = false;
         BTregresar.Visible = false;
-        Linfo.Visible = false;
+        Linfo.Text="";
         Linfo2.Visible = false;
     }
 
@@ -91,7 +91,6 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             
         }
     }
-
 
     protected void GVConsultaContenidoP_RowDataBound(object sender, GridViewRowEventArgs e) { }
     protected void GVConsultaContenidoP_PageIndexChanging(object sender, GridViewPageEventArgs e)
@@ -341,7 +340,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             LinkDescarga.Visible = true;
             BTterminar.Visible = false;
             BTcancelar.Visible = false;
-            Linfo.Visible = true;
+            Linfo.Text= "La propuesta ha sido revisada con exito, presione click en regresar para revisar otra propuesta";
             BTregresar.Visible = true;
 
         }
@@ -365,7 +364,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
     protected void regresar(object sender, EventArgs e)
     {
 
-        Linfo.Visible = false;
+        Linfo.Text = "";
         BTregresar.Visible = false;
         ResultadoConsulta();
         Consulta.Visible = true;
