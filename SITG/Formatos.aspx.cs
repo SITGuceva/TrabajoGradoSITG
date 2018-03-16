@@ -85,7 +85,7 @@ public partial class Formatos : System.Web.UI.Page
     protected void Limpiar(object sender, EventArgs e)
     {
         Linfo.Text = "";
-        TBnom.Text = "";
+         TBnom.Text = "";
     }
 
     /*Metodos que realizan la consulta con el modificar e inhabilitar*/

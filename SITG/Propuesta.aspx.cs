@@ -82,7 +82,7 @@ public partial class Propuesta : Conexion
                 string estado=drc1.GetString(0).ToString();    
                 codprop= drc1.GetInt32(1).ToString();
 
-                if (estado.Equals("Rechazado")){
+                if (estado.Equals("RECHAZADO")){
                     LBSubir_propuesta.Enabled = true;
                     LBSubir_propuesta.ForeColor = System.Drawing.Color.Black;
                     Metodo.Value = "ACTUALIZA";

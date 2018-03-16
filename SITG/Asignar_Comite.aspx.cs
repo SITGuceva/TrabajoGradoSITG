@@ -82,11 +82,9 @@ public partial class Asignar_Comite : Conexion
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows){
-                if (drc1.IsDBNull(0)){
-                    sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval,'" + TBcodigo.Text + "','COM')";
-                    Ejecutar("", sql);
-                }
+            if (!drc1.HasRows){
+                sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval,'" + TBcodigo.Text + "','COM')";
+                Ejecutar("", sql);
             }
             drc1.Close();
         }

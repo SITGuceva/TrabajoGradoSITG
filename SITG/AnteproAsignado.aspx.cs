@@ -7,44 +7,39 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class PropuestaPendiente : System.Web.UI.Page
+public partial class AnteproAsignado : System.Web.UI.Page
 {
     Conexion con = new Conexion();
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null){
+        if (Session["Usuario"] == null)
+        {
             Response.Redirect("Default.aspx");
         }
-        if (!IsPostBack){
+        if (!IsPostBack)
+        {
             ResultadoConsulta();
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
-        scriptManager.RegisterPostBackControl(this.GVConsultaContenidoP);
+        scriptManager.RegisterPostBackControl(this.GVconsultaAA);
     }
 
     /*Metodos que se encargan de la consulta de las propuestas que esten pendientes del respectivo programa(comite) */
-    protected void GVconsultaPP_RowDataBound(object sender, GridViewRowEventArgs e){}
-    protected void GVconsultaPP_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    protected void GVconsultaAA_RowDataBound(object sender, GridViewRowEventArgs e) { }
+    protected void GVconsultaAA_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        GVconsultaPP.PageIndex = e.NewPageIndex;
+        GVconsultaAA.PageIndex = e.NewPageIndex;
         ResultadoConsulta();
     }
-    protected void GVconsultaPP_RowCommand(object sender, GridViewCommandEventArgs e)
+    protected void GVconsultaAA_RowCommand(object sender, GridViewCommandEventArgs e)
     {
-        if (e.CommandName == "ConsultarPropuesta")
+        if (e.CommandName == "ConsultarAnteproyecto")
         {
             Consulta.Visible = false;
             int index = Convert.ToInt32(e.CommandArgument);
-            GridViewRow row = GVconsultaPP.Rows[index];
+            GridViewRow row = GVconsultaAA.Rows[index];
             Metodo.Value = row.Cells[0].Text; //obtiene el codigo de propuesta en la tabla
-            ResultadoContenidoP();
-            ConsultaContenidoP.Visible = true;
-            DDLconsultaReunion.Items.Clear();
-            string sql = "SELECT REU_CODIGO, REU_CODIGO FROM REUNION WHERE COM_CODIGO=(select com_codigo from profesor where usu_username='" + Session["id"] + "') and REU_ESTADO='ACTIVO'";
-            DDLconsultaReunion.Items.AddRange(con.cargardatos(sql));
-            DDLconsultaReunion.Items.Insert(0, "Seleccione Reunion");
-            DDLconsultaReunion.Visible = true;
         }
     }
     private void ResultadoConsulta()
@@ -53,58 +48,21 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select DISTINCT   p.PROP_CODIGO,p.PROP_TITULO, p.PROP_ESTADO, p.PROP_FECHA, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado  " +
-                    "from estudiante e, PROPUESTA p, comite c, PROFESOR d, solicitud_dir s, usuario u " +
-                    "WHERE u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = 'PENDIENTE' and d.COM_CODIGO = c.COM_CODIGO" +
-                    " and c.PROG_CODIGO = e.PROG_CODIGO and d.USU_USERNAME = '"+ Session["id"] + "'";
-
+                string sql = "select DISTINCT   A.Apro_Codigo,A.Anp_Nombre, A.Anp_Fecha, A.Ant_Estado from anteproyecto a, estudiante e, PROFESOR d , evaluador r " +
+                    "WHERE R.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = A.Apro_Codigo and A.Ant_Estado = 'PENDIENTE' and D.Usu_Username = R.Usu_Username";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader()) {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    GVconsultaPP.DataSource = dataTable;
+                    GVconsultaAA.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
-                GVconsultaPP.DataBind();
+                GVconsultaAA.DataBind();
             }
             conn.Close();
-        } catch (Exception ex) {
-            Linfo.Text = "Error al cargar la lista: " + ex.Message;
-        }
-    }
-
-    /* Metodos muestran la info especifica de una propuesta*/
-    protected void GVConsultaContenidoP_RowDataBound(object sender, GridViewRowEventArgs e) { }
-    protected void GVConsultaContenidoP_PageIndexChanging(object sender, GridViewPageEventArgs e)
-    {
-        GVConsultaContenidoP.PageIndex = e.NewPageIndex;
-        ResultadoContenidoP();
-    }
-    private void ResultadoContenidoP()
-    {
-        MostrarDDLReunion.Visible = true;
-        MostrarDDLestadoP.Visible = true;
-        Terminar.Visible = true;
-        try {
-            OracleConnection conn = con.crearConexion();
-            OracleCommand cmd = null;
-            if (conn != null){
-                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LPROF_NOMBRE, t.TEM_NOMBRE from propuesta p, lin_profundizacion l, tema t where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = '" + Metodo.Value + "'";
-
-                 cmd = new OracleCommand(sql, conn);
-                 cmd.CommandType = CommandType.Text;
-                 using (OracleDataReader reader = cmd.ExecuteReader()){
-                     DataTable dataTable = new DataTable();
-                     dataTable.Load(reader);
-                     GVConsultaContenidoP.DataSource = dataTable;
-                 }
-                 GVConsultaContenidoP.DataBind();
-            }
-            conn.Close();
-        }catch (Exception ex) {
+        }catch (Exception ex){
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
@@ -113,19 +71,16 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         int id = int.Parse((sender as LinkButton).CommandArgument);
         byte[] bytes;
         string fileName = "", contentype = "";
-        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
+        string sql = "select ANP_NOMARCHIVO, ANP_DOCUMENTO, ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" + id + "";
         OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
+        if (conn != null){
+            using (OracleCommand cmd = new OracleCommand(sql, conn)){
                 cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
+                using (OracleDataReader drc1 = cmd.ExecuteReader()) {
                     drc1.Read();
-                    contentype = drc1["PROP_TIPO"].ToString();
-                    fileName = drc1["PROP_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PROP_DOCUMENTO"];
+                    contentype = drc1["ANP_TIPO"].ToString();
+                    fileName = drc1["ANP_NOMARCHIVO"].ToString();
+                    bytes = (byte[])drc1["ANP_DOCUMENTO"];
                     Response.Clear();
                     Response.Buffer = true;
                     Response.Charset = "";
@@ -141,7 +96,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
 
     }
 
-    /*Metodos para la consulta de las observaciones*/
+    /*Metodos para la consulta de las observaciones del anteproyecto*/
     protected void GVobservacion_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         GVobservacion.PageIndex = e.NewPageIndex;
@@ -151,11 +106,11 @@ public partial class PropuestaPendiente : System.Web.UI.Page
     public void cargarTabla()
     {
         string sql = "";
-        try{
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='"+ Metodo.Value + "' and OBS_REALIZADA!='Director'";
+                sql = "SELECT AOBS_CODIGO, AOBS_DESCRIPCION FROM ANTE_OBSERVACION  WHERE APROP_CODIGO ='" + Metodo.Value + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -168,7 +123,8 @@ public partial class PropuestaPendiente : System.Web.UI.Page
                 GVobservacion.DataBind();
             }
             conn.Close();
-        } catch (Exception ex) {}
+        }
+        catch (Exception ex) { }
     }
 
     /*Metodos que sirven para el modificar-eliminar de la tabla observaciones*/
@@ -178,7 +134,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         OracleCommand cmd = null;
         if (conn != null){
             string id = GVobservacion.Rows[e.RowIndex].Cells[0].Text;
-            string sql = "Delete from observacion where OBS_CODIGO='" + id + "'";
+            string sql = "Delete from ante_observacion where AOBS_CODIGO='" + id + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             using (OracleDataReader reader = cmd.ExecuteReader())
@@ -195,10 +151,11 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         if (conn != null){
             TextBox observacion = (TextBox)row.Cells[1].Controls[0];
             TextBox codigo = (TextBox)GVobservacion.Rows[e.RowIndex].Cells[0].Controls[0];
-            string sql = "update observacion set obs_descripcion = '" + observacion.Text + "' where  obs_codigo ='" + codigo.Text + "'";
+            string sql = "update ante_observacion set aobs_descripcion = '" + observacion.Text + "' where  aobs_codigo ='" + codigo.Text + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
-            using (OracleDataReader reader = cmd.ExecuteReader()){
+            using (OracleDataReader reader = cmd.ExecuteReader())
+            {
                 GVobservacion.EditIndex = -1;
                 cargarTabla();
             }
@@ -223,26 +180,25 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         MostrarAgregarObs.Visible = true;
     }
     protected void Agregar_observacion(object sender, EventArgs e)
-    {      
+    {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
 
-        if (string.IsNullOrEmpty(TBdescripcion.Value) == true) {
+        if (string.IsNullOrEmpty(TBdescripcion.Value) == true){
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "No puede ingresar una observación en blanco.";
-        } else {
-            string descripcion2=TBdescripcion.Value;
-            string sql = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO, OBS_FECHA) values (OBSERVACIONPROP.nextval,'" + descripcion2.ToLower() + "','Comite', '" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
+        }else{
+            string descripcion2 = TBdescripcion.Value;
+            string sql = "insert into ante_observacion (AOBS_CODIGO, AOBS_DESCRIPCION ,APROP_CODIGO, AOBS_FECHA) values (OBSANTEPID.nextval,'" + descripcion2.ToLower() + "', '" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             Resultado.Visible = true;
             cargarTabla();
-            Linfo.Text = "";
         }
     }
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono")) {
+        if (info.Equals("Funciono")){
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = texto;
         }else{
@@ -254,43 +210,31 @@ public partial class PropuestaPendiente : System.Web.UI.Page
 
     /*Eventos de los botones cancelar, regresar y terminar revision */
     protected void terminar(object sender, EventArgs e)
-    {
-        if (DDLconsultaReunion.SelectedIndex.Equals(0)) {
+    {       
+        if (DDLestadoA.SelectedIndex.Equals(0)) {
             Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "Debe elegir una reunión.";
-        } else if( DDLestadoP.SelectedIndex.Equals(0)){
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "Debe calificar la propuesta.";
-        } else  {
+            Linfo.Text = "Debe calificar el anteproyecto.";
+        }else{
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql2 = "update propuesta set prop_estado='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where prop_codigo='" + Metodo.Value + "'";
-            Ejecutar("", sql2);
-            string sql = "insert into revision_propuesta (REV_FECHA, REV_ESTADO, PROP_CODIGO, REU_CODIGO) values (TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "','" + Metodo.Value + "', '" + DDLconsultaReunion.Items[DDLconsultaReunion.SelectedIndex].Value.ToString() + "')";
-            Ejecutar("La propuesta ha sido revisada con exito, presione click en regresar para revisar otra propuesta", sql);
-            
+            string sql = "update anteproyecto set ant_estado='" + DDLestadoA.Items[DDLestadoA.SelectedIndex].Value.ToString() + "' where aprop_codigo='" + Metodo.Value + "'";
+            Ejecutar("", sql);
             Resultado.Visible = false;
-            ConsultaContenidoP.Visible = false;
-            MostrarDDLReunion.Visible = false;
             MostrarAgregarObs.Visible = false;
             MostrarDDLestadoP.Visible = false;
             Terminar.Visible = false;
             IBregresar.Visible = true;
             Metodo.Value = "";
-
         }
-    } 
+    }
     protected void cancelar(object sender, EventArgs e)
     {
         Resultado.Visible = false;
-        ConsultaContenidoP.Visible = false;
-        MostrarDDLReunion.Visible = false;
         MostrarAgregarObs.Visible = false;
         MostrarDDLestadoP.Visible = false;
         Terminar.Visible = false;
         ResultadoConsulta();
         Consulta.Visible = true;
-        DDLestadoP.SelectedIndex = 0;
-        DDLconsultaReunion.SelectedIndex = 0;
+        DDLestadoA.SelectedIndex = 0;
         Metodo.Value = "";
         Linfo.Text = "";
     }

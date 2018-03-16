@@ -48,6 +48,7 @@ public partial class ActaReunion : System.Web.UI.Page
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVactas);
+        scriptManager.RegisterPostBackControl(this.Bgenerar);
     }
 
     /*Metodos que manejan el fronted en el acta*/
@@ -155,9 +156,6 @@ public partial class ActaReunion : System.Web.UI.Page
             rows["DESCRIPCION"] = TAdes.Value;
             torden.Rows.Add(rows);
 
-
-            
-
             GVorden.DataSource = torden;
             GVorden.DataBind();
             GVorden.Visible = true;
@@ -169,46 +167,38 @@ public partial class ActaReunion : System.Web.UI.Page
     /*Evento del boton limpiar*/
     protected void Bcancelar_Click(object sender, EventArgs e)
     {
-        torden = (System.Data.DataTable)(Session["Orden"]);
-        torden.Clear();
-        table = (System.Data.DataTable)(Session["Tabla"]);
-        table.Clear();
-        TBorden.Text = "";
-        TBcargo.Text = "";
-        TBnombre.Text = "";
-        TBobj.Text = "";
-        TBlugar.Text = "";
-        Linfo.Text = "";
-        TAdes.Value = "";
-        GVagreinte.DataBind();
-        GVorden.DataBind();
-        foreach (GridViewRow row in GVasistente.Rows)
-        {
-            System.Web.UI.WebControls.CheckBox check = row.FindControl("CBasitio") as System.Web.UI.WebControls.CheckBox;
-            check.Checked = false;
-        }
-        DDLreu.SelectedIndex = 0;
-        Asistio.Value = "";
-        Noasistio.Value = "";
+         torden = (System.Data.DataTable)(Session["Orden"]);
+         torden.Clear();
+         table = (System.Data.DataTable)(Session["Tabla"]);
+         table.Clear();
+         TBorden.Text = "";
+         TBcargo.Text = "";
+         TBnombre.Text = "";
+         TBobj.Text = "";
+         TBlugar.Text = "";
+         Linfo.Text = "";
+         TAdes.Value = "";
+         GVagreinte.DataBind();
+         GVorden.DataBind();
+         foreach (GridViewRow row in GVasistente.Rows)
+         {
+             System.Web.UI.WebControls.CheckBox check = row.FindControl("CBasitio") as System.Web.UI.WebControls.CheckBox;
+             check.Checked = false;
+         }
+         DDLreu.SelectedIndex = 0;
+         Asistio.Value = "";
+         Noasistio.Value = "";
     }
   
     /*Metodos que realizan el proceso de generar el acta*/
     protected void Bgenerar_Click(object sender, EventArgs e)
     {
         if (DDLreu.SelectedIndex != 0){
-            Thread threadGetFile = new Thread(new ThreadStart(getfile));
-            threadGetFile.ApartmentState = ApartmentState.STA;
-            threadGetFile.Start();
+            getfile();
         }else{
             Linfo.Text = "Eliga una reunion";
         }
         
-    }
-    static void ThreadMethod()
-    {
-        OpenFileDialog dlg = new OpenFileDialog();
-        dlg.ShowDialog();
-        MessageBox.Show(dlg.FileName);
     }
     public void getfile()
     {
@@ -219,16 +209,14 @@ public partial class ActaReunion : System.Web.UI.Page
         string sql = "select TO_CHAR(REU_FREAL,'HH24:MI')  from reunion where REU_CODIGO = '" + DDLreu.Items[DDLreu.SelectedIndex].Value.ToString() + "'";
         List<string> list2 = con.consulta(sql, 1, 0);
 
-        sql = "select to_char(REU_FREAL,'fm dd \"de\" month \"de\" yyyy','nls_date_language=spanish') from REUNION";
+        sql = "select to_char(REU_FREAL,'fm dd \"de\" month \"de\" yyyy','nls_date_language=spanish') from REUNION where Reu_Codigo= '" + DDLreu.Items[DDLreu.SelectedIndex].Value.ToString() + "'";
         List<string> list3 = con.consulta(sql, 1, 0);
 
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "Pdf Files|*.pdf";
-            saveFileDialog1.FilterIndex = 0;
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK){
-                string filename = saveFileDialog1.FileName;
-                Document doc = new Document(PageSize.A4);
-                PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(filename, FileMode.Create));
+        using (var ms = new MemoryStream()){
+            using (var doc = new Document(PageSize.A4)) {
+                //Document doc = new Document(PageSize.A4);
+                // PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(filename, FileMode.Create));
+                PdfWriter writer = PdfWriter.GetInstance(doc, ms);
 
                 // Le colocamos el título y el autor
                 doc.AddTitle("Acta de reunion");
@@ -435,36 +423,18 @@ public partial class ActaReunion : System.Web.UI.Page
                 cell17.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
                 table12.AddCell(cell17);
 
-            /* ANTES DE LOS CAMBIOS ( ORDEN DEL DIA SIEMPRE DEFINIDA)
-            torden = (System.Data.DataTable)(Session["Orden"]);
-            DataRow[] recorrer = torden.Select(null, null, DataViewRowState.CurrentRows);
-            foreach (DataRow row in recorrer){
-                PdfPCell cell18 = new PdfPCell(new Phrase(row["ORDEN"].ToString()));
-                cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
-                table12.AddCell(cell18);
-            }
-        */
-
-
             if (CBpropuesta.Checked) { 
-
                 PdfPCell cell18 = new PdfPCell(new Phrase("Revisión de Propuestas de trabajos de grado"));
                 cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
                 table12.AddCell(cell18);
-
             }
-
-            if (CBanteproyecto.Checked)
-            {
+            if (CBanteproyecto.Checked) {
 
                 PdfPCell cell18 = new PdfPCell(new Phrase("Asignar los jurados para la lectura de anteproyectos de grado"));
                 cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
                 table12.AddCell(cell18);
-
             }
-
-            if (CBcaso.Checked)
-            {
+            if (CBcaso.Checked) {
 
                 PdfPCell cell18 = new PdfPCell(new Phrase("Analizar casos particulares"));
                 cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
@@ -639,12 +609,18 @@ public partial class ActaReunion : System.Web.UI.Page
                 doc.Add(table14);
 
                 doc.Close();
-                writer.Close();
-
             }
+            Response.Clear();
+            Response.ContentType = "application/octet-stream";
+            Response.AddHeader("content-disposition", "attachment;filename= ActaReunion.pdf");
+            Response.Buffer = true;
+            Response.Clear();
+            var bytes = ms.ToArray();
+            Response.OutputStream.Write(bytes, 0, bytes.Length);
+            Response.OutputStream.Flush();
+
+        }
     }
-
-
 
     /*Metodos que se utilizan para cargar el acta*/
     protected void Bsubir_Click(object sender, EventArgs e)
