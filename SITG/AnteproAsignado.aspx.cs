@@ -40,6 +40,9 @@ public partial class AnteproAsignado : System.Web.UI.Page
             int index = Convert.ToInt32(e.CommandArgument);
             GridViewRow row = GVconsultaAA.Rows[index];
             Metodo.Value = row.Cells[0].Text; //obtiene el codigo de propuesta en la tabla
+            MostrarDDLestadoP.Visible = true;
+            Terminar.Visible = true;
+            Linfo.Text = "";
         }
     }
     private void ResultadoConsulta()
@@ -48,8 +51,8 @@ public partial class AnteproAsignado : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select DISTINCT   A.Apro_Codigo,A.Anp_Nombre, A.Anp_Fecha, A.Ant_Estado from anteproyecto a, estudiante e, PROFESOR d , evaluador r " +
-                    "WHERE R.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = A.Apro_Codigo and A.Ant_Estado = 'PENDIENTE' and D.Usu_Username = R.Usu_Username";
+                string sql = "select DISTINCT   A.Apro_Codigo,A.Anp_Nombre, A.Anp_Fecha, A.Ant_Estado, A.Ant_Aprobacion from anteproyecto a, estudiante e, PROFESOR d , evaluador r " +
+                    "WHERE R.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = A.Apro_Codigo and A.Ant_Estado = 'PENDIENTE'and A.Ant_Aprobacion='APROBADO' and D.Usu_Username = R.Usu_Username";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()) {
@@ -110,7 +113,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT AOBS_CODIGO, AOBS_DESCRIPCION FROM ANTE_OBSERVACION  WHERE APROP_CODIGO ='" + Metodo.Value + "'";
+                sql = "SELECT AOBS_CODIGO, AOBS_DESCRIPCION FROM ANTE_OBSERVACION  WHERE APROP_CODIGO ='" + Metodo.Value + "' and AOBS_REALIZADA='EVALUADOR'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -188,7 +191,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
             Linfo.Text = "No puede ingresar una observación en blanco.";
         }else{
             string descripcion2 = TBdescripcion.Value;
-            string sql = "insert into ante_observacion (AOBS_CODIGO, AOBS_DESCRIPCION ,APROP_CODIGO, AOBS_FECHA) values (OBSANTEPID.nextval,'" + descripcion2.ToLower() + "', '" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
+            string sql = "insert into ante_observacion (AOBS_CODIGO, AOBS_DESCRIPCION ,APROP_CODIGO, AOBS_FECHA,AOBS_REALIZADA) values (OBSANTEPID.nextval,'" + descripcion2.ToLower() + "', '" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'EVALUADOR')";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             Resultado.Visible = true;
@@ -207,7 +210,6 @@ public partial class AnteproAsignado : System.Web.UI.Page
         }
     }
 
-
     /*Eventos de los botones cancelar, regresar y terminar revision */
     protected void terminar(object sender, EventArgs e)
     {       
@@ -216,8 +218,8 @@ public partial class AnteproAsignado : System.Web.UI.Page
             Linfo.Text = "Debe calificar el anteproyecto.";
         }else{
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "update anteproyecto set ant_estado='" + DDLestadoA.Items[DDLestadoA.SelectedIndex].Value.ToString() + "' where aprop_codigo='" + Metodo.Value + "'";
-            Ejecutar("", sql);
+            string sql = "update anteproyecto set ant_estado='" + DDLestadoA.Items[DDLestadoA.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Metodo.Value + "'";
+            Ejecutar("El anteproyecto ha sido revisado con exito, presione click en regresar para revisar otro.", sql);
             Resultado.Visible = false;
             MostrarAgregarObs.Visible = false;
             MostrarDDLestadoP.Visible = false;
@@ -246,4 +248,5 @@ public partial class AnteproAsignado : System.Web.UI.Page
         Metodo.Value = "";
         Linfo.Text = "";
     }
+
 }

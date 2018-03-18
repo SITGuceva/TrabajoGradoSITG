@@ -1,10 +1,10 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Consulta_Anteproyecto.aspx.cs" Inherits="Consulta_Anteproyecto" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Consulta_ProyectoFinal.aspx.cs" Inherits="Consulta_ProyectoFinal" %>
 
-<asp:Content ID="ConsultaAnteproyecto" ContentPlaceHolderID="MainContent" Runat="Server">
+<asp:Content ID="ConsultaProyectoF" ContentPlaceHolderID="MainContent" Runat="Server">
 <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Documentos - Consultar Anteproyectos</div>
+        <div class="panel-heading">Gestionar Documentos - Consultar Proyecto Final</div>
         <div class="panel-body">
-            <asp:UpdatePanel ID="UPconsulta_anteproyecto" runat="server">
+            <asp:UpdatePanel ID="UPconsulta_proyectoF" runat="server">
                 <ContentTemplate>
                     <div class="container-fluid">
 
@@ -33,7 +33,7 @@
 
                         <br>
                         <div id="TResultado" runat="server" visible="false" class="row" style="overflow-x: auto">
-                            <asp:GridView ID="GVresulant" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVresulant_RowDataBound" PageSize="8">
+                            <asp:GridView ID="GVresulpro" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVresulpro_RowDataBound" PageSize="8">
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
@@ -43,14 +43,12 @@
                                 <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                                 <EditRowStyle BackColor="#ffffcc" />
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                                <EmptyDataTemplate>No hay anteproyectos con los parametros especificados.</EmptyDataTemplate>
+                                <EmptyDataTemplate>No hay proyectos finales con los parametros especificados.</EmptyDataTemplate>
                                 <Columns>
-                                    <asp:BoundField DataField="APRO_CODIGO" HeaderText="Código" />
-                                    <asp:BoundField DataField="ANP_NOMBRE" HeaderText="Título" />
-                                    <asp:BoundField DataField="ANP_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="ANT_ESTADO" HeaderText="Estado del anteproyecto" />
-                                    <asp:BoundField DataField="REVISOR" HeaderText="Revisor" />
-                                </Columns>
+                                    <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
+                                    <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
+                                    <asp:BoundField DataField="PF_FECHA" HeaderText="Fecha" />
+                                    <asp:BoundField DataField="PF_ESTADO" HeaderText="Estado del anteproyecto" />                                </Columns>
                             </asp:GridView>
                         </div>
 
@@ -60,5 +58,6 @@
             </asp:UpdatePanel>
         </div>
     </div>
+
 </asp:Content>
 

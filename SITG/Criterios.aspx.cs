@@ -41,11 +41,11 @@ public partial class Criterios : System.Web.UI.Page
     {
         string sql = "", texto = "";
         if (Ingreso.Visible){
-            if (string.IsNullOrEmpty(TBnom.Text) == true || string.IsNullOrEmpty(TBporcentaje.Text)==true){
+            if (string.IsNullOrEmpty(TBnom.Text) == true || string.IsNullOrEmpty(TBtipo.Text)==true){
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Los campos son obligatorios";
             }else{
-                sql = "insert into CRITERIOS (CRIT_CODIGO,CRIT_NOMBRE,CRIT_PORCENTAJE) VALUES(criteriosid.nextval, '" + TBnom.Text + "', '" + TBporcentaje.Text + "')";
+                sql = "insert into CRITERIOS (CRIT_CODIGO,CRIT_NOMBRE,CRIT_TIPO) VALUES(criteriosid.nextval, '" + TBnom.Text + "', '" + TBtipo.Text + "')";
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);             
             }
@@ -65,7 +65,7 @@ public partial class Criterios : System.Web.UI.Page
             Linfo.Text = info;
         }
         TBnom.Text = "";
-        TBporcentaje.Text = "";
+        TBtipo.Text = "";
     }
 
     /*Evento del boton limpiar*/
@@ -73,7 +73,7 @@ public partial class Criterios : System.Web.UI.Page
     {
         Linfo.Text = "";
         TBnom.Text = "";
-        TBporcentaje.Text = "";
+        TBtipo.Text = "";
     }
 
 
@@ -84,7 +84,7 @@ public partial class Criterios : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "SELECT CRIT_CODIGO, CRIT_NOMBRE, CRIT_PORCENTAJE,CRIT_ESTADO FROM CRITERIOS ORDER BY CRIT_CODIGO";
+                string sql = "SELECT CRIT_CODIGO, CRIT_NOMBRE, CRIT_TIPO,CRIT_ESTADO FROM CRITERIOS ORDER BY CRIT_CODIGO";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

@@ -7,13 +7,13 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class ProcesoAnteproyecto : System.Web.UI.Page
+public partial class ProcesoProyectoF : System.Web.UI.Page
 {
     Conexion con = new Conexion();
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null){
+        if (Session["Usuario"] == null) {
             Response.Redirect("Default.aspx");
         }
         if (!IsPostBack) {
@@ -23,70 +23,74 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
         scriptManager.RegisterPostBackControl(this.LBdescarga);
     }
 
-    /*Metodos que consultan los anteproyectos pendientes por revisar */
-    protected void GVantependiente_RowDataBound(object sender, GridViewRowEventArgs e) { }
-    protected void GVantependiente_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    /*Metodos que se encargan de proyectos final pendientes al director*/
+    protected void GVproyfinalp_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
-        GVantependiente.PageIndex = e.NewPageIndex;
+        GVproyfinalp.PageIndex = e.NewPageIndex;
         ResultadoConsulta();
+    }
+    protected void GVproyfinalp_RowDataBound(object sender, GridViewRowEventArgs e) { }
+    protected void GVproyfinalp_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "RevisaPF"){
+            Consulta.Visible = false;
+            int index = Convert.ToInt32(e.CommandArgument);
+            GridViewRow row = GVproyfinalp.Rows[index];
+            Metodo.Value = row.Cells[0].Text; //obtiene el codigo del pf en la tabla         
+            Titulo.Value = row.Cells[1].Text; //obtiene el titulo del pf en la tabla
+            ResultadoContenidoP();
+        }
     }
     private void ResultadoConsulta()
     {
-        try{
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null) {
-                string sql = "select DISTINCT an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, solicitud_dir s, usuario u WHERE  an.apro_codigo = e.PROP_CODIGO and s.prop_codigo = an.apro_codigo and an.ant_aprobacion = 'PENDIENTE' and  s.usu_username='"+Session["id"]+"'";
-
+            if (conn != null){
+                string sql = "select DISTINCT P.ppro_Codigo, P.pf_Tipo, P.pf_Fecha from estudiante e,  proyecto_final p, solicitud_dir s WHERE  P.ppro_Codigo = e.PROP_CODIGO and s.prop_codigo = P.ppro_Codigo and P.pf_aprobacion = 'PENDIENTE' and  s.usu_username='" + Session["id"] + "'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader()) {
+                using (OracleDataReader reader = cmd.ExecuteReader()){
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
-                    GVantependiente.DataSource = dataTable;
+                    GVproyfinalp.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                     Linfo.ForeColor = System.Drawing.Color.Red;
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
-                GVantependiente.DataBind();
+                GVproyfinalp.DataBind();
             }
             conn.Close();
-        } catch (Exception ex){
+        } catch (Exception ex) {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
-    protected void GVantependiente_RowCommand(object sender, GridViewCommandEventArgs e)
-    {
-        if (e.CommandName == "RevisarAnte"){
-            Consulta.Visible = false;
-            int index = Convert.ToInt32(e.CommandArgument);
-            GridViewRow row = GVantependiente.Rows[index];
-            Codigo.Value = row.Cells[0].Text; 
-            Titulo.Value = row.Cells[1].Text; 
-            CargarContenido();  
-        }
-    }
 
-    /*Metodos que consultan anteproyecto especifico*/
-    private void CargarContenido()
+    /*Metodos para la informacion de un pf especifico*/
+    private void ResultadoContenidoP()
     {
-        CodigoP.Text = Codigo.Value;
+        CodigoP.Text = Metodo.Value;    
         TituloP.Text = Titulo.Value;
-        MostrarCalifica.Visible = true;
+  
+        InformacionP.Visible = true;
+        MostrarDDLestadoP.Visible = true;
+        Terminar.Visible = true;
         Linfo.Text = "";
-        InfoAnteproy.Visible = true;
-        Terminar.Visible = true; 
     }
     protected void DownloadFile(object sender, EventArgs e)
     {
         byte[] bytes;
         string fileName = "", contentype = "";
-        string sql = "select ANP_DOCUMENTO, ANP_NOMARCHIVO, ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" +Codigo.Value+ "";
+        string sql = "select ANP_DOCUMENTO, ANP_NOMARCHIVO, ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" + CodigoP.Text + "";
+
         OracleConnection conn = con.crearConexion();
-        if (conn != null){
-            using (OracleCommand cmd = new OracleCommand(sql, conn)) {
+        if (conn != null)
+        {
+            using (OracleCommand cmd = new OracleCommand(sql, conn))
+            {
                 cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader()){
+                using (OracleDataReader drc1 = cmd.ExecuteReader())
+                {
                     drc1.Read();
                     contentype = drc1["ANP_TIPO"].ToString();
                     fileName = drc1["ANP_NOMARCHIVO"].ToString();
@@ -98,15 +102,28 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
                     Response.Cache.SetCacheability(HttpCacheability.NoCache);
                     Response.ContentType = contentype;
                     Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+
                 }
                 Response.BinaryWrite(bytes);
                 Response.Flush();
                 Response.End();
             }
         }
-    }
 
-    /*Metodos para la consulta de las observaciones*/
+    }
+    private void Ejecutar(string texto, string sql)
+    {
+        string info = con.IngresarBD(sql);
+        if (info.Equals("Funciono")) {
+            Linfo.ForeColor = System.Drawing.Color.Green;
+            Linfo.Text = texto;
+        }else {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = info;
+        }
+    }
+   
+    /*Metodos que maneja lo de las observaciones del pf*/
     protected void GVobservacion_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         GVobservacion.PageIndex = e.NewPageIndex;
@@ -115,23 +132,22 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
     protected void GVobservacion_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void cargarTabla()
     {
-        try{
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null) {
-                string sql = "SELECT AOBS_CODIGO, AOBS_DESCRIPCION FROM ANTE_OBSERVACION  WHERE APROP_CODIGO ='" + Codigo.Value + "' and AOBS_REALIZADA ='DIRECTOR'";
+            if (conn != null){
+                string sql = " SELECT PFOBS_CODIGO, PFOBS_DESCRIPCION FROM PF_OBSERVACION WHERE PPROP_CODIGO = '" + CodigoP.Text + "'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader()) {
+                using (OracleDataReader reader = cmd.ExecuteReader()){
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVobservacion.DataSource = dataTable;
-                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                 }
                 GVobservacion.DataBind();
             }
             conn.Close();
-        }catch (Exception ex){
+        } catch (Exception ex) {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
@@ -141,7 +157,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
         OracleCommand cmd = null;
         if (conn != null){
             string id = GVobservacion.Rows[e.RowIndex].Cells[0].Text;
-            string sql = "Delete from ante_observacion where AOBS_CODIGO='" + id + "'";
+            string sql = "Delete from pf_observacion where PFOBS_CODIGO='" + id + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -149,18 +165,17 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             }
         }
     }
-    protected void GVobservacion_RowUpdating(object sender, GridViewUpdateEventArgs e)
-    {
+    protected void GVobservacion_RowUpdating(object sender, GridViewUpdateEventArgs e) {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         GridViewRow row = (GridViewRow)GVobservacion.Rows[e.RowIndex];
-        if (conn != null){
+        if (conn != null) {
             TextBox observacion = (TextBox)row.Cells[1].Controls[0];
             TextBox codigo = (TextBox)GVobservacion.Rows[e.RowIndex].Cells[0].Controls[0];
-            string sql = "update ante_observacion set aobs_descripcion = '" + observacion.Text + "' where  aobs_codigo ='" + Codigo.Value + "'";
+            string sql = "update pf_observacion set pfobs_descripcion = '" + observacion.Text + "' where  pfobs_codigo ='" + codigo.Text + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
-            using (OracleDataReader reader = cmd.ExecuteReader()) {
+            using (OracleDataReader reader = cmd.ExecuteReader()){
                 GVobservacion.EditIndex = -1;
                 cargarTabla();
             }
@@ -177,74 +192,57 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
         GVobservacion.EditIndex = -1;
         cargarTabla();
     }
-
-    /*Eventos de botones para las observaciones*/
     protected void MostrarObservaciones(object sender, EventArgs e)
     {
+        MostrarDDLestadoP.Visible = true;
         cargarTabla();
         Resultado.Visible = true;
-        MostrarAgregarObs.Visible = true;
+        MostrarAgregarObs.Visible = true;   
+        Terminar.Visible = true;       
     }
     protected void Agregar_observacion(object sender, EventArgs e)
     {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        if (string.IsNullOrEmpty(TBdescripcion.Text) == true) {
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "No puede agregar una observacion en blanco.";
-        } else{   
-            string sql = "insert into ante_observacion (AOBS_CODIGO, AOBS_DESCRIPCION, APROP_CODIGO ,AOBS_FECHA, AOBS_REALIZADA) values (OBSANTEPID.nextval,'" + TBdescripcion.Text.ToLower() + "','"+ Codigo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'DIRECTOR')";
+        if (string.IsNullOrEmpty(TBdescripcion.Text) == true){
+            Linfo.Text = "No se puede agregar una observacion vacia";
+        } else  {         
+            string sql = "insert into pf_observacion (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPROP_CODIGO ,PFOBS_FECHA) values (OBSPROYFID.nextval,'" + TBdescripcion.Text.ToLower() + "','" + CodigoP.Text + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
             Ejecutar("", sql);
             TBdescripcion.Text = "";
+            Resultado.Visible = true;
             cargarTabla();
         }
     }
-    private void Ejecutar(string texto, string sql)
-    {
-        string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono")){
-            Linfo.ForeColor = System.Drawing.Color.Green;
-            Linfo.Text = texto;
-        }
-        else
-        {
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = info;
-        }
-    }
 
-    /*Eventos de los botones terminar-cancelar-regresar*/
+   /*Eventos de diferentes botones*/
     protected void terminar(object sender, EventArgs e)
     {
-        if (DDLestadoP.SelectedIndex.Equals(0)){
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "Debe seleccionar una calificación.";
-        } else {
+        if (DDLestadoP.SelectedIndex.Equals(0)) {
+            Linfo.Text = "Debe seleccionar una calificación para el proyecto final.";
+        } else{
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "update anteproyecto set ant_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Codigo.Value + "'";
-            Ejecutar("El anteproyecto ha sido revisada con exito, presione click en regresar para revisar otra", sql);
+            string sql = "update proyecto_final set pf_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where ppro_codigo='" + CodigoP.Text + "'";
+            Ejecutar("La propuesta ha sido revisada con exito, presione click en regresar para revisar otra propuesta", sql);
 
             Resultado.Visible = false;
             MostrarAgregarObs.Visible = false;
-            MostrarCalifica.Visible = false;
-            InfoAnteproy.Visible = false;
-            Terminar.Visible = false;
+            MostrarDDLestadoP.Visible = false;
+            InformacionP.Visible = false;
+            Terminar.Visible = false;          
             IBregresar.Visible = true;
-            Titulo.Value = "";
-            Codigo.Value = "";
         }
+
     }
     protected void cancelar(object sender, EventArgs e)
     {
         Resultado.Visible = false;
         MostrarAgregarObs.Visible = false;
-        MostrarCalifica.Visible = false;
-        InfoAnteproy.Visible = false;
+        MostrarDDLestadoP.Visible = false;
+        InformacionP.Visible = false;
         Terminar.Visible = false;
         ResultadoConsulta();
         Consulta.Visible = true;
         DDLestadoP.SelectedIndex = 0;
-        Codigo.Value = "";
-        Titulo.Value = "";
     }
     protected void regresar(object sender, EventArgs e)
     {
@@ -254,4 +252,5 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
         Consulta.Visible = true;
     }
 
+   
 }

@@ -3,6 +3,9 @@ using Oracle.DataAccess.Client;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
+using System.Net;
+using System.Text;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -15,83 +18,55 @@ public partial class MenuPrincipal : Page
         {
             Response.Redirect("Default.aspx");
         }
-        Menu();
+        //Ftp();
     }
-    List<ListItem> list = new List<ListItem>();
-    List<ListItem> list2 = new List<ListItem>();
-    private void Menu()
+
+    private void Ftp()
     {
-        string rol = Session["rol"].ToString().Trim();
-        String[] ciclo = rol.Split(' ');
-        foreach (var cadena in ciclo){
+        // Get the object used to communicate with the server.  
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.1.7/"+FUdocumento.FileName);
+        request.Method = WebRequestMethods.Ftp.UploadFile;
 
-           
-            try
-            {
-                OracleConnection conn = con.crearConexion();
-                if (conn != null)
-                {
-                    string sql = "SELECT UNIQUE C.CATS_ID ,c.CATS_NOMBRE FROM OPCION_ROL r, OPCION_SISTEMA s, CATEGORIA_SISTEMA  c WHERE r.ROL_ID = '"+cadena+"' and s.OPCS_ID = r.OPCS_ID and s.CATS_ID = c.CATS_ID and c.CATS_ESTADO = 'ACTIVO'";
-                  
-                    OracleCommand cmd = new OracleCommand(sql, conn);
-                    cmd.CommandType = CommandType.Text;
-                    OracleDataReader dr = cmd.ExecuteReader();
-                    while (dr.Read()){
+        // This example assumes the FTP site uses anonymous logon.  
+        request.Credentials = new NetworkCredential("ASUS VX199H", "cole1");
 
+        // Copy the contents of the file to the request stream.  
+        StreamReader sourceStream = new StreamReader(FUdocumento.FileContent);
+        byte[] fileContents = Encoding.UTF8.GetBytes(sourceStream.ReadToEnd());
+        sourceStream.Close();
 
+        request.ContentLength = fileContents.Length;
+        Stream requestStream = request.GetRequestStream();
+        requestStream.Write(fileContents, 0, fileContents.Length);
+        requestStream.Close();
 
-                        /*    String cat = dr.GetString(0).Replace(" ", "");
-                            string sql1 = "SELECT s.OPCS_NOMBRE, s.OPCS_URL FROM  OPCION_ROL r,OPCION_SISTEMA s, CATEGORIA_SISTEMA  c WHERE  r.ROL_ID = '"+cadena+"' AND s.OPCS_ID = r.OPCS_ID  AND s.CATS_ID = c.CATS_ID AND C.Cats_Id = '" + dr.GetString(0) + "' and s.OPCS_ESTADO='ACTIVO'";
-                          
-                           OracleCommand cmd1 = new OracleCommand(sql1, conn);
-                            cmd1.CommandType = CommandType.Text;
-                            OracleDataReader drc2 = cmd1.ExecuteReader();
-                            if (drc2.HasRows)
-                            {
-                                list2.Add(new ListItem(drc2[1].ToString(), drc2[0].ToString()));
-                                Linfo.Text += "es" + list2.Count;
-                            }
-                        
-                        Linfo.Text += "la" + list.Count;*/
-                        //Linfo.Text += list.Count+ "es";
-                        if (list.Count.Equals(0))
-                        {
-                            list.Add(new ListItem(dr[1].ToString(), dr[0].ToString()));
-                        }
-                        else { 
-                        for (int i = 0; i < list.Count; i++){
+        var response = (FtpWebResponse)request.GetResponse();
+        Linfo.Text = response.StatusDescription;
+        response.Close();
+    }
 
-                               if (dr[0].ToString().Equals(list[i].Value))
-                               
-                            {
-                             //  Linfo.Text += "la cat existe";
-                            } else {
-                                list.Add(new ListItem(dr[1].ToString(), dr[0].ToString()));
-                            }
-                             //Linfo.Text += list[i].Value + list[i].Text;
-                        }
-                        }
-                    }
-                conn.Close();
-                }
-            } catch (Exception ex){
-                Response.Write("Error al cargar la lista: " + ex.Message);
-            }
-        }
-        recorrer();
-   }
-
-    private void recorrer()
+    protected void Button1_Click(object sender, EventArgs e)
     {
-        Linfo.Text += list.Count;
-        for(int i =0; i < list.Count; i++)
-        {
-           Linfo.Text += list[i].Value + list[i].Text;
-        }
-       // Linfo.Text += list.Count+"espera"+ list2.Count;
-      //  for (int i = 0; i < list2.Count; i++)
-        //{
-          //  Linfo.Text += list2[i].Value + list2[i].Text;
-        //}
+        Ftp();
+    }
+
+    protected void Button2_Click(object sender, EventArgs e)
+    {
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://192.168.1.7/primera.jpeg");
+        request.Method = WebRequestMethods.Ftp.DownloadFile;
+
+        // This example assumes the FTP site uses anonymous logon.  
+        request.Credentials = new NetworkCredential("ASUS VX199H", "cole1");
+
+        FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+
+        Stream responseStream = response.GetResponseStream();
+        StreamReader reader = new StreamReader(responseStream);
+        Console.WriteLine(reader.ReadToEnd());
+
+        Linfo.Text="Download Complete" +response.StatusDescription;
+
+        reader.Close();
+        response.Close();
     }
 }

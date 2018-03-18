@@ -16,20 +16,21 @@
                     <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
                     <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
                     <RowStyle BackColor="White" />
-                    <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
+                    <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                     <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                     <EditRowStyle BackColor="#ffffcc" />
                     <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                     <EmptyDataTemplate>¡No hay anteproyectos asignados!   </EmptyDataTemplate>
                     <Columns>
-                        <asp:BoundField DataField="APROP_CODIGO" HeaderText="CODIGO" />
+                        <asp:BoundField DataField="APRO_CODIGO" HeaderText="CODIGO" />
                         <asp:BoundField DataField="ANP_NOMBRE" HeaderText="TITULO" />
                         <asp:BoundField DataField="ANP_FECHA" HeaderText="FECHA" />
                         <asp:BoundField DataField="ANT_ESTADO" HeaderText="ESTADO" />
+                        <asp:BoundField DataField="ANT_APROBACION" HeaderText="DIRECTOR" />
                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
-                             <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("APROP_CODIGO") %>'></asp:LinkButton></ItemTemplate>
+                             <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("APRO_CODIGO") %>'></asp:LinkButton></ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="REVISAR PROPUESTA">
+                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="ANTEPROYECTO">
                             <ItemTemplate> <asp:Button ID="BTrevisar" runat="server" Text="REVISAR" class="btn btn-default" AutoPostBack="true" CommandName="ConsultarAnteproyecto" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" /> </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
@@ -38,14 +39,9 @@
 
             <!-- -->
             
-             <div > 
-                 <!--  aqui pongo la informacion basica del anteproyecto -->
-             </div>
-
-
             <div id="MostrarDDLestadoP" runat="server" visible="false" style="text-align: center;">
                 <asp:DropDownList ID="DDLestadoA" class="btn btn-secondary btn-lg dropdown-toggle" runat="server">
-                    <asp:ListItem Value="Calificar Anteproyecto" Text="Calificar Anteproyecto"></asp:ListItem>
+                    <asp:ListItem Value="0" Text="Calificar Anteproyecto"></asp:ListItem>
                     <asp:ListItem Value="APROBADO" Text="Aprobar"></asp:ListItem>
                     <asp:ListItem Value="RECHAZADO" Text="Rechazar"></asp:ListItem>
                 </asp:DropDownList>
@@ -78,8 +74,8 @@
                     <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                     <EmptyDataTemplate>¡Esta propuesta aun no tiene observaciones! </EmptyDataTemplate>
                     <Columns>
-                        <asp:BoundField DataField="OBS_CODIGO" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
-                        <asp:BoundField DataField="OBS_DESCRIPCION" HeaderText="Descripción" HeaderStyle-HorizontalAlign="Center" />
+                        <asp:BoundField DataField="AOBS_CODIGO" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
+                        <asp:BoundField DataField="AOBS_DESCRIPCION" HeaderText="Descripción" HeaderStyle-HorizontalAlign="Center" />
                         <asp:TemplateField HeaderText="Modificar">
                             <ItemTemplate>
                                 <asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" />
@@ -96,8 +92,8 @@
 
 
             <div id="Terminar" runat="server" visible="false" style="text-align: center;" class="row">
-                <asp:Button ID="BTterminar" OnClick="terminar" runat="server"  Text="Terminar revisión" class="btn btn-default" />
-                <asp:Button ID="BTcancelar" OnClick="cancelar" runat="server"  Text="Cancelar revisión" class="btn btn-default" />
+                <asp:Button ID="BTterminar" OnClick="terminar" runat="server"  Text="Terminar" class="btn btn-default" />
+                <asp:Button ID="BTcancelar" OnClick="cancelar" runat="server"  Text="Cancelar" class="btn btn-default" />
             </div>
 
              <asp:ImageButton id="IBregresar" OnClick="regresar" runat="server" Visible="false" ImageUrl="/Images/flecha.png" ToolTip="Regresar" ImageAlign="Baseline"></asp:ImageButton>

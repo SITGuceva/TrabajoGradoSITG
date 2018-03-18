@@ -11,22 +11,21 @@ using Oracle.DataAccess.Client;
 public partial class Anteproyecto : Conexion
 {
     Conexion con = new Conexion();
-    string codprop;
-    string titulo;
+    string codprop, titulo;
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
-            Response.Redirect("Default.aspx");
+        if (Session["Usuario"] == null){
+           Response.Redirect("Default.aspx");
         }
 
         RevisarAprobadoProp(); // llama metodo que verifica si la propuesta fue aprobada
        
-        if (!Page.IsPostBack)
-        {
+        if (!Page.IsPostBack) {
             Page.Form.Attributes.Add("enctype", "multipart/form-data");
         }
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVconsulta);
     }
 
     /* metodo que verifica si una propuesta fue aprobada y habilita el boton de subir propuesta*/
@@ -34,29 +33,24 @@ public partial class Anteproyecto : Conexion
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "select p.prop_estado, p.prop_codigo, p.prop_titulo, s.sol_estado from propuesta p, estudiante e, solicitud_dir s where e.usu_username='" + Session["id"] + "' and s.prop_codigo=e.prop_codigo and p.prop_codigo = e.prop_codigo";
 
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 string estado_propuesta = drc1.GetString(0).ToString();
                 string estado_director = drc1.GetString(3).ToString();
                 codprop = drc1.GetInt32(1).ToString();
-                 titulo = drc1.GetString(2).ToString();
+                titulo = drc1.GetString(2).ToString();
 
-                if (estado_propuesta.Equals("APROBADO") && estado_director.Equals("APROBADO"))
-                {
+                if (estado_propuesta.Equals("APROBADO") && estado_director.Equals("APROBADO")){
                     
                     RevisarAprobadoAnte(); // llama metodo que verifica si el antepryecto fue aprobado
-                }
-                else
-                {
-                    LBSubir_propuesta.Enabled = false;
-                    LBSubir_propuesta.ForeColor = System.Drawing.Color.Gray;
+                } else{
+                    LBSubir.Enabled = false;
+                    LBSubir.ForeColor = System.Drawing.Color.Gray;
                 }
             }
             drc1.Close();
@@ -68,36 +62,29 @@ public partial class Anteproyecto : Conexion
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "select an.ant_estado, an.ant_aprobacion from anteproyecto an, estudiante e where e.usu_username='" + Session["id"] + "' and an.apro_codigo = e.prop_codigo";
 
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 string estado_jurado = drc1.GetString(0).ToString();
-                string estado_director = drc1.GetString(1).ToString();
-            
+                string estado_director = drc1.GetString(1).ToString();            
 
-                if (estado_jurado.Equals("RECHAZADO")||estado_director.Equals("RECHAZADO"))
-                {
+                if (estado_jurado.Equals("RECHAZADO")||estado_director.Equals("RECHAZADO")){
                    
-                    LBSubir_propuesta.Enabled = true;
-                    LBSubir_propuesta.ForeColor = System.Drawing.Color.Black;
+                    LBSubir.Enabled = true;
+                    LBSubir.ForeColor = System.Drawing.Color.Black;
 
-                }
-                else
-                {
-                    LBSubir_propuesta.Enabled = false;
-                    LBSubir_propuesta.ForeColor = System.Drawing.Color.Gray;
+                } else {
+                    LBSubir.Enabled = false;
+                    LBSubir.ForeColor = System.Drawing.Color.Gray;
                 }
             }
             drc1.Close();
         }
     }
-
 
     /*Metodos que manejan la interfaz del subir-consultar*/
     protected void Subir_anteproyecto(object sender, EventArgs e)
@@ -122,21 +109,16 @@ public partial class Anteproyecto : Conexion
     protected void Guardar(object sender, EventArgs e)
     {
         DateTime fecha = DateTime.Today;
-        if (FUdocumento.HasFile)
-            {
+        if (FUdocumento.HasFile) {
                 string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
                 string contentType = FUdocumento.PostedFile.ContentType;
-                using (Stream fs = FUdocumento.PostedFile.InputStream)
-                {
-                    using (BinaryReader br = new BinaryReader(fs))
-                    {
+                using (Stream fs = FUdocumento.PostedFile.InputStream){
+                    using (BinaryReader br = new BinaryReader(fs)){
                         byte[] bytes = br.ReadBytes((Int32)fs.Length);
                         OracleConnection conn = con.crearConexion();
-                        if (conn != null)
-                        {
-                            string query = "insert into anteproyecto values (:apro_codigo ,:anp_nombre , :Data, :anp_nomarchivo, :anp_tipo, :anp_fecha ,'PENDIENTE', 'PENDIENTE')";
-                            using (OracleCommand cmd = new OracleCommand(query))
-                            {
+                        if (conn != null){
+                            string query = "insert into anteproyecto (apro_codigo, anp_nombre, anp_documento, anp_nomarchivo, anp_tipo, anp_fecha) values (:apro_codigo ,:anp_nombre , :Data, :anp_nomarchivo, :anp_tipo, :anp_fecha)";
+                            using (OracleCommand cmd = new OracleCommand(query)) {
                                 cmd.Connection = conn;
                                 cmd.Parameters.Add(":apro_codigo",codprop);
                                 cmd.Parameters.Add(":anp_nombre", titulo);
@@ -144,7 +126,7 @@ public partial class Anteproyecto : Conexion
                                 cmd.Parameters.Add(":anp_nomarchivo", filename);
                                 cmd.Parameters.Add(":anp_tipo", contentType);
                                 cmd.Parameters.Add(":anp_fecha", fecha);
-                            cmd.ExecuteNonQuery();
+                                cmd.ExecuteNonQuery();
                                 conn.Close();
                             }
                         }
@@ -152,26 +134,22 @@ public partial class Anteproyecto : Conexion
                 }
                 // Response.Redirect(Request.Url.AbsoluteUri);   
                 Linfo.ForeColor = System.Drawing.Color.Green;
-                Linfo.Text = "Formato guardado satisfatoriamente";
-            }
-            else
-            {
+                Linfo.Text = "Anteproyecto guardado satisfatoriamente";
+                Ingreso.Visible = false;
+                LBSubir.Enabled = false;
+                LBSubir.ForeColor = System.Drawing.Color.Gray;
+        } else {
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Debe elegir un archivo";
-            }
-       
-
+        }
     }
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono"))
-        {
+        if (info.Equals("Funciono")) {
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = texto;
-        }
-        else
-        {
+        }else {
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = info;
         }
@@ -180,19 +158,15 @@ public partial class Anteproyecto : Conexion
     /*Metodos que realizan la funcionalidad de consultar el anteproyecto*/
     protected void BuscarAnteproyecto()
     {
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-                string sql = "select an.apro_codigo, an.anp_nombre, an.ant_aprobacion, an.ant_estado, an.anp_fecha  from anteproyecto an, estudiante e where an.apro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
+            if (conn != null){
+                string sql = "select an.apro_codigo, an.anp_nombre, an.ant_aprobacion, an.ant_estado, an.anp_fecha, an.ant_evaluador  from anteproyecto an, estudiante e where an.apro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader()){
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVconsulta.DataSource = dataTable;
@@ -268,7 +242,7 @@ public partial class Anteproyecto : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "SELECT DISTINCT O.OBS_CODIGO, O.OBS_DESCRIPCION, O.OBS_REALIZADA FROM OBSERVACION O, ESTUDIANTE E WHERE E.PROP_CODIGO=O.PROP_CODIGO AND E.USU_USERNAME='" + Session["id"] + "' ORDER BY O.OBS_CODIGO";
+                sql = "SELECT DISTINCT O.AOBS_CODIGO, O.AOBS_DESCRIPCION, O.AOBS_REALIZADA FROM ANTE_OBSERVACION O, ESTUDIANTE E WHERE E.PROP_CODIGO=O.APROP_CODIGO AND E.USU_USERNAME='" + Session["id"] + "' ORDER BY O.AOBS_CODIGO";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

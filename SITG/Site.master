@@ -40,8 +40,8 @@
              <%--HEADER--%>
             <div class="navbar navbar-inverse navbar-fixed-top">
                 <div class="container">
-                    <div class="navbar-header">                    
-                       <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/Lsitg4.png"></asp:Image>
+                    <div class="navbar-header">      
+                      <asp:Image ID="Image1" runat="server" ImageUrl="~/Images/Lsitg4.png"></asp:Image>
                     </div>
                     <div class="navbar-collapse collapse">          
                         <ul class="nav navbar-nav navbar-right" id="logged" runat="server" visible="false">                          

@@ -18,15 +18,15 @@
                 </div>
 
                 <div id="Ingreso" runat="server" visible="true" class="row">
-                    <asp:Table ID="Tcriterios" runat="server" HorizontalAlign="Center">                     
+                    <asp:Table ID="Tcriterios" runat="server" HorizontalAlign="Center">                        
                          <asp:TableRow>
+                            <asp:TableCell><asp:Label ID="Ltipo" runat="server" Text="Tipo:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:TextBox ID="TBtipo" runat="server"  CssClass="form-control" ></asp:TextBox></asp:TableCell>
+                        </asp:TableRow>  
+                        <asp:TableRow>
                             <asp:TableCell><asp:Label ID="Lnom" runat="server" Text="Nombre:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:TextBox ID="TBnom" runat="server"  CssClass="form-control"></asp:TextBox></asp:TableCell>
                         </asp:TableRow>
-                         <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lporcentaje" runat="server" Text="Porcentaje:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
-                            <asp:TableCell><asp:TextBox ID="TBporcentaje" runat="server"  CssClass="form-control" TextMode="Number"></asp:TextBox></asp:TableCell>
-                        </asp:TableRow>                                             
                     </asp:Table>
                    
                     <asp:Table ID="botones" runat="server" HorizontalAlign="Center">
@@ -55,7 +55,7 @@
                         <Columns>
                             <asp:BoundField DataField="CRIT_CODIGO" HeaderText="ID" />   
                             <asp:BoundField DataField="CRIT_NOMBRE" HeaderText="NOMBRE" />
-                            <asp:BoundField DataField="CRIT_PORCENTAJE" HeaderText="VALOR" />
+                            <asp:BoundField DataField="CRIT_TIPO" HeaderText="VALOR" />
                             <asp:TemplateField HeaderText="Estado">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server">

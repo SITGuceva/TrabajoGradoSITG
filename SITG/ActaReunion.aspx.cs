@@ -214,8 +214,6 @@ public partial class ActaReunion : System.Web.UI.Page
 
         using (var ms = new MemoryStream()){
             using (var doc = new Document(PageSize.A4)) {
-                //Document doc = new Document(PageSize.A4);
-                // PdfWriter writer = PdfWriter.GetInstance(doc, new FileStream(filename, FileMode.Create));
                 PdfWriter writer = PdfWriter.GetInstance(doc, ms);
 
                 // Le colocamos el título y el autor
@@ -446,7 +444,6 @@ public partial class ActaReunion : System.Web.UI.Page
                 doc.Add(table12);
 
                 /*doc.NewPage();
-
                 img.ScaleToFit(125f, 60F);
                 img.SetAbsolutePosition(0, 800);
                 doc.Add(img);
