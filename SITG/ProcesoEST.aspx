@@ -21,7 +21,7 @@
                             </asp:Table>
                         </div>
 
-                        <br>
+                        
                         <asp:Label ID="LBpropuesta" runat="server" Text=" Propuesta: " ForeColor="black" Font-Bold="True"></asp:Label>
                         <div id="TablaResultado" runat="server" visible="false" class="row" style="overflow-x: auto">
                             <asp:GridView ID="GVgepropuesta" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
@@ -43,6 +43,62 @@
                                     <asp:BoundField DataField="PROP_ESTADO" HeaderText="Estado" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
                                     <asp:BoundField DataField="ESTADO" HeaderText="Estado director" />
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+
+                        <br>
+
+                          <asp:Label ID="LBanteproyecto" runat="server" Text="Anteproyecto: " ForeColor="black" Font-Bold="True"></asp:Label>
+                          <div id="TablaResultado2" runat="server" visible="false" class="row" style="overflow-x: auto">
+                            <asp:GridView ID="GVanteproyecto" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
+                                AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVanteproyecto_RowDataBound">
+                                <AlternatingRowStyle BackColor="White" />
+                                <EditRowStyle BackColor="#2461BF" />
+                                <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                                <PagerStyle BackColor="White" ForeColor="White" HorizontalAlign="Center" />
+                                <RowStyle BackColor="White" />
+                                <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="#333333" />
+                                <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                                <EditRowStyle BackColor="#ffffcc" />
+                                <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                                <EmptyDataTemplate> El estudiante aún no ha subido ningun anteproyecto o el comite no tiene permiso para ver esta información.</EmptyDataTemplate>
+                                <Columns>
+                                    <asp:BoundField DataField="APRO_CODIGO" HeaderText="Código" />
+                                    <asp:BoundField DataField="ANP_NOMBRE" HeaderText="Título" />
+                                    <asp:BoundField DataField="ANP_FECHA" HeaderText="Fecha" />
+                                    <asp:BoundField DataField="ANT_APROBACION" HeaderText="Estado director" />
+                                    <asp:BoundField DataField="ANT_EVALUADOR" HeaderText="Evaluador" />
+                                    <asp:BoundField DataField="ANT_ESTADO" HeaderText="Estado anteproyecto" />
+                                </Columns>
+                            </asp:GridView>
+                        </div>
+
+                          <br>
+
+                          <asp:Label ID="LBproyectofinal" runat="server" Text="Proyecto final: " ForeColor="black" Font-Bold="True"></asp:Label>
+                          <div id="TablaResultado3" runat="server" visible="false" class="row" style="overflow-x: auto">
+                            <asp:GridView ID="GVproyectofinal" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
+                                AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVproyectofinal_RowDataBound">
+                                <AlternatingRowStyle BackColor="White" />
+                                <EditRowStyle BackColor="#2461BF" />
+                                <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
+                                <PagerStyle BackColor="White" ForeColor="White" HorizontalAlign="Center" />
+                                <RowStyle BackColor="White" />
+                                <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="#333333" />
+                                <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                                <EditRowStyle BackColor="#ffffcc" />
+                                <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                                <EmptyDataTemplate> El estudiante aún no ha subido ningun proyecto final o el comite no tiene permiso para ver esta información.</EmptyDataTemplate>
+                                <Columns>
+                                    <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
+                                    <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
+                                    <asp:BoundField DataField="PF_FECHA" HeaderText="Fecha" />
+                                    <asp:BoundField DataField="PF_APROBACION" HeaderText="Estado director" />
+                                    <asp:BoundField DataField="PF_JUR1" HeaderText="Jurado 1" />
+                                    <asp:BoundField DataField="PF_JUR2" HeaderText="Jurado 2" />
+                                    <asp:BoundField DataField="PF_JUR3" HeaderText="Jurado 3" />
+                                    <asp:BoundField DataField="PF_ESTADO" HeaderText="Estado Proyecto final" />
                                 </Columns>
                             </asp:GridView>
                         </div>

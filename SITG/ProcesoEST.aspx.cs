@@ -19,6 +19,8 @@ public partial class ProcesoEST : Conexion
         if (!IsPostBack){
             Ingreso.Visible = true;
             LBpropuesta.Visible = false;
+            LBanteproyecto.Visible = false;
+            LBproyectofinal.Visible = false;
         }
     }
 
@@ -30,8 +32,12 @@ public partial class ProcesoEST : Conexion
         BTnueva.Visible = false;
         TBCodigoE.Enabled = true;
         TablaResultado.Visible = false;
+        TablaResultado2.Visible = false;
+        TablaResultado3.Visible = false;
         LBpropuesta.Visible = false;
-      //  Linfo.Text = "";
+        LBanteproyecto.Visible = false;
+        LBproyectofinal.Visible = false;
+        //  Linfo.Text = "";
     }
 
     /*Evento del boton buscar*/
@@ -57,6 +63,8 @@ public partial class ProcesoEST : Conexion
             OracleDataReader drc1 = cmd.ExecuteReader();
             if (drc1.HasRows) {
                CargarPropuesta();
+                CargarAnteproyecto();
+                CargarProyectoFinal();
                Linfo.Text = "";
             } else{
                 Linfo.ForeColor = System.Drawing.Color.Red;
@@ -69,6 +77,8 @@ public partial class ProcesoEST : Conexion
     private void Comprobado()
     {
         TablaResultado.Visible = true;
+        TablaResultado2.Visible = true;
+        TablaResultado3.Visible = true;
         BTnueva.Visible = true;
         BTbuscar.Visible = false;
         TBCodigoE.Enabled = false;
@@ -104,17 +114,86 @@ public partial class ProcesoEST : Conexion
         Comprobado();
     }
     protected void GVgepropuesta_RowDataBound(object sender, GridViewRowEventArgs e) { }
-    private void Ejecutar(string texto, string sql)
+
+
+
+
+    public void CargarAnteproyecto()
     {
-        string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono")){
-            Linfo.ForeColor = System.Drawing.Color.Green;
-            Linfo.Text = texto;
-        }else{
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = info;
+        LBanteproyecto.Visible = true;
+        string sql = "";
+        try
+        {
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null)
+            {
+
+
+                sql = "Select distinct P.APRO_CODIGO, P.ANP_NOMBRE, P.ANP_FECHA, P.ANT_APROBACION, P.ANT_EVALUADOR, P.ANT_ESTADO from anteproyecto p, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and e.prop_codigo = p.apro_codigo";
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader())
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVanteproyecto.DataSource = dataTable;
+                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                }
+                GVanteproyecto.DataBind();
+            }
+            conn.Close();
         }
+        catch (Exception ex)
+        {
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+        Comprobado();
     }
+    protected void GVanteproyecto_RowDataBound(object sender, GridViewRowEventArgs e) { }
+
+
+
+
+
+
+
+
+    public void CargarProyectoFinal()
+    {
+        LBproyectofinal.Visible = true;
+        string sql = "";
+        try
+        {
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null)
+            {
+
+
+                sql = "Select distinct p.ppro_codigo, p.pf_titulo, p.pf_fecha, p.pf_aprobacion, p.pf_jur1, p.pf_jur2, p.pf_jur3, p.pf_estado from proyecto_final p, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and e.prop_codigo = p.ppro_codigo";
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader())
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVproyectofinal.DataSource = dataTable;
+                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                }
+                GVproyectofinal.DataBind();
+            }
+            conn.Close();
+        }
+        catch (Exception ex)
+        {
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+        Comprobado();
+    }
+    protected void GVproyectofinal_RowDataBound(object sender, GridViewRowEventArgs e) { }
+
+
 
 }
 
