@@ -254,20 +254,34 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
                 Ejecutar("1", sql);
                 if (Verificador.Value.Equals("Funciono"))
                 {
-                    sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval, '" + DDLprofesores.Items[DDLprofesores.SelectedIndex].Value+ "', 'EVA') ";
-                    Ejecutar("Se ha asignado el evaluador para el anteproyecto satisfactoriamente", sql);
+                    ExisteRol(DDLprofesores.Items[DDLprofesores.SelectedIndex].Value);
                 }
             }
-            Mostrarprof.Visible = false;
-            InfoAnteproyecto.Visible = false;
-            Metodo.Value = "";
-            Terminar.Visible = false;           
-            infoprofesor.Visible = false;
-            IBregresar.Visible = true;
-            DDLprofesores.SelectedIndex = 0;
-            DDLconsultaReunion.SelectedIndex = 0;
-            MostrarDDLReunion.Visible = false;
-            Verificador.Value = "";
+            quitar();
+        }
+    }
+    private void quitar(){
+        Mostrarprof.Visible = false;
+        InfoAnteproyecto.Visible = false;
+        Metodo.Value = "";
+        Terminar.Visible = false;
+        infoprofesor.Visible = false;
+        IBregresar.Visible = true;
+        DDLprofesores.SelectedIndex = 0;
+        DDLconsultaReunion.SelectedIndex = 0;
+        MostrarDDLReunion.Visible = false;
+        Verificador.Value = "";
+    }
+    private void ExisteRol(string id)
+    {
+        string sql = " select u.USU_USERNAME from usuario_rol u where u.ROL_ID = 'EVA' and U.Usu_Username = '"+id+"'";
+        List<string> list = con.consulta(sql, 1, 1);
+        if (list.Count.Equals(0)) {
+            sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval, '" + id + "', 'EVA') ";
+            Ejecutar("Se ha asignado el evaluador para el anteproyecto satisfactoriamente", sql);
+        } else {
+            Linfo.ForeColor = System.Drawing.Color.Green;
+            Linfo.Text = "Se ha asignado el evaluador para el anteproyecto satisfactoriamente";
         }
     }
     protected void cancelar(object sender, EventArgs e)
@@ -294,6 +308,6 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         Metodo.Value = "";
         Verificador.Value = "";
     }
-  
+    
 
 }

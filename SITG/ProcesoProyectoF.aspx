@@ -78,8 +78,8 @@
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                                 <EmptyDataTemplate>¡El proyecto final aun no tiene observaciones! </EmptyDataTemplate>
                                 <Columns>
-                                    <asp:BoundField DataField="AOBS_CODIGO" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
-                                    <asp:BoundField DataField="AOBS_DESCRIPCION" HeaderText="Descripción" HeaderStyle-HorizontalAlign="Center" />
+                                    <asp:BoundField DataField="PFOBS_CODIGO" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
+                                    <asp:BoundField DataField="PFOBS_DESCRIPCION" HeaderText="Descripción" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:TemplateField HeaderText="Modificar">
                                         <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" class="btn btn-default" CommandName="Edit" /> </ItemTemplate>
                                         <EditItemTemplate>
@@ -99,6 +99,7 @@
                         </div>
 
                         <asp:ImageButton id="IBregresar" OnClick="regresar" runat="server" Visible="false" ImageUrl="/Images/flecha.png" ToolTip="Regresar" ImageAlign="Baseline"></asp:ImageButton>
+                       <br />
                         <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Green" Font-Bold="True"></asp:Label>
                         <asp:HiddenField ID="Metodo" runat="server" Value="" />
                         <asp:HiddenField ID="Titulo" runat="server" Value="" />

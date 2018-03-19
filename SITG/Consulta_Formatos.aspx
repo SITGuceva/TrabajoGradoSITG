@@ -3,7 +3,8 @@
 <asp:Content ID="ConsultaFormato" ContentPlaceHolderID="MainContent" Runat="Server">
 <div class="panel panel-default">
         <div class="panel-heading">Gestionar Documentos - Consultar Formatos</div>
-        <div class="panel-body">        
+        <div class="panel-body">       
+            <asp:UpdatePanel runat="server" ID="UPformatos"><ContentTemplate>
             <div class="container-fluid">
 
                <div id="ConsultaFormat" runat="server" visible="true" class="row">                           
@@ -32,7 +33,8 @@
                 </div>
              
                 <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True" ></asp:Label>                    
-                </div>         
+                </div>  
+                </ContentTemplate></asp:UpdatePanel>
         </div>
     </div>
 </asp:Content>

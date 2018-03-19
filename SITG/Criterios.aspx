@@ -37,7 +37,7 @@
                     </asp:Table>
                 </div>
           
-                <div id="ConsultaCrit" runat="server" visible="false" class="row">                           
+                <div id="ConsultaCrit" runat="server" visible="false" class="row"  style="overflow-x: auto">                           
                      <asp:GridView ID="GVcriterios" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                          OnPageIndexChanging="GVcriterios_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" 
                          OnRowDataBound="GVcriterios_RowDataBound" PageSize="6" OnRowUpdating="GVcriterios_RowUpdating" OnRowEditing="GVcriterios_RowEditing"

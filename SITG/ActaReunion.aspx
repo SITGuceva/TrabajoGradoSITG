@@ -204,8 +204,6 @@
               
 
                 <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
-                <asp:HiddenField ID="Asistio" runat="server" Value="" />   
-                <asp:HiddenField ID="Noasistio" runat="server" Value=""/>
             </div>
           </ContentTemplate>
                 <Triggers>

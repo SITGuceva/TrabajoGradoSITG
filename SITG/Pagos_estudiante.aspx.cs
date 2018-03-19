@@ -16,48 +16,27 @@ public partial class Pagos_estudiante : Conexion
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
+        if (Session["Usuario"] == null) {
             Response.Redirect("Default.aspx");
         }
-
-        if (!Page.IsPostBack)
-        {
+        if (!Page.IsPostBack){
             BuscarPago();
-            Consulta.Visible = true;
-            Page.Form.Attributes.Add("enctype", "multipart/form-data");
         }
-        MostrarDDLestadoP.Visible = false;
-
+   
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVconsulta);
 
     }
-    /*Metodo que inserta o actualiza informacion en la base de datos*/
-    private void Ejecutar(string texto, string sql)
-    {
-        string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono"))
-        {
-            Linfo.ForeColor = System.Drawing.Color.Green;
-            Linfo.Text = texto;
-        }
-        else
-        {
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = info;
-        }
-    }
+    
 
     /*Metodos que realizan la funcionalidad de consultar el documento de los pagos subido por el usuario*/
     protected void BuscarPago()
     {
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-                string sql = "select * from pagos where pag_estado='PENDIENTE'";
+            if (conn != null){
+                string sql = "select p.pag_id, p.pag_nombre, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as estudiante ,p.pag_fecha, p.pag_estado  from pagos p, estudiante e, usuario u where pag_estado = 'PENDIENTE' and E.Usu_Username = U.Usu_Username";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -66,13 +45,14 @@ public partial class Pagos_estudiante : Conexion
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVconsulta.DataSource = dataTable;
+                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.ForeColor = System.Drawing.Color.Red;
+                    Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVconsulta.DataBind();
             }
             conn.Close();
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
@@ -83,7 +63,7 @@ public partial class Pagos_estudiante : Conexion
         int id = int.Parse((sender as LinkButton).CommandArgument);
         byte[] bytes;
         string fileName = "", contentype = "";
-        string sql = "select PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO FROM PAGOS WHERE USU_USERNAME=" + id + "";
+        string sql = "select PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO FROM PAGOS WHERE PAG_ID=" + id + "";
 
         OracleConnection conn = con.crearConexion();
         if (conn != null)
@@ -119,36 +99,63 @@ public partial class Pagos_estudiante : Conexion
     {
         if (e.CommandName == "Revisar")
         {
-            Consulta.Visible = false;
             int index = Convert.ToInt32(e.CommandArgument);
             GridViewRow row = GVconsulta.Rows[index];
             Metodo.Value = row.Cells[0].Text; //obtiene id del pago
             Consulta.Visible = false;
             MostrarDDLestadoP.Visible = true;
-
+            Linfo.Text = "";
         }
     }
 
-
+    /*Evento de los botones*/
+    private void Ejecutar(string texto, string sql)
+    {
+        string info = con.IngresarBD(sql);
+        if (info.Equals("Funciono"))
+        {
+            Linfo.ForeColor = System.Drawing.Color.Green;
+            Linfo.Text = texto;
+        }
+        else
+        {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = info;
+        }
+    }
+    protected void Bcancelar_Click(object sender, EventArgs e)
+    {
+        MostrarDDLestadoP.Visible = false;
+        BuscarPago();
+        Consulta.Visible = true;
+        DDLestadoP.SelectedIndex = 0;
+        TAdescripcion.Value = "";
+        Metodo.Value = "";
+    }
     protected void guardar(object sender, EventArgs e)
     {
-        string texto = "";
-        string sql = "update pagos set pag_estado='"+DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString()+"' where pag_id='"+Metodo.Value+"'";
-        string texto2 = "";
-        string sql2 = "update pagos set pag_observacion='" + TAdescripcion.Value + "' where pag_id='" + Metodo.Value + "'";
-        Ejecutar(texto, sql);
-        Ejecutar(texto2, sql2);
+        string sql;
+        if (string.IsNullOrEmpty(TAdescripcion.Value) == false)
+        {
+            sql = "update pagos set pag_observacion = '" + TAdescripcion.Value + "', pag_estado = '" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where pag_id = '" + Metodo.Value + "'";
+            Ejecutar("Se verificó el pago correctamente", sql);
+        }
+        else
+        {
+            sql = "update pagos set pag_estado='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where pag_id='" + Metodo.Value + "'";
+            Ejecutar("Se verificó el pago correctamente", sql);
+        }
         IBregresar.Visible = true;
-        Linfo.Text = "Se verificó el pago correctamente";
-
+        MostrarDDLestadoP.Visible = false;
+        Metodo.Value = "";
     }
-
     protected void regresar(object sender, EventArgs e)
     {
+        Linfo.Text = "";
         BuscarPago();
         Consulta.Visible = true;
         IBregresar.Visible = false;
-
+        Metodo.Value = "";
     }
 
 }

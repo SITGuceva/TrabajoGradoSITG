@@ -18,6 +18,8 @@ public partial class Consulta_Formatos : System.Web.UI.Page
             Response.Redirect("Default.aspx");
         }
         ResultadoConsulta();
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVformatos);
     }
 
     /*Metodos que realizan la consulta y descarga el documento*/

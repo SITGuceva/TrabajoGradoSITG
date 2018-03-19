@@ -74,7 +74,7 @@
 
                         <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
                         <asp:HiddenField ID="Metodo" runat="server" Value="" />
-                    
+                        <asp:HiddenField ID="Responsable" runat="server" Value="" />
                      </div>
                 </ContentTemplate>
                 <Triggers>

@@ -11,37 +11,36 @@ using Oracle.DataAccess.Client;
 public partial class Pagos : Conexion
 {
     Conexion con = new Conexion();
-    string codprop;
-    string titulo;
-
+ 
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["Usuario"] == null)
         {
             Response.Redirect("Default.aspx");
         }
-
-        if (!Page.IsPostBack)
-        {
+        if (!Page.IsPostBack){
             Page.Form.Attributes.Add("enctype", "multipart/form-data");
         }
+        AnteAprobado();
         revisarpago();
-        pagorechazado();
+      
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.GVconsulta);
     }
 
-    /* Metodo que verifica si un pago esta pendiente o aprobado, si se cumple se inhabilita subir pago*/
-    private void revisarpago()
-    {
+    /*Metodo que verifica que el anteproyecto fue aprobado.*/
+    private void AnteAprobado()  {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
-            string sql = "select * from pagos where usu_username = '"+Session["id"]+"' and pag_estado='PENDIENTE' or pag_estado='APROBADO'";
+        if (conn != null) {
+            string sql = "select A.Apro_Codigo from anteproyecto a , estudiante e where a.apro_codigo = E.Prop_Codigo and E.Usu_Username = '"+Session["id"]+"' and a.ant_estado = 'APROBADO' and a.ant_aprobacion = 'APROBADO'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
+                LBSubir_pago.Enabled = true;
+                LBSubir_pago.ForeColor = System.Drawing.Color.Black;
+            }else{
                 LBSubir_pago.Enabled = false;
                 LBSubir_pago.ForeColor = System.Drawing.Color.Gray;
             }
@@ -49,19 +48,27 @@ public partial class Pagos : Conexion
         }
     }
 
-    /* Metodo que verifica si el pago fue rechazado*/
-    private void pagorechazado()
+    /* Metodo que verifica si el estado del pago*/
+    private void revisarpago()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
-            string sql = "select * from pagos where usu_username = '" + Session["id"] + "' and pag_estado='rechazado'";
+        if (conn != null){
+            string sql = "select Pag_Estado from pagos where usu_username = '" + Session["id"] + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
             if (drc1.HasRows)
             {
+                string estado = drc1[0].ToString();
+                if (estado.Equals("RECHAZADO")){
+                    LBSubir_pago.Enabled = true;
+                    LBSubir_pago.ForeColor = System.Drawing.Color.Black;
+                } else{
+                    LBSubir_pago.Enabled = false;
+                    LBSubir_pago.ForeColor = System.Drawing.Color.Gray;
+                }
+            }else {
                 LBSubir_pago.Enabled = true;
                 LBSubir_pago.ForeColor = System.Drawing.Color.Black;
             }
@@ -76,8 +83,6 @@ public partial class Pagos : Conexion
         Consulta.Visible = false;
         Linfo.Text = "";
     }
-
-    //metodo que llama a la tabla pagos
     protected void Consulta_pago(object sender, EventArgs e)
     {
         Consulta.Visible = true;
@@ -86,31 +91,26 @@ public partial class Pagos : Conexion
         BuscarPago();
     }
 
-    //metodo que sube los pagos(documento);
+    /*Evento del boton guardar*/
     protected void Guardar(object sender, EventArgs e)
     {
         DateTime fecha = DateTime.Today;
-        if (FUdocumento.HasFile)
-        {
+        if (FUdocumento.HasFile) {
             string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
             string contentType = FUdocumento.PostedFile.ContentType;
-            using (Stream fs = FUdocumento.PostedFile.InputStream)
-            {
-                using (BinaryReader br = new BinaryReader(fs))
-                {
+            using (Stream fs = FUdocumento.PostedFile.InputStream){
+                using (BinaryReader br = new BinaryReader(fs)){
                     byte[] bytes = br.ReadBytes((Int32)fs.Length);
                     OracleConnection conn = con.crearConexion();
-                    if (conn != null)
-                    {
-                        string query = "insert into pagos values (PAGOSID.nextval ,:pag_nombre , :Data, :pag_nomarchivo, :pag_tipo, :pag_fecha ,'PENDIENTE', '"+Session["id"]+"')";
-                        using (OracleCommand cmd = new OracleCommand(query))
-                        {
+                    if (conn != null) {
+                        string query = "insert into pagos (PAG_ID, PAG_NOMBRE, PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO, PAG_FECHA, USU_USERNAME) values (PAGOSID.nextval ,:pag_nombre , :Data, :pag_nomarchivo, :pag_tipo, :pag_fecha , '"+Session["id"]+"')";
+                        using (OracleCommand cmd = new OracleCommand(query)){
                             cmd.Connection = conn;
                             cmd.Parameters.Add(":anp_nombre", TBtitulo.Text);
                             cmd.Parameters.Add(":Data", bytes);
-                            cmd.Parameters.Add(":anp_nomarchivo", filename);
-                            cmd.Parameters.Add(":anp_tipo", contentType);
-                            cmd.Parameters.Add(":anp_fecha", fecha);
+                            cmd.Parameters.Add(":pag_nomarchivo", filename);
+                            cmd.Parameters.Add(":pag_tipo", contentType);
+                            cmd.Parameters.Add(":pag_fecha", fecha);
                             cmd.ExecuteNonQuery();
                             conn.Close();
                         }
@@ -124,46 +124,23 @@ public partial class Pagos : Conexion
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = "Pago guardado satisfatoriamente, cuando sean verificados podrá subir el proyecto final";
             TBtitulo.Text = "";
-        }
-        else
-        {
+        } else{
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe elegir un archivo";
         }
-
-
     }
-    private void Ejecutar(string texto, string sql)
-    {
-        string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono"))
-        {
-            Linfo.ForeColor = System.Drawing.Color.Green;
-            Linfo.Text = texto;
-        }
-        else
-        {
-            Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = info;
-        }
-    }
-
+ 
     /*Metodos que realizan la funcionalidad de consultar el documento de los pagos subido por el usuario*/
     protected void BuscarPago()
     {
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
+            if (conn != null) {
                 string sql = "select * from pagos where usu_username = '" + Session["id"] + "'";
-
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader())  {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVconsulta.DataSource = dataTable;
@@ -171,29 +148,21 @@ public partial class Pagos : Conexion
                 GVconsulta.DataBind();
             }
             conn.Close();
-        }
-        catch (Exception ex)
-        {
+        }catch (Exception ex) {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
-
-    /*Metodos que descarga el pago subido*/
     protected void DownloadFile(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
         byte[] bytes;
         string fileName = "", contentype = "";
-        string sql = "select PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO FROM PAGOS WHERE USU_USERNAME=" + id + "";
-
+        string sql = "select PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO FROM PAGOS WHERE PAG_ID=" + id + "";
         OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
+        if (conn != null) {
+            using (OracleCommand cmd = new OracleCommand(sql, conn)) {
                 cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
+                using (OracleDataReader drc1 = cmd.ExecuteReader()){
                     drc1.Read();
                     contentype = drc1["PAG_TIPO"].ToString();
                     fileName = drc1["PAG_NOMARCHIVO"].ToString();
@@ -215,7 +184,10 @@ public partial class Pagos : Conexion
 
     }
 
-   
-
-
+    /*Evento del boton limpiar*/
+    protected void Blimpiar_Click(object sender, EventArgs e)
+    {
+        Linfo.Text = "";
+        TBtitulo.Text = "";
+    }
 }

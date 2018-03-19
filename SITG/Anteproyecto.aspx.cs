@@ -24,6 +24,7 @@ public partial class Anteproyecto : Conexion
         if (!Page.IsPostBack) {
             Page.Form.Attributes.Add("enctype", "multipart/form-data");
         }
+
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVconsulta);
     }
@@ -69,14 +70,17 @@ public partial class Anteproyecto : Conexion
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
             if (drc1.HasRows){
-                string estado_jurado = drc1.GetString(0).ToString();
-                string estado_director = drc1.GetString(1).ToString();            
+                string estado_jurado = drc1.GetString(0);
+                string estado_director = drc1.GetString(1);            
 
                 if (estado_jurado.Equals("RECHAZADO")||estado_director.Equals("RECHAZADO")){
                    
                     LBSubir.Enabled = true;
                     LBSubir.ForeColor = System.Drawing.Color.Black;
+                    Metodo.Value = "ACTUALIZA";
 
+                    if (estado_jurado.Equals("RECHAZADO")) Responsable.Value = "2";
+                    if(estado_director.Equals("RECHAZADO")) Responsable.Value = "1";
                 } else {
                     LBSubir.Enabled = false;
                     LBSubir.ForeColor = System.Drawing.Color.Gray;
@@ -110,6 +114,31 @@ public partial class Anteproyecto : Conexion
     {
         DateTime fecha = DateTime.Today;
         if (FUdocumento.HasFile) {
+            if (Metodo.Value.Equals("ACTUALIZA")) {
+                string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
+                string contentType = FUdocumento.PostedFile.ContentType;
+                using (Stream fs = FUdocumento.PostedFile.InputStream) {
+                    using (BinaryReader br = new BinaryReader(fs)) {
+                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
+                        OracleConnection conn = con.crearConexion();
+                        if (conn != null){
+                            string query = "";
+                            if (Responsable.Value.Equals("1")) { query = "update anteproyecto set anp_documento=::Data, anp_nomarchivo=:anp_nomarchivo, anp_tipo=:anp_tipo, anp_fecha=:anp_fecha, ant_aprobacion='PENDIENTE' whete apro_codigo='"+codprop+"'"; }
+                            if (Responsable.Value.Equals("2")) { query= "update anteproyecto set anp_documento=::Data, anp_nomarchivo=:anp_nomarchivo, anp_tipo=:anp_tipo, anp_fecha=:anp_fecha, ant_estado='PENDIENTE' whete apro_codigo='" + codprop + "'"; }
+                            
+                            using (OracleCommand cmd = new OracleCommand(query)){
+                                cmd.Connection = conn;
+                                cmd.Parameters.Add(":Data", bytes);
+                                cmd.Parameters.Add(":anp_nomarchivo", filename);
+                                cmd.Parameters.Add(":anp_tipo", contentType);
+                                cmd.Parameters.Add(":anp_fecha", fecha);
+                                cmd.ExecuteNonQuery();
+                                conn.Close();
+                            }
+                        }
+                    }
+                }
+            } else { 
                 string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
                 string contentType = FUdocumento.PostedFile.ContentType;
                 using (Stream fs = FUdocumento.PostedFile.InputStream){
@@ -132,16 +161,23 @@ public partial class Anteproyecto : Conexion
                         }
                     }
                 }
-                // Response.Redirect(Request.Url.AbsoluteUri);   
-                Linfo.ForeColor = System.Drawing.Color.Green;
-                Linfo.Text = "Anteproyecto guardado satisfatoriamente";
-                Ingreso.Visible = false;
-                LBSubir.Enabled = false;
-                LBSubir.ForeColor = System.Drawing.Color.Gray;
+            }
+            // Response.Redirect(Request.Url.AbsoluteUri);  
+            quitar();
         } else {
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Debe elegir un archivo";
         }
+    }
+    private void quitar()
+    {
+        Linfo.ForeColor = System.Drawing.Color.Green;
+        Linfo.Text = "Anteproyecto cargado satisfatoriamente";
+        Ingreso.Visible = false;
+        LBSubir.Enabled = false;
+        LBSubir.ForeColor = System.Drawing.Color.Gray;
+        Metodo.Value = "";
+        Responsable.Value = "";
     }
     private void Ejecutar(string texto, string sql)
     {

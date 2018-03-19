@@ -36,7 +36,7 @@
                     </asp:Table>
                 </div>
           
-                <div id="ConsultaFormat" runat="server" visible="false" class="row">                           
+                <div id="ConsultaFormat" runat="server" visible="false" class="row" style="overflow-x: auto">                           
                      <asp:GridView ID="GVformatos" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                          OnPageIndexChanging="GVformatos_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" 
                          OnRowDataBound="GVformatos_RowDataBound" PageSize="8" OnRowUpdating="GVformatos_RowUpdating" OnRowEditing="GVformatos_RowEditing"

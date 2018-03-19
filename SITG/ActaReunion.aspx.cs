@@ -57,8 +57,6 @@ public partial class ActaReunion : System.Web.UI.Page
         Linfo.Text = "";
         SubirActa.Visible = false;
         Ingreso.Visible = true;
-        Asistio.Value = "";
-        Noasistio.Value = "";
         ConsultarActa.Visible = false;
         TBhasta.Text = "";
         TBdesde.Text = "";
@@ -68,8 +66,6 @@ public partial class ActaReunion : System.Web.UI.Page
         Ingreso.Visible = false;
         SubirActa.Visible = false;
         ConsultarActa.Visible = true;
-        Asistio.Value = "";
-        Noasistio.Value = "";
         Linfo.Text = "";
         TBhasta.Text = "";
         TBdesde.Text = "";
@@ -83,8 +79,6 @@ public partial class ActaReunion : System.Web.UI.Page
         DDLreunion2.Items.Insert(0, "Seleccione");
         Ingreso.Visible = false;
         Linfo.Text = "";
-        Asistio.Value = "";
-        Noasistio.Value = "";
         SubirActa.Visible = true;
         ConsultarActa.Visible = false;
         TBhasta.Text = "";
@@ -186,8 +180,6 @@ public partial class ActaReunion : System.Web.UI.Page
              check.Checked = false;
          }
          DDLreu.SelectedIndex = 0;
-         Asistio.Value = "";
-         Noasistio.Value = "";
     }
   
     /*Metodos que realizan el proceso de generar el acta*/

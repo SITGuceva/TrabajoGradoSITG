@@ -38,7 +38,7 @@
             <!-- -->
             <div id="criterios" runat="server" visible="false" class="row"  >
                 <asp:Label ID="Ltitulo" runat="server" Text="CRITERIOS DE EVALUACION" Font-Bold="True" ForeColor="Black"></asp:Label>
-                <asp:GridView ID="GVcriterios" runat="server" Visible="true" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVcriterios_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVcriterios_RowDataBound" PageSize="20">
+                <asp:GridView ID="GVcriterios" runat="server" Visible="true" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVcriterios_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVcriterios_RowDataBound" PageSize="40">
                     <AlternatingRowStyle BackColor="White" />
                     <EditRowStyle BackColor="#2461BF" />
                     <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
@@ -54,7 +54,7 @@
                         <asp:BoundField DataField="CRIT_TIPO" HeaderText="TIPO" ItemStyle-Font-Bold="true"/>
                         <asp:BoundField DataField="CRIT_NOMBRE" HeaderText="NOMBRE" />
                         <asp:TemplateField HeaderText="CUMPLE">
-                            <ItemTemplate><asp:CheckBox ID="CBcumplio" runat="server" Text="" OnCheckedChanged="CBcumplio_CheckedChanged" AutoPostBack="true" /> </ItemTemplate>
+                            <ItemTemplate><asp:CheckBox ID="CBcumplio" runat="server" Text="" AutoPostBack="true" /> </ItemTemplate>
                         </asp:TemplateField>
                     </Columns>
                 </asp:GridView>
@@ -62,8 +62,8 @@
 
                 <asp:Table ID="Tevaluarcrit2" runat="server" HorizontalAlign="Center">
                     <asp:TableRow>
-                        <asp:TableCell><asp:Label ID="Lrecomendacion" runat="server" Text="OBSERVACIONES" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
-                        <asp:TableCell><textarea id="TBbs" runat="server" CssClass="form-control" rows="5" Value="Realice los comentarios que considere prudentes y que ayuden a evaluar el trabajo." ></textarea></asp:TableCell>
+                        <asp:TableCell><asp:Label ID="Lrecomendacion" runat="server" Text="OBSERVACIONES" ForeColor="Black" Font-Bold="True" class="text-justify" ToolTip="Realice los comentarios que considere prudentes y que ayuden a evaluar el trabajo."></asp:Label></asp:TableCell>
+                        <asp:TableCell><textarea id="TBbs" runat="server" CssClass="form-control" rows="5" Value="" ></textarea></asp:TableCell>
                     </asp:TableRow>
                     <asp:TableRow>
                         <asp:TableCell><asp:Label ID="Lcalifca" runat="server" Text="CALIFICACION" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>

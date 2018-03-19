@@ -53,7 +53,7 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
             OracleCommand cmd = null;
             if (conn != null){
                 string sql = "select DISTINCT  P.Ppro_Codigo, P.Pf_Titulo, P.Pf_Fecha, P.Pf_Estado, P.Pf_Aprobacion from proyecto_final p, estudiante e, profesor d , jurado j " +
-                    "WHERE J.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = P.Ppro_Codigo and P.Pf_Estado = 'PENDIENTE'and P.Pf_Aprobacion = 'APROBADO' and D.Usu_Username = J.Usu_Username and J.Ppro_Codigo = P.Ppro_Codigo";
+                    "WHERE J.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = P.Ppro_Codigo and P.Pf_Estado = 'PENDIENTE'and P.Pf_Aprobacion = 'APROBADO' and D.Usu_Username = J.Usu_Username and J.Ppro_Codigo = P.Ppro_Codigo and J.Jur_Revisado = 'PENDIENTE'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
@@ -62,6 +62,7 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
                     dataTable.Load(reader);
                     GVpfasignado.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.ForeColor = System.Drawing.Color.Red;
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVpfasignado.DataBind();
@@ -99,9 +100,6 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
             }
         }
     }
-
-
-
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
@@ -124,28 +122,51 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe calificar el anteproyecto.";
         } else {
-            string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "select Jur_Num from jurado where Usu_Username = '"+Session["id"]+"' and Ppro_Codigo = '"+Metodo.Value+"'";
-            List<string> list = con.consulta(sql, 1, 1);
-            int num = Convert.ToInt32(list[0]);
-
-            string sentencia = "" ;
-            if (num.Equals(1)){
-                sentencia = "update proyecto_final set Pf_Jur1='" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' where Ppro_Codigo='" + Metodo.Value + "'";
-            }
-            else if (num.Equals(2)) {
-                sentencia = "update proyecto_final set Pf_Jur2='" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' where Ppro_Codigo='" + Metodo.Value + "'";
-            }
-            else if (num.Equals(3)){
-                sentencia = "update proyecto_final set Pf_Jur3='" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' where Ppro_Codigo='" + Metodo.Value + "'";
-            }
-
-            Ejecutar("El proyecto ha sido revisado con exito, presione click en regresar para revisar otro.", sentencia);
-            Terminar.Visible = false;
-            IBregresar.Visible = true;
-            Metodo.Value = "";
-            criterios.Visible = false;
+            guardarCriterios(); 
         }
+    }
+    private void guardarCriterios()
+    {
+        foreach (GridViewRow row in GVcriterios.Rows){
+            CheckBox check = row.FindControl("CBcumplio") as CheckBox;
+            if (!check.Checked){
+                int id = Convert.ToInt32(row.Cells[0].Text);
+                string sql = "insert into evalua_criterios values (REVCRITID.nextval,'No','"+id+"', '"+Metodo.Value+"')";
+                Ejecutar("", sql);
+            }
+        }
+        if(string.IsNullOrEmpty(TBbs.Value) == false){
+            string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+            string sql = "insert into pf_observacion (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBbs.Value.ToLower() + "','" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'JURADO')";
+            Ejecutar("", sql);
+        }
+        CambiaEstado();
+    }
+    private void CambiaEstado()
+    {
+        string revision = "update jurado set jur_revisado='REVISADO' where ppro_codigo='" + Metodo.Value + "' and usu_username='" + Session["id"] + "'";
+        Ejecutar("", revision);
+
+        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+        string sql = "select Jur_Num from jurado where Usu_Username = '" + Session["id"] + "' and Ppro_Codigo = '" + Metodo.Value + "'";
+        List<string> list = con.consulta(sql, 1, 1);
+        int num = Convert.ToInt32(list[0]);
+
+        string sentencia = "";
+        if (num.Equals(1)) {
+            sentencia = "update proyecto_final set Pf_Jur1='" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' where Ppro_Codigo='" + Metodo.Value + "'";
+        } else if (num.Equals(2)) {
+            sentencia = "update proyecto_final set Pf_Jur2='" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' where Ppro_Codigo='" + Metodo.Value + "'";
+        }else if (num.Equals(3)){
+            sentencia = "update proyecto_final set Pf_Jur3='" + DDLestado.Items[DDLestado.SelectedIndex].Value.ToString() + "' where Ppro_Codigo='" + Metodo.Value + "'";
+        }
+
+        Ejecutar("El proyecto ha sido revisado con exito, presione click en regresar para revisar otro.", sentencia);
+
+        Terminar.Visible = false;
+        IBregresar.Visible = true;
+        Metodo.Value = "";
+        criterios.Visible = false;
     }
     protected void cancelar(object sender, EventArgs e)
     {      
@@ -192,14 +213,5 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
         CargarCriterios();
     }
     protected void GVcriterios_RowDataBound(object sender, GridViewRowEventArgs e){}
-    protected void CBcumplio_CheckedChanged(object sender, EventArgs e)
-    {
-        foreach (GridViewRow row in GVcriterios.Rows){
-            CheckBox check = row.FindControl("CBcumplio") as CheckBox;
-            if (check.Checked) {
-                string x = row.Cells[0].Text;        
-            }
-        }
-
-    }
+   
 }
