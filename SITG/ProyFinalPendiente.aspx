@@ -2,12 +2,10 @@
 
 <asp:Content ID="ProyFinalPendiente" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Asignar jurados</div>
+        <div class="panel-heading">Gestionar Documentos - Proyectos Finales Pendientes</div>
         <div class="panel-body">
-
-            <asp:UpdatePanel runat="server" ID="UPanteproyecto">
-                <ContentTemplate>
-
+            <asp:UpdatePanel runat="server" ID="UPasignarjur"> <ContentTemplate>
+                <div class="container-fluid">
                     <div id="Consulta" runat="server" visible="false" class="row">
 
                         <asp:GridView ID="GVconsulta" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
@@ -21,15 +19,11 @@
                                 <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
                                 <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
                                 <asp:BoundField DataField="PF_FECHA" HeaderText="Fecha" />
-                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="JURADOS">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" CommandArgument='<%# Eval("PPRO_CODIGO") %>'></asp:LinkButton>
-                                    </ItemTemplate>
+                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
+                                    <ItemTemplate> <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaPF" CommandArgument='<%# Eval("PPRO_CODIGO") %>'></asp:LinkButton> </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="JURADOS">
-                                    <ItemTemplate>
-                                        <asp:Button ID="BTrevisar" runat="server" Text="ASIGNAR" class="btn btn-default" AutoPostBack="true" CommandName="Asignar" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" />
-                                    </ItemTemplate>
+                                    <ItemTemplate><asp:Button ID="BTrevisar" runat="server" Text="ASIGNAR" class="btn btn-default" AutoPostBack="true" CommandName="Asignar" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" /> </ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
@@ -51,12 +45,10 @@
                             <EmptyDataTemplate>¡El proyecto final no tiene jurado de anteproyecto! </EmptyDataTemplate>
                             <Columns>
                                 <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
+                                <asp:BoundField DataField="USU_USERNAME" HeaderText="Cedula" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:BoundField DataField="USU_CORREO" HeaderText="Correo" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de vida">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" CommandArgument='<%# Eval("JUR_ID") %>'></asp:LinkButton>
-                                    </ItemTemplate>
-
+                                    <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton></ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Proyecto final" HeaderStyle-HorizontalAlign="Center" />
                             </Columns>
@@ -78,13 +70,11 @@
                             <EmptyDataTemplate>¡No se ha asignado el jurado 2! </EmptyDataTemplate>
                             <Columns>
                                 <asp:BoundField DataField="JUR_ID" HeaderText="Código" HeaderStyle-HorizontalAlign="Center" />
+                                <asp:BoundField DataField="USU_USERNAME" HeaderText="Cedula" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:BoundField DataField="USU_CORREO" HeaderText="Correo" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de vida">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" CommandArgument='<%# Eval("JUR_ID") %>'></asp:LinkButton>
-                                    </ItemTemplate>
-
+                                    <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton> </ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Proyecto final" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:CommandField ShowDeleteButton="true" HeaderText="Eliminar" ShowHeader="true"></asp:CommandField>
@@ -106,14 +96,12 @@
                             <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                             <EmptyDataTemplate>¡No se ha asignado el jurado 3! </EmptyDataTemplate>
                             <Columns>
-                                 <asp:BoundField DataField="JUR_ID" HeaderText="Código" HeaderStyle-HorizontalAlign="Center" />
+                                <asp:BoundField DataField="JUR_ID" HeaderText="Código" HeaderStyle-HorizontalAlign="Center" />
+                                <asp:BoundField DataField="USU_USERNAME" HeaderText="Cedula" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:BoundField DataField="USU_CORREO" HeaderText="Correo" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de vida">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" CommandArgument='<%# Eval("JUR_ID") %>'></asp:LinkButton>
-                                    </ItemTemplate>
-
+                                    <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton></ItemTemplate>
                                 </asp:TemplateField>
                                 <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Proyecto final" HeaderStyle-HorizontalAlign="Center" />
                                 <asp:CommandField ShowDeleteButton="true" HeaderText="Eliminar" ShowHeader="true"></asp:CommandField>
@@ -125,11 +113,8 @@
                     <div id="Mostrarprof" runat="server" visible="false" style="text-align: center;">
                         <asp:Table ID="Tprofesor" runat="server" HorizontalAlign="center">
                             <asp:TableRow>
-                                <asp:TableCell>
-                                    <asp:DropDownList ID="DDLprofesores" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList>
-                                </asp:TableCell>
-                                <asp:TableCell>
-                                    <asp:Button ID="BTconsultar" Enabled="true" OnClick="consultarprofesor" runat="server" Text="Consultar" Style="background-color: white; font-size: 14px; color: black" CssClass="form-control"></asp:Button></asp:TableCell>
+                                <asp:TableCell><asp:DropDownList ID="DDLprofesores" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>
+                                <asp:TableCell> <asp:Button ID="BTconsultar" Enabled="true" OnClick="consultarprofesor" runat="server" Text="Consultar" class="btn btn-default"></asp:Button></asp:TableCell>
                             </asp:TableRow>
                         </asp:Table>
                         <br>
@@ -153,28 +138,24 @@
                                 <asp:BoundField DataField="USU_DIRECCION" HeaderText="Direccion" />
                                 <asp:BoundField DataField="USU_CORREO" HeaderText="Correo" />
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="HOJA DE VIDA">
-                                    <ItemTemplate>
-                                        <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton>
-                                    </ItemTemplate>
+                                    <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton></ItemTemplate>
                                 </asp:TemplateField>
                             </Columns>
                         </asp:GridView>
                         <asp:Table ID="TBbotonesProf" runat="server" HorizontalAlign="center">
                             <asp:TableRow>
-                                <asp:TableCell>
-                                    <asp:Button ID="BTasignar" Enabled="true" OnClick="asignarjurado" runat="server" Text="Asignar" Style="background-color: white; font-size: 14px; color: black" CssClass="form-control"></asp:Button></asp:TableCell>
-                                <asp:TableCell>
-                                    <asp:Button ID="BTcancelar" Enabled="true" OnClick="cancelarasignar" runat="server" Text="Cancelar" Style="background-color: white; font-size: 14px; color: black" CssClass="form-control"></asp:Button></asp:TableCell>
+                                <asp:TableCell> <asp:Button ID="BTasignar" Enabled="true" OnClick="asignarjurado" runat="server" Text="Asignar" class="btn btn-default"></asp:Button></asp:TableCell>
+                                <asp:TableCell><asp:Button ID="BTcancelar" Enabled="true" OnClick="cancelarasignar" runat="server" Text="Cancelar" class="btn btn-default"></asp:Button></asp:TableCell>
                             </asp:TableRow>
                         </asp:Table>
                     </div>
-                    </div>
-                </div>
-              </div>
+                   
+               
                     <asp:ImageButton ID="IBregresar" OnClick="regresar" runat="server" Visible="false" ImageUrl="/Images/flecha.png" ToolTip="Regresar" ImageAlign="Baseline"></asp:ImageButton>
+                   <br />
                     <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
-
-                </ContentTemplate>
-
-            </asp:UpdatePanel>
+                 </div>
+                </ContentTemplate></asp:UpdatePanel>
+        </div>
+    </div>
 </asp:Content>
