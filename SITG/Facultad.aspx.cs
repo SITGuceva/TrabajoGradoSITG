@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Facultad : System.Web.UI.Page
@@ -15,6 +11,12 @@ public partial class Facultad : System.Web.UI.Page
     {
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack) {
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Facultad.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            }
         }
     }
 
@@ -78,13 +80,11 @@ public partial class Facultad : System.Web.UI.Page
     protected void GVfac_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void cargarTabla()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
         try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT FAC_CODIGO,FAC_NOMBRE, FAC_ESTADO  FROM FACULTAD ";
+                string sql = "SELECT FAC_CODIGO,FAC_NOMBRE, FAC_ESTADO  FROM FACULTAD ";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -138,4 +138,5 @@ public partial class Facultad : System.Web.UI.Page
             }
         }
     }
+
 }

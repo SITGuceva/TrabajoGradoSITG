@@ -14,6 +14,12 @@ public partial class Asignar_Comite : Conexion
         {
             Response.Redirect("Default.aspx");
         }
+        if (!IsPostBack) {
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Asignar_Comite.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }
+        }
     }
 
     /*Metodo que maneja el asignar-consultar en el fronted*/
@@ -72,6 +78,7 @@ public partial class Asignar_Comite : Conexion
         RevisarExiste();
     }
 
+    /*Valida si el usuario ya esta en  la tabla usuario_rol*/
     private void RevisarExiste()
     {
         OracleConnection conn = con.crearConexion();
@@ -247,7 +254,6 @@ public partial class Asignar_Comite : Conexion
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
-
 
 }
 

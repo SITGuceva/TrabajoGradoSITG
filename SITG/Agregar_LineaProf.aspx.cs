@@ -22,9 +22,14 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
         string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
         DDLprog.Items.AddRange(con.cargardatos(sql));
         if (!Page.IsPostBack){
-            table = new System.Data.DataTable();
-            table.Columns.Add("TEMAS", typeof(System.String));
-            Session.Add("Tabla", table);
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Agregar_LineaProf.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            } else { 
+                table = new System.Data.DataTable();
+                table.Columns.Add("TEMAS", typeof(System.String));
+                Session.Add("Tabla", table);
+            }
         }
         
     }
@@ -214,7 +219,6 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
     }
     
     /*Metodos que se utilizan para la consulta de los temas*/
-
     protected void RegresarLP(object sender, EventArgs e) {
         SolTema.Visible = false;
         SolLinProf.Visible = true;
@@ -296,4 +300,5 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
         GVtema.EditIndex = -1;
         ResultadoTemas();
     }
+
 }

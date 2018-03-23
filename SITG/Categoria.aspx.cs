@@ -15,6 +15,12 @@ public partial class Categoria : Conexion
         if (Session["Usuario"] == null) {
             Response.Redirect("Default.aspx");
         }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Categoria.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }
+        }
     }
 
     /*Metodos de crear-consultar que manejan la parte del fronted*/

@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class OpcSistema : Conexion
@@ -14,6 +10,12 @@ public partial class OpcSistema : Conexion
     protected void Page_Load(object sender, EventArgs e){
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "OpcSistema.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            } 
         }
         DDLcategoria.Items.Clear();
         string sql = "SELECT CATS_ID, CATS_NOMBRE FROM CATEGORIA_SISTEMA";
@@ -93,15 +95,12 @@ public partial class OpcSistema : Conexion
     }
     protected void GVSysRol_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void cargarTabla(){
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "SELECT DISTINCT O.OPCS_ID, O.OPCS_NOMBRE, O.OPCS_URL, O.OPCS_ESTADO FROM OPCION_SISTEMA O, CATEGORIA_SISTEMA C WHERE O.CATS_ID = C.CATS_ID AND C.CATS_ID='"+ DDLcat.Items[DDLcat.SelectedIndex].Value.ToString() + "'ORDER BY O.OPCS_ID ";
+                string sql = "SELECT DISTINCT O.OPCS_ID, O.OPCS_NOMBRE, O.OPCS_URL, O.OPCS_ESTADO FROM OPCION_SISTEMA O, CATEGORIA_SISTEMA C WHERE O.CATS_ID = C.CATS_ID AND C.CATS_ID='"+ DDLcat.Items[DDLcat.SelectedIndex].Value.ToString() + "'ORDER BY O.OPCS_ID ";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -156,4 +155,5 @@ public partial class OpcSistema : Conexion
             }
         }
     }
+
 }

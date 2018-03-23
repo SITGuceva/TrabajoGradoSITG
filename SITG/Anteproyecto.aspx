@@ -21,8 +21,8 @@
                                     <asp:TableCell><asp:Label ID="Ldocumento" runat="server" Text="Documento:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:FileUpload ID="FUdocumento" runat="server" class="btn btn-default image-preview-input" /></asp:TableCell>
                                 </asp:TableRow>
-                                <asp:TableRow>
-                                    <asp:TableCell><asp:Button ID="Bguardar" runat="server" Text="Guardar" OnClick="Guardar" class="btn btn-default" /></asp:TableCell>
+                                <asp:TableRow >
+                                    <asp:TableCell HorizontalAlign="Center" ColumnSpan="2"><asp:Button ID="Bguardar" runat="server" Text="Guardar" OnClick="Guardar" class="btn btn-default" /></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>                          
                         </div>

@@ -3,10 +3,9 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 public partial class DatoPersonal : Conexion
 {
@@ -19,13 +18,21 @@ public partial class DatoPersonal : Conexion
             Response.Redirect("Default.aspx");
         }else{
             if (!IsPostBack){
-                Page.Form.Attributes.Add("enctype", "multipart/form-data");
-                Buscar();
+                string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "DatoPersonal.aspx");
+                if (valida.Equals("false")){
+                    Response.Redirect("MenuPrincipal.aspx");
+                }else{
+                    Page.Form.Attributes.Add("enctype", "multipart/form-data");
+                    Buscar();
+                }
             }
             validarol();
-        } 
+        }
+        ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
+        scriptManager.RegisterPostBackControl(this.LBhv);
     }
 
+    /*Valida si es de rol profesor para que le muestre que puede subir la hoja de vida*/
     private void validarol()
     {
         string rol = Session["rol"].ToString().Trim();
@@ -34,11 +41,40 @@ public partial class DatoPersonal : Conexion
         {
             if (cadena.Equals("DOC")){
                 HVdoc.Visible = true;
+                BuscarHV();
                 break;
-            }else { HVdoc.Visible = false; }
+            }else { HVdoc.Visible = false;
+                Lhv.Visible = false;
+                LBhv.Visible = false;
+            }
+        }
+    }
+    private void BuscarHV()
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null){
+            string sql = "select Prof_Documento from profesor where Usu_Username='" + Session["id"] + "'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows){
+                if (drc1.IsDBNull(0)){
+                    Lhv.Visible = false;
+                    LBhv.Visible = false;
+                    Linfo.Text = "Debe subir la hoja de vida para que la información se encuentre actualizada.";
+                } else{
+                    Lhv.Visible = true;
+                    LBhv.Visible = true;
+                    Verificar.Value = "NO";
+                }
+            }
+            drc1.Close();
         }
     }
 
+    /*Metodo para buscar la  informacion del usuario*/
     private void Buscar()
     {
         int id = Int32.Parse(Session["id"].ToString());
@@ -52,7 +88,7 @@ public partial class DatoPersonal : Conexion
         Lanscod.Text = Session["id"].ToString();
     }
 
-
+    /*Metodos para actualizar la informacion del usuario*/
     protected void Aceptar(object sender, EventArgs e)
     {
         if (string.IsNullOrEmpty(TBnombre.Text) == true || string.IsNullOrEmpty(TBapellido.Text) == true || string.IsNullOrEmpty(TBtelefono.Text) == true || string.IsNullOrEmpty(TBdireccion.Text) == true || string.IsNullOrEmpty(TBcorreo.Text) == true) {
@@ -61,29 +97,22 @@ public partial class DatoPersonal : Conexion
         } else{
             if (HVdoc.Visible) {
                 if (FUdocumento.HasFile){
-                    string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
-                    string contentType = FUdocumento.PostedFile.ContentType;
-                    using (Stream fs = FUdocumento.PostedFile.InputStream){
-                        using (BinaryReader br = new BinaryReader(fs)) {
-                            byte[] bytes = br.ReadBytes((Int32)fs.Length);
-                            OracleConnection conn = con.crearConexion();
-                            if (conn != null) {
-                                string query = "update PROFESOR set prof_documento= :Data, prof_nomarchivo= :Prof_nomarchivo,prof_tipo= :Prof_tipo where usu_username='"+ Session["id"] + "'";
-                                using (OracleCommand cmd = new OracleCommand(query)){
-                                    cmd.Connection = conn;
-                                    cmd.Parameters.Add(":Data", bytes);
-                                    cmd.Parameters.Add(":Prof_nomarchivo", filename);
-                                    cmd.Parameters.Add(":Prof_tipo", contentType);
-                                    cmd.ExecuteNonQuery();
-                                    conn.Close();
-                                }
-                            }
-                        }
-                    }
-                    string sql = "UPDATE USUARIO SET USU_NOMBRE='" + TBnombre.Text + "', USU_APELLIDO='" + TBapellido.Text + "', USU_TELEFONO='" + TBtelefono.Text + "', USU_DIRECCION='" + TBdireccion.Text + "', USU_CORREO='" + TBcorreo.Text + "'WHERE USU_USERNAME='" + Lanscod.Text + "'";
-                    Ejecutar("Datos Modificados Satisfactoriamente", sql);
-                }
-                else {
+                    string fileExt = System.IO.Path.GetExtension(FUdocumento.FileName);
+                    if (fileExt == ".pdf" || fileExt == ".doc" || fileExt == ".docx") {
+                        List<string> list = con.FtpConexion();
+
+                        if (Verificar.Value.Equals("NO")) {  EliminarHV(list[0], list[1]); }
+                        string ruta = list[2] + "HV/";
+                        bool existe = con.ExisteDirectorio(ruta);
+                        if (!existe) {
+                            con.crearcarpeta(ruta);
+                            Guardar(ruta, list[0], list[1]);
+                        } else { Guardar(ruta, list[0], list[1]);}
+                    } else{
+                        Linfo.ForeColor = System.Drawing.Color.Red;
+                        Linfo.Text = "Formato no permitido, debe subir un archivo en PDF o un documento de Word";
+                    }  
+                } else {
                     Linfo.ForeColor = System.Drawing.Color.Red;
                     Linfo.Text = "Debe elegir un archivo";
                 }
@@ -92,6 +121,48 @@ public partial class DatoPersonal : Conexion
                 Ejecutar("Datos Modificados Satisfactoriamente", sql);
             }   
         }
+    }
+    private void EliminarHV(string usuario, string pass){
+        string ruta = "";
+        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO FROM PROFESOR WHERE USU_USERNAME = '" + Session["id"] + "'";
+        List<string> contenido = con.consulta(sql, 2, 0);
+        ruta = contenido[1] + contenido[0];
+
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta);
+        request.Method = WebRequestMethods.Ftp.DeleteFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (FtpWebResponse response = (FtpWebResponse)request.GetResponse()) { }
+
+        sql = "update profesor set prof_nomarchivo= null,Prof_Documento= null, Prof_Tipo=null where usu_username='" + Session["id"] + "'";
+        Ejecutar("", sql);
+    }
+    private void Guardar(string ruta, string usuario, string pass){
+        string contentType = "";
+        string filename = Lanscod.Text + FUdocumento.FileName;
+
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta + filename);
+        request.Method = WebRequestMethods.Ftp.UploadFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (Stream fs = FUdocumento.PostedFile.InputStream){
+            using (BinaryReader br = new BinaryReader(fs)){
+                contentType = FUdocumento.PostedFile.ContentType;
+                byte[] fileContents = br.ReadBytes((Int32)fs.Length);
+                StreamReader sourceStream = new StreamReader(FUdocumento.FileContent);
+                sourceStream.Close();
+                request.ContentLength = fileContents.Length;
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(fileContents, 0, fileContents.Length);
+                requestStream.Close();
+                var response = (FtpWebResponse)request.GetResponse();
+                Linfo.Text = response.StatusDescription;
+                response.Close();
+                string query = "update PROFESOR set prof_documento='"+ruta+"', prof_nomarchivo='"+filename+"',prof_tipo='"+contentType+"' where usu_username='" + Session["id"] + "'";
+                Ejecutar("", query);
+            }
+        }
+        string sql = "UPDATE USUARIO SET USU_NOMBRE='" + TBnombre.Text + "', USU_APELLIDO='" + TBapellido.Text + "', USU_TELEFONO='" + TBtelefono.Text + "', USU_DIRECCION='" + TBdireccion.Text + "', USU_CORREO='" + TBcorreo.Text + "'WHERE USU_USERNAME='" + Lanscod.Text + "'";
+        Ejecutar("Datos Modificados Satisfactoriamente", sql);
+        Verificar.Value = "NO";
     }
     private void Ejecutar(string texto, string sql)
     {
@@ -104,6 +175,8 @@ public partial class DatoPersonal : Conexion
             Linfo.Text = info;
         }
     }
+
+    /*Evento del boton limpiar*/
     protected void Limpiar(object sender, EventArgs e)
     {
         TBnombre.Text = "";
@@ -112,6 +185,38 @@ public partial class DatoPersonal : Conexion
         TBdireccion.Text = "";
         TBcorreo.Text = "";
         Linfo.Text = "";
+    }
+
+    /*Evento para descargar la hoja de vida*/
+    protected void LBhv_Click(object sender, EventArgs e)
+    {
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + Session["id"] + "'";
+        List<string> prof = con.consulta(sql, 3, 0);
+        fileName = prof[0];
+        ruta = prof[1];
+        contentype = prof[2];
+        try {
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }
+        catch (WebException a)
+        {
+            Linfo.Text = a.ToString();
+        }
     }
 
 }

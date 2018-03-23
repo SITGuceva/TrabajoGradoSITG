@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using Oracle.DataAccess.Client;
+using System.Net;
 
 public partial class Pagos : Conexion
 {
@@ -19,7 +19,12 @@ public partial class Pagos : Conexion
             Response.Redirect("Default.aspx");
         }
         if (!Page.IsPostBack){
-            Page.Form.Attributes.Add("enctype", "multipart/form-data");
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Pagos.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                Page.Form.Attributes.Add("enctype", "multipart/form-data");
+            }
         }
         AnteAprobado();
         revisarpago();
@@ -49,8 +54,7 @@ public partial class Pagos : Conexion
     }
 
     /* Metodo que verifica si el estado del pago*/
-    private void revisarpago()
-    {
+    private void revisarpago() {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         if (conn != null){
@@ -58,12 +62,12 @@ public partial class Pagos : Conexion
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 string estado = drc1[0].ToString();
                 if (estado.Equals("RECHAZADO")){
                     LBSubir_pago.Enabled = true;
                     LBSubir_pago.ForeColor = System.Drawing.Color.Black;
+                    Metodo.Value = "NO";
                 } else{
                     LBSubir_pago.Enabled = false;
                     LBSubir_pago.ForeColor = System.Drawing.Color.Gray;
@@ -94,42 +98,100 @@ public partial class Pagos : Conexion
     /*Evento del boton guardar*/
     protected void Guardar(object sender, EventArgs e)
     {
-        DateTime fecha = DateTime.Today;
         if (FUdocumento.HasFile) {
-            string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
-            string contentType = FUdocumento.PostedFile.ContentType;
-            using (Stream fs = FUdocumento.PostedFile.InputStream){
-                using (BinaryReader br = new BinaryReader(fs)){
-                    byte[] bytes = br.ReadBytes((Int32)fs.Length);
-                    OracleConnection conn = con.crearConexion();
-                    if (conn != null) {
-                        string query = "insert into pagos (PAG_ID, PAG_NOMBRE, PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO, PAG_FECHA, USU_USERNAME) values (PAGOSID.nextval ,:pag_nombre , :Data, :pag_nomarchivo, :pag_tipo, :pag_fecha , '"+Session["id"]+"')";
-                        using (OracleCommand cmd = new OracleCommand(query)){
-                            cmd.Connection = conn;
-                            cmd.Parameters.Add(":anp_nombre", TBtitulo.Text);
-                            cmd.Parameters.Add(":Data", bytes);
-                            cmd.Parameters.Add(":pag_nomarchivo", filename);
-                            cmd.Parameters.Add(":pag_tipo", contentType);
-                            cmd.Parameters.Add(":pag_fecha", fecha);
-                            cmd.ExecuteNonQuery();
-                            conn.Close();
-                        }
-                    }
+           
+            string fileExt = System.IO.Path.GetExtension(FUdocumento.FileName);
+            if (fileExt == ".pdf" || fileExt == ".doc" || fileExt == ".docx" || fileExt == ".xls" || fileExt == ".xlsx"){
+
+               
+                List<string> list = con.FtpConexion();
+                if (Metodo.Value.Equals("NO"))
+                {
+                    EliminarPago(list[0], list[1]);
                 }
-            }
-            // Response.Redirect(Request.Url.AbsoluteUri);
-            LBSubir_pago.Enabled = false;
-            LBSubir_pago.ForeColor = System.Drawing.Color.Gray;
-            Ingreso.Visible = false;
-            Linfo.ForeColor = System.Drawing.Color.Green;
-            Linfo.Text = "Pago guardado satisfatoriamente, cuando sean verificados podrá subir el proyecto final";
-            TBtitulo.Text = "";
+                string ruta = list[2] + "PAGOS/";
+                bool existe = con.ExisteDirectorio(ruta);
+                if (!existe){
+                    con.crearcarpeta(ruta);
+                    CargarPagos(ruta, list[0], list[1]);
+                }else { CargarPagos(ruta, list[0], list[1]); }
+            }else {
+                Linfo.ForeColor = System.Drawing.Color.Red;
+                Linfo.Text = "Formato no permitido, debe subir un archivo en PDF, Word o Excel";
+            }              
         } else{
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe elegir un archivo";
         }
     }
- 
+    private void EliminarPago(string usuario, string pass)
+    {
+        string ruta = "";
+        string sql = "select PAG_NOMARCHIVO, PAG_DOCUMENTO FROM PAGOS WHERE USU_USERNAME = '" + Session["id"] + "'";
+        List<string> contenido = con.consulta(sql, 2, 0);
+        ruta = contenido[1] + contenido[0];
+
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta);
+        request.Method = WebRequestMethods.Ftp.DeleteFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (FtpWebResponse response = (FtpWebResponse)request.GetResponse()) { }
+
+        sql = "Delete from PAGOS where USU_USERNAME='" +Session["id"]+ "'";
+        Ejecutar("", sql);
+    }
+    private void CargarPagos(string ruta, string usuario, string pass)
+    {
+        
+        string contentType = "";
+        string filename = Session["id"]+ FUdocumento.FileName;
+        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta + filename);
+        request.Method = WebRequestMethods.Ftp.UploadFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (Stream fs = FUdocumento.PostedFile.InputStream){
+            using (BinaryReader br = new BinaryReader(fs)) {
+                contentType = FUdocumento.PostedFile.ContentType;
+                byte[] fileContents = br.ReadBytes((Int32)fs.Length);
+                StreamReader sourceStream = new StreamReader(FUdocumento.FileContent);
+                sourceStream.Close();
+                request.ContentLength = fileContents.Length;
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(fileContents, 0, fileContents.Length);
+                requestStream.Close();
+                var response = (FtpWebResponse)request.GetResponse();
+                Linfo.Text = response.StatusDescription;
+                response.Close();
+                string query = "insert into pagos (PAG_ID, PAG_NOMBRE, PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO, PAG_FECHA, USU_USERNAME) values " +
+                    "(PAGOSID.nextval ,'"+ TBtitulo.Text + "' , '"+ruta+"', '"+filename+"', '"+contentType+ "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS') , '" + Session["id"] + "')";
+                Ejecutar("Pago guardado satisfatoriamente, cuando sean verificados podrá subir el proyecto final", query);
+            }
+        }
+        Quitar();
+    }
+    private void Quitar()
+    {
+        LBSubir_pago.Enabled = false;
+        LBSubir_pago.ForeColor = System.Drawing.Color.Gray;
+        Ingreso.Visible = false;
+        TBtitulo.Text = "";
+        Metodo.Value = "";
+    }
+    private void Ejecutar(string texto, string sql)
+    {
+        string info = con.IngresarBD(sql);
+        if (info.Equals("Funciono"))
+        {
+            Linfo.ForeColor = System.Drawing.Color.Green;
+            Linfo.Text = texto;
+        }
+        else
+        {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = info;
+        }
+    }
+
     /*Metodos que realizan la funcionalidad de consultar el documento de los pagos subido por el usuario*/
     protected void BuscarPago()
     {
@@ -137,7 +199,7 @@ public partial class Pagos : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select * from pagos where usu_username = '" + Session["id"] + "'";
+                string sql = "select pag_id, pag_nombre,pag_tipo,pag_fecha, INITCAP(pag_estado) as estado ,pag_observacion from pagos where usu_username = '" + Session["id"] + "'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())  {
@@ -154,34 +216,34 @@ public partial class Pagos : Conexion
     }
     protected void DownloadFile(object sender, EventArgs e)
     {
-        int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PAG_DOCUMENTO, PAG_NOMARCHIVO, PAG_TIPO FROM PAGOS WHERE PAG_ID=" + id + "";
-        OracleConnection conn = con.crearConexion();
-        if (conn != null) {
-            using (OracleCommand cmd = new OracleCommand(sql, conn)) {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader()){
-                    drc1.Read();
-                    contentype = drc1["PAG_TIPO"].ToString();
-                    fileName = drc1["PAG_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PAG_DOCUMENTO"];
+        int id = int.Parse((sender as LinkButton).CommandArgument);      
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
 
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+        string sql = "select PAG_NOMARCHIVO,PAG_DOCUMENTO, PAG_TIPO FROM PAGOS WHERE PAG_ID=" + id + "";
+        List<string> pago = con.consulta(sql, 3, 0);
+        fileName = pago[0];
+        ruta = pago[1];
+        contentype = pago[2];
+        try {
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        } catch (WebException a){
+            Linfo.Text = a.ToString();
         }
-
     }
 
     /*Evento del boton limpiar*/

@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Consulta_Anteproyecto : System.Web.UI.Page
@@ -13,18 +9,21 @@ public partial class Consulta_Anteproyecto : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
+        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         }
-        if (!IsPostBack)
-        {
-            DDLconsultaPrograma.Items.Clear();
-            string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA";
-            DDLconsultaPrograma.Items.AddRange(con.cargardatos(sql));
-            DDLconsultaPrograma.Items.Insert(0, "Seleccione Programa");
-            DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
-            DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Consulta_Anteproyecto.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                DDLconsultaPrograma.Items.Clear();
+                string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA";
+                DDLconsultaPrograma.Items.AddRange(con.cargardatos(sql));
+                DDLconsultaPrograma.Items.Insert(0, "Seleccione Programa");
+                DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
+                DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
+            }
         }
     }
 

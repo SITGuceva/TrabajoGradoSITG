@@ -99,14 +99,14 @@
                          </asp:TableRow>
                           <asp:TableRow>
                             <asp:TableCell><asp:Label ID="Lcaso" runat="server" Text="Analizar casos particulares" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
-                            <asp:TableCell><asp:CheckBox ID="CBcaso" runat="server" Text=""  AutoPostBack="true" /></asp:TableCell>
+                            <asp:TableCell><asp:CheckBox ID="CBcaso" runat="server" Text=""  AutoPostBack="true" OnCheckedChanged="CBcaso_CheckedChanged" /></asp:TableCell>
                          </asp:TableRow>
                         
                     </asp:Table>
 
                      <br>
 
-                    <asp:Table ID="Torden" runat="server" HorizontalAlign="Center">
+                    <asp:Table ID="Tcasop" runat="server" HorizontalAlign="Center" Visible="false">
                         <asp:TableRow>
                          <asp:TableHeaderCell><asp:Label ID="Label1" runat="server" Text="CASO PARTICULAR" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableHeaderCell>
                        </asp:TableRow>

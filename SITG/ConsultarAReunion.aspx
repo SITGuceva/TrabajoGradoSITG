@@ -10,7 +10,7 @@
                 <div id="ConsultarActa" runat="server" visible="true" class="row">
                     <asp:Table runat="server" ID="Tconsulta" HorizontalAlign="Center"> 
                         <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lprograma" runat="server" Text="Programa:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Lprograma" runat="server" Text="Comite:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:DropDownList ID="DDLprog" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLprog_SelectedIndexChanged" AutoPostBack="true"> </asp:DropDownList></asp:TableCell>
                         </asp:TableRow>  
                         <asp:TableRow>

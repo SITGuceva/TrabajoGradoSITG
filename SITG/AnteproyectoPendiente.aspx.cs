@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -16,8 +17,13 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         }
-        if (!IsPostBack) {
-            ResultadoConsulta(); //consulta los anteproyectos pendientes
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "AnteproyectoPendiente.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else {
+                ResultadoConsulta(); //consulta los anteproyectos pendientes
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVanteproy);
@@ -57,34 +63,34 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
     }
     protected void DescargaAnteProyecto(object sender, EventArgs e)
     {
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select ANP_DOCUMENTO, ANP_NOMARCHIVO, ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" + Metodo.Value + "";
+        int id = int.Parse((sender as LinkButton).CommandArgument);
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
-        OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-                    contentype = drc1["ANP_TIPO"].ToString();
-                    fileName = drc1["ANP_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["ANP_DOCUMENTO"];
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+        string sql = "select ANP_NOMARCHIVO, ANP_DOCUMENTO,ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" + id + "";
+        List<string> ante = con.consulta(sql, 3, 0);
+        fileName = ante[0];
+        ruta = ante[1];
+        contentype = ante[2];
+
+        try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        } catch (WebException a){
+            Linfo.Text = a.ToString();
         }
     }
 
@@ -148,32 +154,30 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
     protected void DescargaHV(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PROF_DOCUMENTO, PROF_NOMARCHIVO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
-        OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-                    contentype = drc1["PROF_TIPO"].ToString();
-                    fileName = drc1["PROF_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PROF_DOCUMENTO"];
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
+        List<string> prof = con.consulta(sql, 3, 0);
+        fileName = prof[0];
+        ruta = prof[1];
+        contentype = prof[2];
+        try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }catch (WebException a){
+            Linfo.Text = a.ToString();
         }
     }
     protected void InfProfesor(object sender, EventArgs e)
@@ -206,8 +210,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
     protected void GVinfprof_RowDataBound(object sender, GridViewRowEventArgs e) { }
     protected void consultarprofesor(object sender, EventArgs e)
     {
-         if (DDLprofesores.SelectedIndex.Equals(0))
-        {
+         if (DDLprofesores.SelectedIndex.Equals(0)){
             Linfo.Text = "Seleccione un profesor.";
             infoprofesor.Visible = false;
         }

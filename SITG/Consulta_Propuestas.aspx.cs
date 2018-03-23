@@ -15,13 +15,18 @@ public partial class Consulta_Propuestas : Conexion
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         } 
-        if (!IsPostBack){ 
-            DDLconsultaPrograma.Items.Clear();
-            string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA";
-            DDLconsultaPrograma.Items.AddRange(con.cargardatos(sql));
-            DDLconsultaPrograma.Items.Insert(0, "Seleccione Programa");
-            DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
-            DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Consulta_Propuestas.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                DDLconsultaPrograma.Items.Clear();
+                string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA";
+                DDLconsultaPrograma.Items.AddRange(con.cargardatos(sql));
+                DDLconsultaPrograma.Items.Insert(0, "Seleccione Programa");
+                DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
+                DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
+            }
         }
     }
 

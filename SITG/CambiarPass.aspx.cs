@@ -11,9 +11,14 @@ public partial class CambiarPass : Conexion
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
+        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack) {
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "CambiarPass.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }
         }
     }
 

@@ -25,7 +25,7 @@
                             <asp:BoundField DataField="FOR_TITULO" HeaderText="Titulo" />
                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Documento">
                                 <ItemTemplate>
-                                    <asp:LinkButton ID="lnkDownload" runat="server" Text="Download" OnClick="DownloadFile" CommandArgument='<%# Eval("FOR_ID") %>'></asp:LinkButton>
+                                    <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("FOR_ID") %>'></asp:LinkButton>
                                 </ItemTemplate>
                             </asp:TemplateField>
                         </Columns>

@@ -42,7 +42,7 @@
                             <asp:Label ID="TituloP" runat="server" Text="" ForeColor="Black" Font-Bold="True"></asp:Label>
                             <br/>
                             <asp:Label ID="Ldocumento" runat="server" Text="Documento:" ForeColor="Gray" Font-Bold="True"></asp:Label>
-                            <asp:LinkButton ID="LBdescarga" runat="server" Text="Descargar documento" OnClick="DownloadFile"></asp:LinkButton>
+                            <asp:LinkButton ID="LBdescarga" runat="server" Text="Descargar" OnClick="DownloadFile"></asp:LinkButton>
                         </div>
 
                         <div id="MostrarDDLestadoP" runat="server" visible="false" style="text-align: center;">

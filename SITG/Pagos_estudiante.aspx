@@ -1,6 +1,6 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Pagos_estudiante.aspx.cs" Inherits="Pagos_estudiante" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Pagos_Estudiante.aspx.cs" Inherits="Pagos_Estudiante" %>
 
-<asp:Content ID="Pagos_estudiante" ContentPlaceHolderID="MainContent" runat="Server">
+<asp:Content ID="Pagos_Estudiante" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
         <div class="panel-heading">Pagos Estudiantes</div>
         <div class="panel-body">
@@ -8,7 +8,7 @@
 
                     <div class="container-fluid">
 
-<div id="Consulta" runat="server" visible="true" class="row" style="overflow-x: auto">
+                    <div id="Consulta" runat="server" visible="true" class="row" style="overflow-x: auto">
                         <asp:GridView ID="GVconsulta" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                             AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowCommand="GVconsulta_RowCommand">
                             <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" />
@@ -21,7 +21,7 @@
                                 <asp:BoundField DataField="PAG_NOMBRE" HeaderText="NOMBRE" />
                                 <asp:BoundField DataField="ESTUDIANTE" HeaderText="ESTUDIANTE" />
                                 <asp:BoundField DataField="PAG_FECHA" HeaderText="FECHA" />
-                                <asp:BoundField DataField="PAG_ESTADO" HeaderText="ESTADO" />
+                                <asp:BoundField DataField="ESTADO" HeaderText="ESTADO" />
                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
                                     <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("PAG_ID") %>'></asp:LinkButton> </ItemTemplate>
                                 </asp:TemplateField>

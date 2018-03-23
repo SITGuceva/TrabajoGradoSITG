@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class OpcRol : Conexion
@@ -17,9 +13,14 @@ public partial class OpcRol : Conexion
             Response.Redirect("Default.aspx");
         }else{
             if (!IsPostBack){
-                DDLrolbuscar.Items.Clear();
-                string sql = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
-                DDLrolbuscar.Items.AddRange(con.cargardatos(sql));
+                string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "OpcRol.aspx");
+                if (valida.Equals("false")) {
+                    Response.Redirect("MenuPrincipal.aspx");
+                }else { 
+                    DDLrolbuscar.Items.Clear();
+                    string sql = "SELECT ROL_ID, ROL_NOMBRE FROM ROL";
+                    DDLrolbuscar.Items.AddRange(con.cargardatos(sql));
+                }
             }
         }
    
@@ -103,19 +104,14 @@ public partial class OpcRol : Conexion
     }
     public void CargarOpciones()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-                sql = "SELECT O.OPCS_ID,O.OPCS_NOMBRE FROM OPCION_SISTEMA O WHERE O.OPCS_ESTADO='ACTIVO' AND O.OPCS_ID NOT IN(SELECT R.OPCS_ID FROM OPCION_ROL R WHERE  R.ROL_ID = '" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "') ORDER BY O.OPCS_ID";
+            if (conn != null) {
+                string sql = "SELECT O.OPCS_ID,O.OPCS_NOMBRE FROM OPCION_SISTEMA O WHERE O.OPCS_ESTADO='ACTIVO' AND O.OPCS_ID NOT IN(SELECT R.OPCS_ID FROM OPCION_ROL R WHERE  R.ROL_ID = '" + DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "') ORDER BY O.OPCS_ID";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader()) {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVasignaopc.DataSource = dataTable;
@@ -172,13 +168,11 @@ public partial class OpcRol : Conexion
     protected void GVopcrol_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void cargarTabla()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
         try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT DISTINCT C.OPCROL_ID,O.OPCS_ID,O.OPCS_NOMBRE  FROM OPCION_SISTEMA O, OPCION_ROL C WHERE O.OPCS_ID = C.OPCS_ID AND C.ROL_ID = '"+ DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "' ORDER BY O.OPCS_ID ";
+               string sql = "SELECT DISTINCT C.OPCROL_ID,O.OPCS_ID,O.OPCS_NOMBRE  FROM OPCION_SISTEMA O, OPCION_ROL C WHERE O.OPCS_ID = C.OPCS_ID AND C.ROL_ID = '"+ DDLrolbuscar.Items[DDLrolbuscar.SelectedIndex].Value.ToString() + "' ORDER BY O.OPCS_ID ";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -199,5 +193,4 @@ public partial class OpcRol : Conexion
     }
 
 
-   
 }

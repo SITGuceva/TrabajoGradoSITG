@@ -5,12 +5,10 @@ using System.Data;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System.IO;
-using System.Linq;
-using System.Threading;
 using System.Web;
 using System.Web.UI;
-using System.Windows.Forms;
 using System.Web.UI.WebControls;
+using System.Net;
 
 public partial class ActaReunion : System.Web.UI.Page
 {
@@ -20,31 +18,34 @@ public partial class ActaReunion : System.Web.UI.Page
     DataRow rows;
     DataTable torden;
 
-   
-
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         }
         if (!IsPostBack){
-            Page.Form.Attributes.Add("enctype", "multipart/form-data");
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "ActaReunion.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            }else { 
+                Page.Form.Attributes.Add("enctype", "multipart/form-data");
 
-            DDLreu.Items.Clear();
-            string sql = "SELECT r.reu_codigo FROM reunion r, profesor p WHERE r.reu_estado='ACTIVO' AND r.COM_CODIGO = p.COM_CODIGO and p.USU_USERNAME = '"+ Session["id"] + "'";
-            DDLreu.Items.AddRange(con.cargarDDLid(sql));
-            DDLreu.Items.Insert(0, "Seleccione");
-            CargarAsistente();
+                DDLreu.Items.Clear();
+                string sql = "SELECT r.reu_codigo FROM reunion r, profesor p WHERE r.reu_estado='ACTIVO' AND r.COM_CODIGO = p.COM_CODIGO and p.USU_USERNAME = '"+ Session["id"] + "'";
+                DDLreu.Items.AddRange(con.cargarDDLid(sql));
+                DDLreu.Items.Insert(0, "Seleccione");
+                CargarAsistente();
 
-            table = new DataTable();
-            table.Columns.Add("NOMBRE", typeof(System.String));
-            table.Columns.Add("CARGO", typeof(System.String));
-            Session.Add("Tabla", table);
+                table = new DataTable();
+                table.Columns.Add("NOMBRE", typeof(System.String));
+                table.Columns.Add("CARGO", typeof(System.String));
+                Session.Add("Tabla", table);
 
-            torden = new DataTable("TOrden");
-            torden.Columns.Add("ORDEN", typeof(System.String));
-            torden.Columns.Add("DESCRIPCION", typeof(System.String));
-            Session.Add("Orden", torden);
+                torden = new DataTable("TOrden");
+                torden.Columns.Add("ORDEN", typeof(System.String));
+                torden.Columns.Add("DESCRIPCION", typeof(System.String));
+                Session.Add("Orden", torden);
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVactas);
@@ -157,29 +158,22 @@ public partial class ActaReunion : System.Web.UI.Page
         TBorden.Text = "";
         TAdes.Value = "";
     }
-
+    protected void CBcaso_CheckedChanged(object sender, EventArgs e)
+    {
+        if (CBcaso.Checked)
+        {
+            Tcasop.Visible = true;
+        }
+        else
+        {
+            Tcasop.Visible = false;
+        }
+    }
+ 
     /*Evento del boton limpiar*/
     protected void Bcancelar_Click(object sender, EventArgs e)
     {
-         torden = (System.Data.DataTable)(Session["Orden"]);
-         torden.Clear();
-         table = (System.Data.DataTable)(Session["Tabla"]);
-         table.Clear();
-         TBorden.Text = "";
-         TBcargo.Text = "";
-         TBnombre.Text = "";
-         TBobj.Text = "";
-         TBlugar.Text = "";
-         Linfo.Text = "";
-         TAdes.Value = "";
-         GVagreinte.DataBind();
-         GVorden.DataBind();
-         foreach (GridViewRow row in GVasistente.Rows)
-         {
-             System.Web.UI.WebControls.CheckBox check = row.FindControl("CBasitio") as System.Web.UI.WebControls.CheckBox;
-             check.Checked = false;
-         }
-         DDLreu.SelectedIndex = 0;
+        limpiar();
     }
   
     /*Metodos que realizan el proceso de generar el acta*/
@@ -187,14 +181,40 @@ public partial class ActaReunion : System.Web.UI.Page
     {
         if (DDLreu.SelectedIndex != 0){
             getfile();
+            limpiar();
         }else{
-            Linfo.Text = "Eliga una reunion";
-        }
-        
+            Linfo.Text = "Escoga una reunion";
+        }       
     }
-    public void getfile()
-    {
-
+    private void limpiar(){
+        torden = (System.Data.DataTable)(Session["Orden"]);
+        torden.Clear();
+        table = (System.Data.DataTable)(Session["Tabla"]);
+        table.Clear();
+        TBorden.Text = "";
+        TBcargo.Text = "";
+        TBnombre.Text = "";
+        TBobj.Text = "";
+        TBlugar.Text = "";
+        Linfo.Text = "";
+        TAdes.Value = "";
+        GVagreinte.DataBind();
+        GVorden.DataBind();
+        foreach (GridViewRow row in GVasistente.Rows)
+        {
+            System.Web.UI.WebControls.CheckBox check = row.FindControl("CBasitio") as System.Web.UI.WebControls.CheckBox;
+            check.Checked = false;
+        }
+        if(CBanteproyecto.Checked || CBpropuesta.Checked || CBcaso.Checked)
+        {
+            CBcaso.Checked = false;
+            CBanteproyecto.Checked = false;
+            CBpropuesta.Checked = false;
+        }
+        Tcasop.Visible = false;
+        DDLreu.SelectedIndex = 0;
+    }
+    public void getfile() {
         string sql2 = "select c.COM_NOMBRE from comite c, profesor f where f.COM_CODIGO = c.COM_CODIGO and f.USU_USERNAME='" + Session["id"] + "'";
         List<string> list = con.consulta(sql2, 1, 0);
 
@@ -216,25 +236,23 @@ public partial class ActaReunion : System.Web.UI.Page
                 // Creamos el tipo de Font que vamos utilizar
                 BaseFont bf = BaseFont.CreateFont(BaseFont.TIMES_ROMAN, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
                 iTextSharp.text.Font font = new iTextSharp.text.Font(bf, 2, iTextSharp.text.Font.NORMAL);
-
                 iTextSharp.text.Image img = iTextSharp.text.Image.GetInstance(Server.MapPath("/Images/uceva.jpg"));
                 Paragraph saltoDeLinea1 = new Paragraph(" ");
                 doc.Add(saltoDeLinea1);
 
                 //logo uceva pagina1
                 img.ScaleToFit(125f, 60F);
-                //Imagen - Movio en el eje de las Y
-                img.SetAbsolutePosition(0, 800);
+                img.SetAbsolutePosition(0, 800);  //Imagen - Movio en el eje de las Y
                 doc.Add(img);
 
                 //Tabla 1
-                PdfPTable table16 = new PdfPTable(1);
+                PdfPTable table1 = new PdfPTable(1);
                 PdfPCell cell = new PdfPCell(new Phrase("Secretaría General - Archivo"));
                 cell.Colspan = 3000;
                 cell.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                table16.AddCell(cell);
-                table16.WidthPercentage = 100f;
-                doc.Add(table16);
+                table1.AddCell(cell);
+                table1.WidthPercentage = 100f;
+                doc.Add(table1);
 
                 //Tabla 2
                 PdfPTable table2 = new PdfPTable(3);
@@ -294,7 +312,7 @@ public partial class ActaReunion : System.Web.UI.Page
                 table4.WidthPercentage = 100f;
                 doc.Add(table4);
 
-                //Tabla Asistentes
+                //Tabla 5 Asistentes
                 PdfPTable table5 = new PdfPTable(2);
                 PdfPTable table11 = new PdfPTable(2);
                 PdfPTable table14 = new PdfPTable(3);
@@ -425,29 +443,27 @@ public partial class ActaReunion : System.Web.UI.Page
                 table12.AddCell(cell18);
             }
             if (CBcaso.Checked) {
-
                 PdfPCell cell18 = new PdfPCell(new Phrase("Analizar casos particulares"));
                 cell18.HorizontalAlignment = 0; //0=Left, 1=Centre, 2=Right
                 table12.AddCell(cell18);
-
             }
 
             table12.WidthPercentage = 100f;
-                doc.Add(table12);
+            doc.Add(table12);
 
-                /*doc.NewPage();
-                img.ScaleToFit(125f, 60F);
-                img.SetAbsolutePosition(0, 800);
-                doc.Add(img);
-                doc.Add(saltoDeLinea1);*/
-                doc.Add(saltoDeLinea1);
-                Paragraph titulo7 = new Paragraph("Desarrollo del orden del día");
-                titulo7.Alignment = 1;
-                doc.Add(titulo7);
+            doc.NewPage();
+            img.ScaleToFit(125f, 60F);
+            img.SetAbsolutePosition(0, 800);
+            doc.Add(img);
+            /*doc.Add(saltoDeLinea1);*/
+
+            doc.Add(saltoDeLinea1);
+            Paragraph titulo7 = new Paragraph("Desarrollo del orden del día");
+            titulo7.Alignment = 1;
+            doc.Add(titulo7);
 
 
-            if (CBpropuesta.Checked)
-            {
+            if (CBpropuesta.Checked) {
                 doc.Add(saltoDeLinea1);
                 Paragraph texto3 = new Paragraph("Revision propuesta de trabajo de grado");
                 doc.Add(texto3);
@@ -470,32 +486,30 @@ public partial class ActaReunion : System.Web.UI.Page
                 cell23.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
                 table13.AddCell(cell23);
 
-
                 OracleConnection conn = con.crearConexion();
                 OracleCommand cmd = null;
-                if (conn != null)
-                {
+                if (conn != null){
                     string prop = "select  p.PROP_TITULO, p.PROP_ESTADO,p.PROP_CODIGO from propuesta p, revision_propuesta r where r.PROP_CODIGO = p.PROP_CODIGO and r.REU_CODIGO='" + DDLreu.Items[DDLreu.SelectedIndex].Value.ToString() + "'";
                     cmd = new OracleCommand(prop, conn);
                     cmd.CommandType = CommandType.Text;
                     OracleDataReader drc1 = cmd.ExecuteReader();
-                    if (drc1.HasRows)
-                    {
-                        while (drc1.Read())
-                        {
+                    if (drc1.HasRows) {
+                        while (drc1.Read()) {
                             PdfPCell cell24 = new PdfPCell(new Phrase(drc1[2].ToString()));
                             cell24.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
                             table13.AddCell(cell24);
 
+                            string estu="";
                             prop = "select  CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) from estudiante e, propuesta p, usuario u " +
                                    "where u.USU_USERNAME = e.USU_USERNAME and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_CODIGO = '" + drc1[2] + "' ";
                             List<string> lintegra = con.consulta(prop, 1, 0);
                             for (int intre = 0; intre < lintegra.Count; intre++)
                             {
-                                PdfPCell cell25 = new PdfPCell(new Phrase(lintegra[intre].ToString()));
-                                cell25.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                                table13.AddCell(cell25);
+                                estu += lintegra[intre] + "\n";
                             }
+                            PdfPCell cell25 = new PdfPCell(new Phrase(estu));
+                            cell25.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                            table13.AddCell(cell25);
 
                             PdfPCell cell26 = new PdfPCell(new Phrase(drc1[0].ToString()));
                             cell26.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
@@ -526,24 +540,19 @@ public partial class ActaReunion : System.Web.UI.Page
                 }
                 table13.WidthPercentage = 100f;
                 doc.Add(table13);
-
             }
 
-
-
-            if (CBanteproyecto.Checked)
-            {
+            if (CBanteproyecto.Checked) {
                 doc.Add(saltoDeLinea1);
                 Paragraph texto50 = new Paragraph("Asignar los jurados para la lectura de anteproyectos de grado");
                 doc.Add(texto50);
                 doc.Add(saltoDeLinea1);
                 //Tabla 13 Orden del dia
-                PdfPTable table50 = new PdfPTable(5);
+                PdfPTable table50 = new PdfPTable(4);
                 PdfPCell cell50 = new PdfPCell(new Phrase("Código"));
                 PdfPCell cell51 = new PdfPCell(new Phrase("Estudiantes"));
                 PdfPCell cell52 = new PdfPCell(new Phrase("Nombre Anteproyecto"));
                 PdfPCell cell53 = new PdfPCell(new Phrase("Jurado"));
-                PdfPCell cell54 = new PdfPCell(new Phrase("Revisor"));
                 cell50.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
                 table50.AddCell(cell50);
                 cell51.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
@@ -552,23 +561,54 @@ public partial class ActaReunion : System.Web.UI.Page
                 table50.AddCell(cell52);
                 cell53.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
                 table50.AddCell(cell53);
-                cell54.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
-                table50.AddCell(cell54);
-
-
                 table50.WidthPercentage = 100f;
                 doc.Add(table50);
 
+               PdfPTable table20 = new PdfPTable(4);
+               OracleConnection conn = con.crearConexion();
+               OracleCommand cmd = null;
+               if (conn != null) {
+                  string ante = "select A.Apro_Codigo, A.Anp_Nombre, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as evaluador from anteproyecto a, evaluador e, usuario u where E.Usu_Username = U.Usu_Username and E.Apro_Codigo = A.Apro_Codigo and E.Reu_Codigo = '" + DDLreu.Items[DDLreu.SelectedIndex].Value.ToString() + "'";
+                  cmd = new OracleCommand(ante, conn);
+                  cmd.CommandType = CommandType.Text;
+                  OracleDataReader drc1 = cmd.ExecuteReader();
+                  if (drc1.HasRows){
+                       while (drc1.Read()){
+                           PdfPCell cell40 = new PdfPCell(new Phrase(drc1[0].ToString()));
+                           cell40.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                           table20.AddCell(cell40);
+
+                           string estu = "";
+                           ante = "select  CONCAT(CONCAT(u.usu_apellido, ' '), u.usu_nombre) as estudiante from estudiante e, anteproyecto p, usuario u where u.USU_USERNAME = e.USU_USERNAME and P.Apro_Codigo = e.PROP_CODIGO and P.Apro_Codigo = '" + drc1[0] + "' ";
+                           List<string> lest = con.consulta(ante, 1, 0);
+                           for (int intre = 0; intre < lest.Count; intre++) {
+                               estu += lest[intre] + "\n";
+                           }
+                           PdfPCell cell41 = new PdfPCell(new Phrase(estu));
+                           cell41.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                           table20.AddCell(cell41);
+
+                           PdfPCell cell42 = new PdfPCell(new Phrase(drc1[1].ToString()));
+                           cell42.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                           table20.AddCell(cell42);
+
+                           PdfPCell cell43 = new PdfPCell(new Phrase(drc1[2].ToString()));
+                           cell43.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                           table20.AddCell(cell43);
+                       }  
+                  }
+                  drc1.Close();
+               }
+               table20.WidthPercentage = 100f;
+               doc.Add(table20);
             }
 
-
-            if (CBcaso.Checked)
-            {
+            if (CBcaso.Checked){
                 doc.Add(saltoDeLinea1);
                 Paragraph texto60 = new Paragraph("Casos particulares");
                 doc.Add(texto60);
                 doc.Add(saltoDeLinea1);
-                //Tabla 13 Orden del dia
+
                 PdfPTable table60 = new PdfPTable(2);
                 PdfPCell cell60 = new PdfPCell(new Phrase("Título del caso"));
                 PdfPCell cell61 = new PdfPCell(new Phrase("Descripción"));
@@ -576,14 +616,26 @@ public partial class ActaReunion : System.Web.UI.Page
                 table60.AddCell(cell60);
                 cell61.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
                 table60.AddCell(cell61);
-
                 table60.WidthPercentage = 100f;
                 doc.Add(table60);
 
-            }
+                   PdfPTable table61 = new PdfPTable(2);                  
+                   torden = (System.Data.DataTable)(Session["Orden"]);
+                   DataRow[] recorrer = torden.Select(null, null, DataViewRowState.CurrentRows);
+                   foreach (DataRow row in recorrer) {
+                            PdfPCell cell62 = new PdfPCell(new Phrase(row["ORDEN"].ToString()));
+                            PdfPCell cell63 = new PdfPCell(new Phrase(row["DESCRIPCION"].ToString()));
+                            cell62.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                            table61.AddCell(cell62);
+                            cell63.HorizontalAlignment = 1; //0=Left, 1=Centre, 2=Right
+                            table61.AddCell(cell63);
+                   }
+                    table61.WidthPercentage = 100f;
+                    doc.Add(table61);
 
+                }
 
-            doc.Add(saltoDeLinea1);
+                doc.Add(saltoDeLinea1);
                 Paragraph texto4 = new Paragraph("Siendo las "+ DateTime.Now.ToString("HH:mm") + " horas el presidente dio por terminada  la reunión, se procedió a firmar la presente Acta la cual fue aprobada en sesión verificada el "+list3[0]+":");
                 doc.Add(texto4);
                 doc.Add(saltoDeLinea1);
@@ -599,15 +651,15 @@ public partial class ActaReunion : System.Web.UI.Page
 
                 doc.Close();
             }
+            string acta= "ActaReunion"+DDLreu.Items[DDLreu.SelectedIndex].Value.ToString();
             Response.Clear();
             Response.ContentType = "application/octet-stream";
-            Response.AddHeader("content-disposition", "attachment;filename= ActaReunion.pdf");
+            Response.AddHeader("content-disposition", "attachment;filename="+acta+".pdf");
             Response.Buffer = true;
             Response.Clear();
             var bytes = ms.ToArray();
             Response.OutputStream.Write(bytes, 0, bytes.Length);
             Response.OutputStream.Flush();
-
         }
     }
 
@@ -619,40 +671,69 @@ public partial class ActaReunion : System.Web.UI.Page
             Linfo.Text = "Se requiere que escoja una reunion";
         }else {
             if (FUdocumento.HasFile){
-                string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
-                string contentType = FUdocumento.PostedFile.ContentType;
-
-                using (Stream fs = FUdocumento.PostedFile.InputStream){
-                    using (BinaryReader br = new BinaryReader(fs)){
-                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
-                        OracleConnection conn = con.crearConexion();
-                        if (conn != null) {
-                            string query = "update REUNION set reu_acta=:Data, reu_nomarchivo=:Nomarchivo, reu_tipo=:Tipo, reu_estado='Finalizada' where reu_codigo='"+ DDLreunion2.Items[DDLreunion2.SelectedIndex].Value.ToString() + "'";
-                            using (OracleCommand cmd = new OracleCommand(query)){
-                                cmd.Connection = conn;
-                                cmd.Parameters.Add(":Data", bytes);
-                                cmd.Parameters.Add(":Nomarchivo", filename);
-                                cmd.Parameters.Add(":Tipo", contentType);
-                                cmd.ExecuteNonQuery();
-                                conn.Close();
-                            }
-                        }
-                    }
+                string fileExt = System.IO.Path.GetExtension(FUdocumento.FileName);
+                if (fileExt == ".pdf" || fileExt == ".doc" || fileExt == ".docx")
+                {
+                    List<string> list = con.FtpConexion();
+                    string ruta = list[2] + "ACTAS/";
+                    bool existe = con.ExisteDirectorio(ruta);
+                    if (!existe) {
+                        con.crearcarpeta(ruta);
+                        guardar(ruta, list[0], list[1]);
+                    }else { guardar(ruta, list[0], list[1]); }
+                } else {
+                    Linfo.ForeColor = System.Drawing.Color.Red;
+                    Linfo.Text = "Formato no permitido, debe subir un archivo en PDF o un documento de Word";
                 }
-                //Response.Redirect(Request.Url.AbsoluteUri);
-                Linfo.ForeColor = System.Drawing.Color.Green;
-                Linfo.Text = "Acta guardada satisfatoriamente";
-                DDLreunion2.Items.Clear();
-                string sql = "SELECT r.reu_codigo FROM reunion r, profesor p WHERE r.reu_estado='ACTIVO' AND r.COM_CODIGO = p.COM_CODIGO and p.USU_USERNAME = '" + Session["id"] + "'";
-                DDLreunion2.Items.AddRange(con.cargarDDLid(sql));
-                DDLreunion2.Items.Insert(0, "Seleccione");
             } else {
-                Linfo.Text = "Escoja un documento para subir";
+                Linfo.Text = "Escoga un documento para subir";
             }
         }
     }
-    protected void Blimpiar_Click(object sender, EventArgs e)
+    private void guardar(string ruta, string usuario, string pass)
     {
+        string contentType = "";
+        string filename = DDLreunion2.Items[DDLreunion2.SelectedIndex].Value + FUdocumento.FileName;
+
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta + filename);
+        request.Method = WebRequestMethods.Ftp.UploadFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (Stream fs = FUdocumento.PostedFile.InputStream) {
+            using (BinaryReader br = new BinaryReader(fs)){
+                contentType = FUdocumento.PostedFile.ContentType;
+                byte[] fileContents = br.ReadBytes((Int32)fs.Length);
+                StreamReader sourceStream = new StreamReader(FUdocumento.FileContent);
+                sourceStream.Close();
+                request.ContentLength = fileContents.Length;
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(fileContents, 0, fileContents.Length);
+                requestStream.Close();
+                var response = (FtpWebResponse)request.GetResponse();
+                Linfo.Text = response.StatusDescription;
+                response.Close();
+                string query = "update REUNION set reu_acta='"+ruta+"', reu_nomarchivo='"+filename+"', reu_tipo='"+contentType+"', reu_estado='FINALIZADA' where reu_codigo='" + DDLreunion2.Items[DDLreunion2.SelectedIndex].Value.ToString() + "'";
+                Ejecutar("Acta cargada satisfatoriamente", query);
+                DDLreunion2.SelectedIndex = 0;
+            }
+        }
+    }
+    private void Ejecutar(string texto, string sql)
+    {
+        string info = con.IngresarBD(sql);
+        if (info.Equals("Funciono"))
+        {
+            Linfo.ForeColor = System.Drawing.Color.Green;
+            Linfo.Text = texto;
+        }
+        else
+        {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = info;
+        }
+    }
+
+    /*Evento del boton limpiar*/
+    protected void Blimpiar_Click(object sender, EventArgs e){
         DDLreunion2.SelectedIndex = 0;
         Linfo.Text = "";
     }
@@ -706,7 +787,7 @@ public partial class ActaReunion : System.Web.UI.Page
             OracleCommand cmd = null;
             if (conn != null){
                 string sql = "SELECT r.REU_CODIGO, TO_CHAR(r.REU_FREAL,'DD/MM/YY') AS FECHA from reunion r , profesor p" +
-                    " where r.REU_FREAL BETWEEN TO_DATE('" + TBdesde.Text + "', 'DD/MM/YYYY')  and TO_DATE('" + fhasta + "', 'DD/MM/YYYY')  AND r.REU_ESTADO='Finalizada'" +
+                    " where r.REU_FREAL BETWEEN TO_DATE('" + TBdesde.Text + "', 'DD/MM/YYYY')  and TO_DATE('" + fhasta + "', 'DD/MM/YYYY')  AND r.REU_ESTADO='FINALIZADA'" +
                     "and p.COM_CODIGO= r.COM_CODIGO and p.USU_USERNAME='"+ Session["id"] + "' ORDER BY r.REU_CODIGO";
                 cmd = new OracleCommand(sql, conn);
                  cmd.CommandType = CommandType.Text;
@@ -728,38 +809,43 @@ public partial class ActaReunion : System.Web.UI.Page
     }
     protected void DownloadFile(object sender, EventArgs e)
     {
+        List<string> list = con.FtpConexion();
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
+        string fileName = "", contentype = "", ruta="";
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
         string sql = "select REU_NOMARCHIVO, REU_ACTA, REU_TIPO FROM REUNION WHERE REU_CODIGO=" + id + "";
 
         OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
+        if (conn != null) {
+            using (OracleCommand cmd = new OracleCommand(sql, conn)) {
                 cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
+                using (OracleDataReader drc1 = cmd.ExecuteReader()){
                     drc1.Read();
                     contentype = drc1["REU_TIPO"].ToString();
                     fileName = drc1["REU_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["REU_ACTA"];
+                    ruta = drc1["REU_ACTA"].ToString() ;
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                    try {
+                        byte[] bytes = request.DownloadData(ruta + fileName);
+                        string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+                        Console.WriteLine(fileString);
+                        Response.Clear();
+                        Response.Buffer = true;
+                        Response.Charset = "";
+                        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                        Response.ContentType = contentype;
+                        Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                        Response.BinaryWrite(bytes);
+                        Response.Flush();
+                        Response.End();
+                    }catch (WebException a) {
+                        Linfo.Text = a.ToString();
+                    }
 
                 }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
             }
         }
-
     }
     protected void GVactas_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
@@ -767,5 +853,6 @@ public partial class ActaReunion : System.Web.UI.Page
         CargarActas();
     }
     protected void GVactas_RowDataBound(object sender, GridViewRowEventArgs e){}
+
 
 }
