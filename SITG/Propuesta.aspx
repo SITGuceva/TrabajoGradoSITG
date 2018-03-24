@@ -88,7 +88,7 @@
                         <Columns>
                             <asp:BoundField DataField="PROP_CODIGO" HeaderText="ID" />
                             <asp:BoundField DataField="PROP_TITULO" HeaderText="TITULO" />
-                            <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="LINEA INVESTIGACION" /> 
+                            <asp:BoundField DataField="LINV_NOMBRE" HeaderText="LINEA INVESTIGACION" /> 
                             <asp:BoundField DataField="TEM_NOMBRE" HeaderText="TEMA" /> 
                             <asp:BoundField DataField="FECHA" HeaderText="FECHA" />
                             <asp:BoundField DataField="ESTADO" HeaderText="ESTADO" />
@@ -174,9 +174,9 @@
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                         <EmptyDataTemplate> ¡No tiene solicitudes de director! </EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="SOL_ID" HeaderText="Id Solicitud" />
-                            <asp:BoundField DataField="SOL_FECHA" HeaderText="Fecha de solicitud" />
-                            <asp:BoundField DataField="SOL_ESTADO" HeaderText="Estado" />
+                            <asp:BoundField DataField="DIR_ID" HeaderText="Id Solicitud" />
+                            <asp:BoundField DataField="DIR_FECHA" HeaderText="Fecha de solicitud" />
+                            <asp:BoundField DataField="DIR_ESTADO" HeaderText="Estado" />
                             <asp:BoundField DataField="director" HeaderText="Director" />
                         </Columns>
                     </asp:GridView>

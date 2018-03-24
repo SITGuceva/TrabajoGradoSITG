@@ -110,7 +110,7 @@ public partial class GDirEst : Conexion
         } else if(DDLsol.SelectedIndex.Equals(3)){
             foreach (DataRow row in currentRows){
                 sql = "insert into solicitud_est (sole_id, sole_fecha, sole_motivo,sole_tipo, prop_codigo, usu_username) " +
-                "values (SOLIESTID.nextval, TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'" + TAdescrip.Value + "','" + DDLsol.Items[DDLsol.SelectedIndex].Text + "','" + prop_codigo + "','" + row["CODIGO"] + "')";
+                "values (SOLICITUDID.nextval, TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'" + TAdescrip.Value + "','" + DDLsol.Items[DDLsol.SelectedIndex].Text + "','" + prop_codigo + "','" + row["CODIGO"] + "')";
                 Ejecutar("Solicitud realizada correctamente!!", sql);
             }
             table.Rows.Clear();
@@ -118,7 +118,7 @@ public partial class GDirEst : Conexion
             GVagreinte.Visible = false;
         } else { 
             sql = "insert into solicitud_est (sole_id, sole_fecha, sole_motivo,sole_tipo, prop_codigo, usu_username) " +
-                "values (SOLIESTID.nextval, TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'"+TAdescrip.Value+"','" + DDLsol.Items[DDLsol.SelectedIndex].Text + "','"+prop_codigo+"','"+ Session["id"] + "')";
+                "values (SOLICITUDID.nextval, TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'"+TAdescrip.Value+"','" + DDLsol.Items[DDLsol.SelectedIndex].Text + "','"+prop_codigo+"','"+ Session["id"] + "')";
             Ejecutar("Solicitud realizada correctamente!!", sql); 
         }
 

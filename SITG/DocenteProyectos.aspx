@@ -66,7 +66,7 @@
                         <EmptyDataTemplate>¡No tienes proyectos creados!</EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="PROY_ID" HeaderText="ID" />   
-                            <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="LINEA INVESTIGACION" />
+                            <asp:BoundField DataField="LINV_NOMBRE" HeaderText="LINEA INVESTIGACION" />
                             <asp:BoundField DataField="TEM_NOMBRE" HeaderText="TEMA" />
                             <asp:BoundField DataField="PROY_NOMBRE" HeaderText="NOMBRE" />
                             <asp:BoundField DataField="PROY_DESCRIPCION" HeaderText="DESCRIPCION" />

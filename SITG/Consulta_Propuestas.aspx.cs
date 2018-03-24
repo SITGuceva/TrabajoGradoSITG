@@ -1,9 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Consulta_Propuestas : Conexion
@@ -53,9 +50,9 @@ public partial class Consulta_Propuestas : Conexion
             OracleCommand cmd = null;
             if (conn != null) {
                 if (crit.Equals(2)){
-                    sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, programa pro, estudiante e, tema t, lin_profundizacion l, solicitud_dir s, usuario u where pro.prog_codigo=e.prog_codigo and pro.prog_codigo='"+DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString()+"' and l.lprof_codigo='"+ DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.lprof_codigo =t.lprof_codigo  and  u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo  ";
+                    sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_estado as Estado from propuesta p, programa pro, estudiante e, tema t, lin_investigacion l, director s, usuario u where pro.prog_codigo=e.prog_codigo and pro.prog_codigo='"+DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString()+"' and l.linv_codigo='"+ DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.linv_codigo =t.linv_codigo  and  u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo  ";
                 }else if (crit.Equals(1)){
-                    sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, programa pro, estudiante e, tema t, lin_profundizacion l, solicitud_dir s, usuario u where pro.prog_codigo=e.prog_codigo and pro.prog_codigo='" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.lprof_codigo='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo='"+ DDLconsultaTema.Items[DDLconsultaTema.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.lprof_codigo =t.lprof_codigo  and  u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo  ";
+                    sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_estado as Estado from propuesta p, programa pro, estudiante e, tema t, lin_investigacion l, director s, usuario u where pro.prog_codigo=e.prog_codigo and pro.prog_codigo='" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.linv_codigo='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo='"+ DDLconsultaTema.Items[DDLconsultaTema.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.linv_codigo =t.linv_codigo  and  u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo  ";
                 }
 
                 cmd = new OracleCommand(sql, conn);
@@ -84,7 +81,7 @@ public partial class Consulta_Propuestas : Conexion
             DDLconsultaTema.Items.Insert(0, "Seleccione");
         }else{
             DDLconsultaLinea.Items.Clear();
-            string sql = "SELECT LPROF_CODIGO, LPROF_NOMBRE FROM LIN_PROFUNDIZACION WHERE PROG_CODIGO='" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "'";
+            string sql = "SELECT LINV_CODIGO, LINV_NOMBRE FROM LIN_INVESTIGACION WHERE PROG_CODIGO='" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "'";
             DDLconsultaLinea.Items.AddRange(con.cargardatos(sql));
             DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
             Linfo.Text = "";
@@ -97,7 +94,7 @@ public partial class Consulta_Propuestas : Conexion
             DDLconsultaTema.Items.Insert(0, "Seleccione");
         } else{
             DDLconsultaTema.Items.Clear();
-            string sql3 = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE LPROF_CODIGO='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'";
+            string sql3 = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE LINV_CODIGO='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'";
             DDLconsultaTema.Items.AddRange(con.cargardatos(sql3));
             DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
             Linfo.Text = "";

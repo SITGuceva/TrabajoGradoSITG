@@ -451,7 +451,7 @@ public partial class ProyectoFinal : Conexion
         List<string> list = con.consulta(sql, 1, 0);
         string titulo = list[0];
 
-        sql = "select  CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director from solicitud_dir s, estudiante e, usuario u  where s.prop_codigo = e.prop_codigo and e.usu_username = '" + Session["id"] + "' and s.usu_username = u.usu_username ";
+        sql = "select  CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director from director s, estudiante e, usuario u  where s.prop_codigo = e.prop_codigo and e.usu_username = '" + Session["id"] + "' and s.usu_username = u.usu_username ";
         List<string> list2 = con.consulta(sql, 1, 0);
         string director = list2[0];
 

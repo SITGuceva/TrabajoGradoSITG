@@ -81,8 +81,8 @@
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                         <EmptyDataTemplate>¡No hay lineas de investigación agregadas para el programa!</EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="LPROF_CODIGO" HeaderText="ID" />   
-                            <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="INVESTIGACIÓN" />
+                            <asp:BoundField DataField="LINV_CODIGO" HeaderText="ID" />   
+                            <asp:BoundField DataField="LINV_NOMBRE" HeaderText="INVESTIGACIÓN" />
                             <asp:TemplateField HeaderText="Estado">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server">
@@ -91,7 +91,7 @@
                                     </asp:DropDownList>
                                 </EditItemTemplate>
                                 <ItemTemplate>
-                                    <asp:Label ID="Lestado" runat="server" Text='<%# Bind("LPROF_ESTADO") %>'></asp:Label>
+                                    <asp:Label ID="Lestado" runat="server" Text='<%# Bind("LINV_ESTADO") %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Modificar">

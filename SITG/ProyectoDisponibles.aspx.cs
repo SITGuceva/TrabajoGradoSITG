@@ -29,8 +29,8 @@ public partial class ProyectoDisponibles : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select P.Proy_Id,L.Lprof_Nombre, T.Tem_Nombre ,P.Proy_Nombre, P.Proy_Descripcion, P.Proy_Cantest,P.Proy_Fecha , CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as creador from proyectos p, lin_profundizacion l, programa p ,estudiante e, tema t , usuario u " +
-                    "where T.Tem_Codigo = P.Tem_Codigo and T.Lprof_Codigo = L.Lprof_Codigo and P.Usu_Username = U.Usu_Username  and P.Proy_Estado = 'DISPONIBLE' and P.Prog_Codigo = E.Prog_Codigo and E.Usu_Username = '"+Session["id"]+ "' and L.Prog_Codigo = P.Prog_Codigo order by P.Proy_Id";
+                string sql = "select P.Proy_Id,L.Linv_Nombre, T.Tem_Nombre ,P.Proy_Nombre, P.Proy_Descripcion, P.Proy_Cantest,P.Proy_Fecha , CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as creador from proyectos p, lin_investigacion l, programa p ,estudiante e, tema t , usuario u " +
+                    "where T.Tem_Codigo = P.Tem_Codigo and T.Linv_Codigo = L.Linv_Codigo and P.Usu_Username = U.Usu_Username  and P.Proy_Estado = 'DISPONIBLE' and P.Prog_Codigo = E.Prog_Codigo and E.Usu_Username = '"+Session["id"]+ "' and L.Prog_Codigo = P.Prog_Codigo order by P.Proy_Id";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())

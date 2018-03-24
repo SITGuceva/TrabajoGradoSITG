@@ -63,7 +63,7 @@
                                <asp:Label ID="Lcat" runat="server" Text="CATEGORIAS:" ForeColor="Black" Font-Bold="True" ></asp:Label>
                             </asp:TableCell>                         
                             <asp:TableCell ColumnSpan="3">
-                                <asp:DropDownList ID="DDLcat" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList>
+                                <asp:DropDownList ID="DDLcat" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLcat_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList>
                             </asp:TableCell>  
                             <asp:TableCell>
                                 <asp:Button ID="Bbuscar" runat="server" OnClick="Buscar" Text="Buscar" class="btn btn-default" />

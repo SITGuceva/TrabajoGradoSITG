@@ -31,8 +31,8 @@
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                                 <EmptyDataTemplate>¡No hay peticiones de director pendientes!</EmptyDataTemplate>
                                 <Columns>
-                                    <asp:BoundField DataField="SOL_ID" HeaderText="Id" />
-                                    <asp:BoundField DataField="SOL_FECHA" HeaderText="Fecha" />
+                                    <asp:BoundField DataField="DIR_ID" HeaderText="Id" />
+                                    <asp:BoundField DataField="DIR_FECHA" HeaderText="Fecha" />
                                     <asp:BoundField DataField="PROP_TITULO" HeaderText="Propuesta" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director solicitante" />
                                     <asp:TemplateField HeaderText="Estado">

@@ -1,9 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -12,8 +9,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
     Conexion con = new Conexion();
     System.Data.DataTable table;
     System.Data.DataRow row;
-    
-
+   
     protected void Page_Load(object sender, EventArgs e)
     {
        if (Session["Usuario"] == null){
@@ -87,12 +83,12 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Los campos son obligatorios";
             }else{
-                sql = "insert into LIN_PROFUNDIZACION (LPROF_CODIGO,LPROF_NOMBRE,PROG_CODIGO) VALUES(lprofid.nextval, '" + TBnomlinea.Text + "', '" + DDLprog.Items[DDLprog.SelectedIndex].Value.ToString() + "')";
+                sql = "insert into LIN_INVESTIGACION (LINV_CODIGO,LINV_NOMBRE,PROG_CODIGO) VALUES(linvid.nextval, '" + TBnomlinea.Text + "', '" + DDLprog.Items[DDLprog.SelectedIndex].Value.ToString() + "')";
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);
 
                 foreach (DataRow row in currentRows){ 
-                    sql = "insert into TEMA (TEM_CODIGO,TEM_NOMBRE,LPROF_CODIGO) VALUES(temaid.nextval, '" + row["TEMAS"] + "', lprofid.currval)";
+                    sql = "insert into TEMA (TEM_CODIGO,TEM_NOMBRE,LINV_CODIGO) VALUES(temaid.nextval, '" + row["TEMAS"] + "', linvid.currval)";
                     texto = "Datos guardados satisfactoriamente";
                     Ejecutar(texto, sql);    
                 }
@@ -149,7 +145,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
             if (conn != null) {
                
                 string programa = DDLprog2.Items[DDLprog2.SelectedIndex].Value.ToString();               
-                sql = "SELECT LPROF_CODIGO, LPROF_NOMBRE, LPROF_ESTADO FROM LIN_PROFUNDIZACION WHERE PROG_CODIGO='" + programa + "' ORDER BY LPROF_CODIGO";
+                sql = "SELECT LINV_CODIGO, LINV_NOMBRE, LINV_ESTADO FROM LIN_INVESTIGACION WHERE PROG_CODIGO='" + programa + "' ORDER BY LINV_CODIGO";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -185,7 +181,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
             TextBox nombre = (TextBox)GVlineaprof.Rows[e.RowIndex].Cells[1].Controls[0];
             TextBox codigo = (TextBox)GVlineaprof.Rows[e.RowIndex].Cells[0].Controls[0];
 
-            string sql = "update lin_profundizacion set lprof_nombre = '" + nombre.Text + "', lprof_estado='" + estado + "' where  lprof_codigo ='" + codigo.Text + "'";
+            string sql = "update lin_investigacion set linv_nombre = '" + nombre.Text + "', linv_estado='" + estado + "' where  linv_codigo ='" + codigo.Text + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             using (OracleDataReader reader = cmd.ExecuteReader()){               
@@ -228,7 +224,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
     }
     protected void AgregarT(object sender, EventArgs e)
     {
-       string sql = "insert into TEMA (TEM_CODIGO,TEM_NOMBRE,LPROF_CODIGO) VALUES(temaid.nextval, '" + TBagregt.Text+ "', '"+Metodo.Value+"')";
+       string sql = "insert into TEMA (TEM_CODIGO,TEM_NOMBRE,LINV_CODIGO) VALUES(temaid.nextval, '" + TBagregt.Text+ "', '"+Metodo.Value+"')";
        string texto = "";    
        Ejecutar(texto, sql);
        ResultadoTemas();
@@ -239,7 +235,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
               OracleConnection conn = con.crearConexion();
               OracleCommand cmd = null;
               if (conn != null){
-                  string sql = "SELECT T.TEM_CODIGO, T.TEM_NOMBRE, T.TEM_ESTADO FROM TEMA T, LIN_PROFUNDIZACION L WHERE T.LPROF_CODIGO = L.LPROF_CODIGO AND L.LPROF_CODIGO='" + Metodo.Value + "' ORDER BY  T.TEM_CODIGO";
+                  string sql = "SELECT T.TEM_CODIGO, T.TEM_NOMBRE, T.TEM_ESTADO FROM TEMA T, LIN_INVESTIGACION L WHERE T.LINV_CODIGO = L.LINV_CODIGO AND L.LINV_CODIGO='" + Metodo.Value + "' ORDER BY  T.TEM_CODIGO";
 
                   cmd = new OracleCommand(sql, conn);
                   cmd.CommandType = CommandType.Text;

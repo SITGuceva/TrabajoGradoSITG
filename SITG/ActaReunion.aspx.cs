@@ -89,13 +89,11 @@ public partial class ActaReunion : System.Web.UI.Page
     /*Metodos que consultan los miembros del comite*/
     private void CargarAsistente()
     {
-        string sql = "";
-       
         try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                sql = "Select CONCAT(CONCAT(usu_nombre, ' '), usu_apellido) as miembros from profesor p, usuario u where p.usu_username = u.usu_username and p.com_codigo in (select COM_CODIGO from profesor where USU_USERNAME = '"+ Session["id"] + "')";
+                string sql = "Select CONCAT(CONCAT(usu_nombre, ' '), usu_apellido) as miembros from profesor p, usuario u where p.usu_username = u.usu_username and p.com_codigo in (select COM_CODIGO from profesor where USU_USERNAME = '"+ Session["id"] + "')";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -160,12 +158,9 @@ public partial class ActaReunion : System.Web.UI.Page
     }
     protected void CBcaso_CheckedChanged(object sender, EventArgs e)
     {
-        if (CBcaso.Checked)
-        {
+        if (CBcaso.Checked){
             Tcasop.Visible = true;
-        }
-        else
-        {
+        } else{
             Tcasop.Visible = false;
         }
     }

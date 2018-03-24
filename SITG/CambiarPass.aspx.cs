@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 
 public partial class CambiarPass : Conexion
 {
@@ -24,14 +19,11 @@ public partial class CambiarPass : Conexion
 
     protected void Aceptar(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(TBpassactual.Text) == true || string.IsNullOrEmpty(TBpassnueva.Text) == true || string.IsNullOrEmpty(TBpassnueva2.Text) == true)
-        {
+        if (string.IsNullOrEmpty(TBpassactual.Text) == true || string.IsNullOrEmpty(TBpassnueva.Text) == true || string.IsNullOrEmpty(TBpassnueva2.Text) == true){
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Los campos son obligatorios";
-        }
-        else { 
-            if (TBpassnueva.Text.Equals(TBpassnueva2.Text))
-            {
+        }else { 
+            if (TBpassnueva.Text.Equals(TBpassnueva2.Text)){
                 string pass = con.GetMD5(TBpassactual.Text);
                 string passnueva = con.GetMD5(TBpassnueva.Text);       
                 string sql = "UPDATE USUARIO SET USU_CONTRASENA='"+passnueva+"' WHERE USU_USERNAME='"+Session["id"].ToString()+"' AND USU_CONTRASENA='"+pass+"'";

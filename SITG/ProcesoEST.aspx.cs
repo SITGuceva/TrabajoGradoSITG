@@ -93,7 +93,7 @@ public partial class ProcesoEST : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-               string sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha,INITCAP(p.prop_estado) as estado,  CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, INITCAP(s.sol_estado) as direstado from propuesta p, solicitud_dir s, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='" + Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo";
+               string sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha,INITCAP(p.prop_estado) as estado,  CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, INITCAP(s.dir_estado) as direstado from propuesta p, director s, usuario u, estudiante e, profesor pro where pro.usu_username='" + Session["id"]+"' and pro.com_codigo =e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -120,12 +120,11 @@ public partial class ProcesoEST : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "Select P.APRO_CODIGO, P.ANP_NOMBRE, P.ANP_FECHA, INITCAP(P.ANT_APROBACION) as aprobacion ,INITCAP(P.ANT_ESTADO) as estado, CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor from anteproyecto p, usuario o, estudiante e, comite com, profesor pro, evaluador r " +
-                    "where pro.usu_username = '"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo = e.prog_codigo and e.usu_username = '"+TBCodigoE.Text+"' and e.prop_codigo = p.apro_codigo and r.Usu_Username = o.Usu_Username and r.Apro_Codigo = e.Prop_Codigo";
+                string sql = "Select P.APRO_CODIGO, P.ANP_NOMBRE, P.ANP_FECHA, INITCAP(P.ANT_APROBACION) as aprobacion ,INITCAP(P.ANT_ESTADO) as estado,CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor from anteproyecto p, usuario o, estudiante e, profesor d, evaluador r " +
+                             "where d.usu_username = '" + Session["id"] + "' and d.com_codigo = e.prog_codigo  and e.usu_username = '" + TBCodigoE.Text + "' and e.prop_codigo = p.apro_codigo and r.Usu_Username = o.Usu_Username and r.Apro_Codigo = e.Prop_Codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader()) {
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVanteproyecto.DataSource = dataTable;
@@ -150,9 +149,9 @@ public partial class ProcesoEST : Conexion
         try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-                string sql = "Select distinct p.ppro_codigo, p.pf_titulo, p.pf_fecha, INITCAP(p.pf_aprobacion) as aprobacion, p.pf_jur1, p.pf_jur2, p.pf_jur3, INITCAP(p.pf_estado) as estado from proyecto_final p, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and e.prop_codigo = p.ppro_codigo";
+            if (conn != null){
+                string sql = "Select distinct p.ppro_codigo, p.pf_titulo, p.pf_fecha, INITCAP(p.pf_aprobacion) as aprobacion, p.pf_jur1, p.pf_jur2, p.pf_jur3, INITCAP(p.pf_estado) as estado from proyecto_final p, estudiante e, profesor d " +
+                             " where d.usu_username = '"+Session["id"]+"' and d.com_codigo = e.prog_codigo and e.usu_username = '"+TBCodigoE.Text+"' and e.prop_codigo = p.ppro_codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
@@ -165,9 +164,7 @@ public partial class ProcesoEST : Conexion
                 GVproyectofinal.DataBind();
             }
             conn.Close();
-        }
-        catch (Exception ex)
-        {
+        }catch (Exception ex) {
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
         Comprobado();

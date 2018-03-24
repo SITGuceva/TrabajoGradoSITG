@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -40,7 +39,7 @@ public partial class Anteproyecto : Conexion
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         if (conn != null){
-            string sql = "select p.prop_estado, p.prop_codigo, p.prop_titulo, s.sol_estado from propuesta p, estudiante e, solicitud_dir s where e.usu_username='" + Session["id"] + "' and s.prop_codigo=e.prop_codigo and p.prop_codigo = e.prop_codigo";
+            string sql = "select p.prop_estado, p.prop_codigo, p.prop_titulo, s.dir_estado from propuesta p, estudiante e, director s where e.usu_username='" + Session["id"] + "' and s.prop_codigo=e.prop_codigo and p.prop_codigo = e.prop_codigo";
 
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;

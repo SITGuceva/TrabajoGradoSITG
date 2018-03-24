@@ -1,6 +1,5 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Web.UI.WebControls;
 
@@ -107,15 +106,12 @@ public partial class Asignar_Comite : Conexion
     protected void GVusuario_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void CargarUsuario()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "select CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as usuario from usuario u, profesor p where p.usu_username = '" + TBcodigo.Text + "' and u.usu_estado = 'ACTIVO' and u.USU_USERNAME = p.USU_USERNAME";
+                string sql = "select CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as usuario from usuario u, profesor p where p.usu_username = '" + TBcodigo.Text + "' and u.usu_estado = 'ACTIVO' and u.USU_USERNAME = p.USU_USERNAME";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -158,20 +154,15 @@ public partial class Asignar_Comite : Conexion
     protected void GVmiembros_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void CargarMiembros()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-                sql = "Select u.usu_username, CONCAT(CONCAT(usu_nombre, ' '), usu_apellido) as miembros from profesor p, usuario u where p.usu_username = u.usu_username and p.com_codigo='" + DDLcom2.Items[DDLcom2.SelectedIndex].Value.ToString() + "'";
+            if (conn != null) { 
+                string  sql = "Select u.usu_username, CONCAT(CONCAT(usu_nombre, ' '), usu_apellido) as miembros from profesor p, usuario u where p.usu_username = u.usu_username and p.com_codigo='" + DDLcom2.Items[DDLcom2.SelectedIndex].Value.ToString() + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader()){
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVmiembros.DataSource = dataTable;
@@ -211,16 +202,13 @@ public partial class Asignar_Comite : Conexion
     protected void GVcomite_RowDataBound(object sender, GridViewRowEventArgs e) {}
     public void CargarComite()
     {
-
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
         try
         {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "Select C.COM_NOMBRE from COMITE C, PROFESOR P where C.COM_CODIGO=P.COM_CODIGO and p.usu_username='"+TBcodigo.Text+"'";
+                string sql = "Select C.COM_NOMBRE from COMITE C, PROFESOR P where C.COM_CODIGO=P.COM_CODIGO and p.usu_username='"+TBcodigo.Text+"'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())

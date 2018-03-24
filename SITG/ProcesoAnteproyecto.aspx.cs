@@ -41,7 +41,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select DISTINCT an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, solicitud_dir s, usuario u WHERE  an.apro_codigo = e.PROP_CODIGO and s.prop_codigo = an.apro_codigo and an.ant_aprobacion = 'PENDIENTE' and  s.usu_username='"+Session["id"]+"'";
+                string sql = "select DISTINCT an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, director s, usuario u WHERE  an.apro_codigo = e.PROP_CODIGO and s.prop_codigo = an.apro_codigo and an.ant_aprobacion = 'PENDIENTE' and  s.usu_username='"+Session["id"]+"'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -196,13 +196,13 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
     protected void Agregar_observacion(object sender, EventArgs e)
     {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        if (string.IsNullOrEmpty(TBdescripcion.Text) == true) {
+        if (string.IsNullOrEmpty(TBdescripcion.Value) == true) {
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "No puede agregar una observacion en blanco.";
         } else{   
-            string sql = "insert into ante_observacion (AOBS_CODIGO, AOBS_DESCRIPCION, APROP_CODIGO ,AOBS_FECHA, AOBS_REALIZADA) values (OBSANTEPID.nextval,'" + TBdescripcion.Text.ToLower() + "','"+ Codigo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'DIRECTOR')";
+            string sql = "insert into ante_observacion (AOBS_CODIGO, AOBS_DESCRIPCION, APROP_CODIGO ,AOBS_FECHA, AOBS_REALIZADA) values (OBSANTEPID.nextval,'" + TBdescripcion.Value.ToLower() + "','"+ Codigo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'DIRECTOR')";
             Ejecutar("", sql);
-            TBdescripcion.Text = "";
+            TBdescripcion.Value = "";
             cargarTabla();
         }
     }

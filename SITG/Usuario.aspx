@@ -23,7 +23,7 @@
                                     <asp:TableCell><asp:TextBox ID="TBcodigo" runat="server" TextMode="Number" CssClass="form-control"></asp:TextBox></asp:TableCell>
                                     <%--<asp:RequiredFieldValidator runat="server" ControlToValidate="TBcodigo" CssClass="text-danger" ErrorMessage="El codigo es obligatorio." ForeColor="#CC0000" />--%>
                                     <asp:TableCell><asp:Label ID="Lcontra" runat="server" Text="Contraseña:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
-                                    <asp:TableCell><asp:TextBox ID="TBcontra" runat="server" TextMode="Password" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                                    <asp:TableCell><asp:TextBox ID="TBcontra" runat="server" TextMode="Password" CssClass="form-control" AutoPostBack="false" autocomplete="off"></asp:TextBox></asp:TableCell>
                                 </asp:TableRow>
                                 <asp:TableRow>
                                     <asp:TableCell><asp:Label ID="Lnombre" runat="server" Text="Nombre:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>

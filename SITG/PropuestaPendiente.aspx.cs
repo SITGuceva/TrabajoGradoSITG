@@ -46,7 +46,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             ResultadoContenidoP();
             ConsultaContenidoP.Visible = true;
             DDLconsultaReunion.Items.Clear();
-            string sql = "SELECT REU_CODIGO, REU_CODIGO FROM REUNION WHERE COM_CODIGO=(select com_codigo from profesor where usu_username='" + Session["id"] + "') and REU_ESTADO='ACTIVO'";
+            string sql = "SELECT r.REU_CODIGO, r.REU_CODIGO FROM REUNION r, profesor p WHERE r.COM_CODIGO=p.COM_CODIGO AND p.usu_username='" + Session["id"] + "' AND r.REU_ESTADO='ACTIVO'";
             DDLconsultaReunion.Items.AddRange(con.cargardatos(sql));
             DDLconsultaReunion.Items.Insert(0, "Seleccione Reunion");
             DDLconsultaReunion.Visible = true;
@@ -58,10 +58,9 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select DISTINCT   p.PROP_CODIGO,p.PROP_TITULO, p.PROP_ESTADO, p.PROP_FECHA, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado  " +
-                    "from estudiante e, PROPUESTA p, comite c, PROFESOR d, solicitud_dir s, usuario u " +
-                    "WHERE u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = 'PENDIENTE' and d.COM_CODIGO = c.COM_CODIGO" +
-                    " and c.PROG_CODIGO = e.PROG_CODIGO and d.USU_USERNAME = '"+ Session["id"] + "'";
+                string sql = "select DISTINCT   p.PROP_CODIGO,p.PROP_TITULO, p.PROP_ESTADO, p.PROP_FECHA, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_estado as Estado  " +
+                    "from estudiante e, PROPUESTA p,  PROFESOR d, director s, usuario u " +
+                    "WHERE u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = 'PENDIENTE' and d.COM_CODIGO = e.PROG_CODIGO and d.USU_USERNAME = '"+ Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -97,7 +96,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LPROF_NOMBRE, t.TEM_NOMBRE from propuesta p, lin_profundizacion l, tema t where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = '" + Metodo.Value + "'";
+                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LINV_NOMBRE, t.TEM_NOMBRE from propuesta p, lin_investigacion l, tema t where t.LINV_CODIGO = l.LINV_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = '" + Metodo.Value + "'";
 
                  cmd = new OracleCommand(sql, conn);
                  cmd.CommandType = CommandType.Text;
@@ -145,7 +144,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         }
     }
 
-    /*Metodos para la consulta de las observaciones*/
+    /*Metodos para la consulta de las observaciones que ha hecho el comite*/
     protected void GVobservacion_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         GVobservacion.PageIndex = e.NewPageIndex;
@@ -159,7 +158,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='"+ Metodo.Value + "' and OBS_REALIZADA!='Director'";
+                sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='"+ Metodo.Value + "' and OBS_REALIZADA!='DIRECTOR'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -235,7 +234,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             Linfo.Text = "No puede ingresar una observación en blanco.";
         } else {
             string descripcion2=TBdescripcion.Value;
-            string sql = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO, OBS_FECHA) values (OBSERVACIONPROP.nextval,'" + descripcion2.ToLower() + "','Comite', '" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
+            string sql = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO, OBS_FECHA) values (OBSPROPID.nextval,'" + descripcion2.ToLower() + "','COMITE', '" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             Resultado.Visible = true;

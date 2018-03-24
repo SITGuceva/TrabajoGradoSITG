@@ -13,13 +13,16 @@ public partial class OpcSistema : Conexion
         }
         if (!IsPostBack){
             string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "OpcSistema.aspx");
-            if (valida.Equals("false")) {
+            if (valida.Equals("false")){
                 Response.Redirect("MenuPrincipal.aspx");
-            } 
+            }else {
+                DDLcategoria.Items.Clear();
+                string sql = "SELECT CATS_ID, CATS_NOMBRE FROM CATEGORIA_SISTEMA";
+                DDLcategoria.Items.AddRange(con.cargardatos(sql));
+                DDLcategoria.Items.Insert(0, "Seleccione");
+            }
         }
-        DDLcategoria.Items.Clear();
-        string sql = "SELECT CATS_ID, CATS_NOMBRE FROM CATEGORIA_SISTEMA";
-        DDLcategoria.Items.AddRange(con.cargardatos(sql));
+        
     }
 
     /*Metodos de crear-consultar que manejan la parte del fronted*/
@@ -28,14 +31,18 @@ public partial class OpcSistema : Conexion
         DDLcategoria.Items.Clear();
         string sql = "SELECT CATS_ID, CATS_NOMBRE FROM CATEGORIA_SISTEMA";
         DDLcategoria.Items.AddRange(con.cargardatos(sql));
+        DDLcategoria.Items.Insert(0, "Seleccione");
         Resultado.Visible = false;
         Busqueda.Visible = false;
         Linfo.Text = "";
+        TBnombre.Text = "";
+        TBurl.Text = "";
     }
     protected void Consultar(object sender, EventArgs e){
         DDLcat.Items.Clear();
         string sql = "SELECT CATS_ID, CATS_NOMBRE FROM CATEGORIA_SISTEMA";
         DDLcat.Items.AddRange(con.cargardatos(sql));
+        DDLcat.Items.Insert(0, "Seleccione");
         Resultado.Visible = false;
         Busqueda.Visible = true;
         Ingreso.Visible = false;
@@ -47,6 +54,7 @@ public partial class OpcSistema : Conexion
         Linfo.Text = "";      
         TBnombre.Text = "";
         TBurl.Text = "";
+        DDLcategoria.SelectedIndex = 0;
     }
 
     /*Metodos que se utilizan para guardar*/
@@ -59,11 +67,11 @@ public partial class OpcSistema : Conexion
             {
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Los campos son obligatorios";
-            }
-            else
-            {
+            }else if (DDLcategoria.SelectedIndex.Equals(0)) {
+                Linfo.ForeColor = System.Drawing.Color.Red;
+                Linfo.Text = "Debe escoger una categoria.";
+            } else {
                 sql = "insert into OPCION_SISTEMA (OPCS_ID,OPCS_NOMBRE,CATS_ID,OPCS_URL) VALUES(OPCSID.nextval, '" + TBnombre.Text + "', '" + DDLcategoria.Items[DDLcategoria.SelectedIndex].Value + "', '" + TBurl.Text + "')";
-
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);
             }
@@ -81,13 +89,19 @@ public partial class OpcSistema : Conexion
         }
         TBnombre.Text = "";
         TBurl.Text = "";
+        DDLcategoria.SelectedIndex = 0;
     }
 
     /*Metodos que se utilizan para la consulta*/
     protected void Buscar(object sender, EventArgs e)
     {
-        cargarTabla();
-        Resultado.Visible = true;
+        if (DDLcat.SelectedIndex.Equals(0)) {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Debe escoger una categoria.";
+        } else {
+            cargarTabla();
+            Resultado.Visible = true;
+        }
     }
     protected void GVSysRol_PageIndexChanging(object sender, GridViewPageEventArgs e){
         GVSysRol.PageIndex = e.NewPageIndex;
@@ -110,6 +124,7 @@ public partial class OpcSistema : Conexion
                     dataTable.Load(reader);
                     GVSysRol.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.ForeColor = System.Drawing.Color.Red;
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVSysRol.DataBind();
@@ -155,5 +170,12 @@ public partial class OpcSistema : Conexion
             }
         }
     }
-
+    protected void DDLcat_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        if (DDLcat.SelectedIndex.Equals(0))
+        {
+            Resultado.Visible = false;
+            Linfo.Text = "";
+        }
+    }
 }

@@ -64,8 +64,7 @@ public partial class PeticionDir : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT DISTINCT S.SOL_ID, S.SOL_FECHA, S.SOL_ESTADO, p.PROP_TITULO, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, u.usu_username  FROM SOLICITUD_DIR S, USUARIO U, estudiante e, propuesta p WHERE p.PROP_CODIGO = S.PROP_CODIGO  and S.SOL_ESTADO = 'PENDIENTE' AND U.USU_USERNAME = S.USU_USERNAME and S.PROP_CODIGO = e.PROP_CODIGO  and e.PROG_CODIGO in( " +
-                    "select  p.PROG_CODIGO from  programa p, profesor d, comite c where c.PROG_CODIGO = p.PROG_CODIGO and c.COM_CODIGO = d.COM_CODIGO and d.USU_USERNAME = '"+Session["id"] +"')"; 
+                sql = "SELECT DISTINCT S.DIR_ID, S.DIR_FECHA, S.DIR_ESTADO, p.PROP_TITULO, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, u.usu_username  FROM DIRECTOR S, USUARIO U, estudiante e, propuesta p, profesor d WHERE p.PROP_CODIGO = S.PROP_CODIGO  and S.DIR_ESTADO = 'PENDIENTE' AND U.USU_USERNAME = S.USU_USERNAME and S.PROP_CODIGO = e.PROP_CODIGO  and e.PROG_CODIGO = d.COM_CODIGO "; 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -99,23 +98,23 @@ public partial class PeticionDir : Conexion
         }  
         if (e.CommandName == "Aprobar") {
             row = GVpeticion.Rows[index]; 
-            sql = "update SOLICITUD_DIR set SOL_ESTADO='APROBADO' where SOL_ID='" + row.Cells[0].Text + "'";
+            sql = "update DIRECTOR set DIR_ESTADO='APROBADO' where DIR_ID='" + row.Cells[0].Text + "'";
             Ejecutar("Solicitud de Director Aprobada", sql);
             ExisteRol(row.Cells[0].Text);
         }
         if (e.CommandName == "Rechazar"){
             row = GVpeticion.Rows[index];
-            sql = "update SOLICITUD_DIR set SOL_ESTADO='RECHAZADO' where SOL_ID='" + row.Cells[0].Text + "'";
+            sql = "update DIRECTOR set DIR_ESTADO='RECHAZADO' where DIR_ID='" + row.Cells[0].Text + "'";
             Ejecutar("Solicitud de Director Rechazada", sql);
             CargarTablaPeticiones();
         }   
     }
     private void ExisteRol(string id)
     {
-        string sql = " select u.USU_USERNAME from usuario_rol u , solicitud_dir s  where u.ROL_ID = 'DIR' and s.SOL_ID = '" + id + "' and u.USU_USERNAME = s.USU_USERNAME";
+        string sql = " select u.USU_USERNAME from usuario_rol u , director s  where u.ROL_ID = 'DIR' and s.DIR_ID = '" + id + "' and u.USU_USERNAME = s.USU_USERNAME";
         List<string> list = con.consulta(sql, 1, 1);
         if (list.Count.Equals(0)){
-            sql = " select USU_USERNAME from solicitud_dir  where SOL_ID = '" + id + "'";
+            sql = " select USU_USERNAME from DIRECTOR  where DIR_ID = '" + id + "'";
             List<string> list2 = con.consulta(sql, 1, 1);
             sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval, '" + list2[0] + "', 'DIR')";
             Ejecutar("", sql);
@@ -149,17 +148,13 @@ public partial class PeticionDir : Conexion
 
     /*Metodos que se utilizan para consultar la informacion adicional del director*/
     protected void GVinfprof_RowDataBound(object sender, GridViewRowEventArgs e){}
-    public void CargarInfprof(int cod)
-    {
-        string sql = "";
+    public void CargarInfprof(int cod) {
         List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-                sql = "select CONCAT(CONCAT(usu_nombre, ' '), usu_apellido) as nombre, usu_telefono, usu_correo, usu_username from usuario  where usu_username='" + cod+ "'";
+            if (conn != null){
+                string sql = "select CONCAT(CONCAT(usu_nombre, ' '), usu_apellido) as nombre, usu_telefono, usu_correo, usu_username from usuario  where usu_username='" + cod+ "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -229,13 +224,12 @@ public partial class PeticionDir : Conexion
             OracleCommand cmd = null;
             if (conn != null){
                 string sql = "select DISTINCT s.SOLE_ID, s.SOLE_FECHA, s.SOLE_MOTIVO, p.PROP_TITULO,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as ESTUDIANTE,s.SOLE_ESTADO " +
-                    "from solicitud_est s, propuesta p, usuario u, estudiante e where s.PROP_CODIGO = p.PROP_CODIGO  and u.USU_USERNAME = s.USU_USERNAME and s.SOLE_TIPO = '"+ DDLsol.Items[DDLsol.SelectedIndex].Text + "'  and s.SOLE_ESTADO='Pendiente' and e.PROG_CODIGO " +
-                    " in (select  c.PROG_CODIGO from profesor p, comite c where p.USU_USERNAME = '" + Session["id"] + "' and c.COM_CODIGO = p.COM_CODIGO ) order by s.sole_id";
+                    "from solicitud_est s, propuesta p, usuario u, estudiante e, profesor d where s.PROP_CODIGO = p.PROP_CODIGO  and u.USU_USERNAME = s.USU_USERNAME and s.SOLE_TIPO = '" + DDLsol.Items[DDLsol.SelectedIndex].Text + "'  and s.SOLE_ESTADO='Pendiente' " +
+                    "and e.PROG_CODIGO=d.COM_CODIGO  and  d.USU_USERNAME = '" + Session["id"] + "'  order by s.sole_id";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader()){
                     
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
@@ -307,6 +301,7 @@ public partial class PeticionDir : Conexion
             }
         }
     }
+
 }
 
 

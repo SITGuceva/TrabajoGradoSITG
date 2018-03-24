@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.UI;
@@ -107,7 +106,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select DISTINCT   an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, comite c, PROFESOR d WHERE an.apro_codigo = e.prop_codigo and an.ant_evaluador = 'SIN ASIGNAR' and d.COM_CODIGO = c.COM_CODIGO  and An.Ant_Aprobacion = 'APROBADO' and c.PROG_CODIGO = e.PROG_CODIGO and d.USU_USERNAME = '"+Session["id"]+"'";
+                string sql = "select DISTINCT   an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, PROFESOR d WHERE an.apro_codigo = e.prop_codigo and an.ant_evaluador = 'SIN ASIGNAR' and d.COM_CODIGO = e.PROG_CODIGO  and An.Ant_Aprobacion = 'APROBADO' and d.USU_USERNAME = '" + Session["id"]+"'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -143,7 +142,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
             DDLprofesores.Items.AddRange(con.cargardatos(sql));
             DDLprofesores.Items.Insert(0, "Seleccione");
             DDLconsultaReunion.Items.Clear();
-            string sql2 = "SELECT REU_CODIGO, REU_CODIGO FROM REUNION WHERE COM_CODIGO=(select com_codigo from profesor where usu_username='" + Session["id"] + "') and REU_ESTADO='ACTIVO'";
+            string sql2 = "SELECT r.REU_CODIGO, r.REU_CODIGO FROM REUNION r,profesor p WHERE r.COM_CODIGO=p.com_codigo AND p.usu_username='" + Session["id"] + "' AND r.REU_ESTADO='ACTIVO'";
             DDLconsultaReunion.Items.AddRange(con.cargardatos(sql2));
             DDLconsultaReunion.Items.Insert(0, "Seleccione Reunion");
             DDLconsultaReunion.Visible = true;
@@ -187,7 +186,6 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
     }
     private void CargarInfoProfesor()
     {
-        List<ListItem> list = new List<ListItem>();
         try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;

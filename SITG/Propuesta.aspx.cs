@@ -110,7 +110,7 @@ public partial class Propuesta : Conexion
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         if (conn != null) {
-            string sql = "SELECT SOL_ESTADO FROM SOLICITUD_DIR WHERE PROP_CODIGO ='" + prop_codigo + "'";
+            string sql = "SELECT DIR_ESTADO FROM DIRECTOR WHERE PROP_CODIGO ='" + prop_codigo + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
@@ -138,7 +138,7 @@ public partial class Propuesta : Conexion
     protected void SolicitarDir(object sender, EventArgs e)
     {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        string sql = "insert into solicitud_dir (SOL_ID, SOL_FECHA, PROP_CODIGO, USU_USERNAME) values(SOLICITUDID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
+        string sql = "insert into DIRECTOR (DIR_ID, DIR_FECHA, PROP_CODIGO, USU_USERNAME) values(DIRECTORID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
         string texto = "Solicitud realizada correctamente";
         Ejecutar(texto, sql);
         Solicitar.Visible = false;
@@ -156,7 +156,7 @@ public partial class Propuesta : Conexion
             ConsultaSolicitud.Visible = false;
             Linfo.Text = "";
             DDLlprof.Items.Clear();
-            string sql = "SELECT LPROF_CODIGO, LPROF_NOMBRE FROM LIN_PROFUNDIZACION WHERE LPROF_ESTADO='ACTIVO' AND PROG_CODIGO IN" +
+            string sql = "SELECT LINV_CODIGO, LINV_NOMBRE FROM LIN_INVESTIGACION WHERE LINV_ESTADO='ACTIVO' AND PROG_CODIGO IN" +
                 " ( SELECT E.PROG_CODIGO FROM PROGRAMA P, ESTUDIANTE E WHERE P.PROG_CODIGO = E.PROG_CODIGO AND E.USU_USERNAME = '" + Session["id"] + "')";
             DDLlprof.Items.AddRange(con.cargardatos(sql));
             DDLlprof.Items.Insert(0, "Seleccione");
@@ -407,7 +407,7 @@ public partial class Propuesta : Conexion
             DDLtema.Items.Insert(0, "Seleccione");
         }else{
             DDLtema.Items.Clear();
-            string sql = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE TEM_ESTADO='ACTIVO' AND LPROF_CODIGO='" + DDLlprof.Items[DDLlprof.SelectedIndex].Value.ToString() + "'";
+            string sql = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE TEM_ESTADO='ACTIVO' AND LINV_CODIGO='" + DDLlprof.Items[DDLlprof.SelectedIndex].Value.ToString() + "'";
             DDLtema.Items.AddRange(con.cargardatos(sql));
             DDLtema.Items.Insert(0, "Seleccione");
         }
@@ -420,7 +420,7 @@ public partial class Propuesta : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LPROF_NOMBRE, t.TEM_NOMBRE,TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA ,INITCAP(p.PROP_ESTADO) as ESTADO  from propuesta p, estudiante e, lin_profundizacion l, tema t where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = e.PROP_CODIGO and e.USU_USERNAME = '" + Session["id"] + "'";
+                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LINV_NOMBRE, t.TEM_NOMBRE,TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA ,INITCAP(p.PROP_ESTADO) as ESTADO  from propuesta p, estudiante e, lin_investigacion l, tema t where t.LINV_CODIGO = l.LINV_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = e.PROP_CODIGO and e.USU_USERNAME = '" + Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -489,12 +489,11 @@ public partial class Propuesta : Conexion
     protected void GVobservacion_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void ResultadoObservaciones()
     {
-        string sql = "";
         try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT DISTINCT O.OBS_CODIGO, O.OBS_DESCRIPCION, O.OBS_REALIZADA FROM OBSERVACION O, ESTUDIANTE E WHERE E.PROP_CODIGO=O.PROP_CODIGO AND E.USU_USERNAME='" + Session["id"] + "' ORDER BY O.OBS_CODIGO";
+                string sql = "SELECT DISTINCT O.OBS_CODIGO, O.OBS_DESCRIPCION, O.OBS_REALIZADA FROM OBSERVACION O, ESTUDIANTE E WHERE E.PROP_CODIGO=O.PROP_CODIGO AND E.USU_USERNAME='" + Session["id"] + "' ORDER BY O.OBS_CODIGO";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -526,15 +525,12 @@ public partial class Propuesta : Conexion
     }
     private void CargarInfoProfesor()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "select usu_username, CONCAT(CONCAT(usu_nombre, ' '),usu_apellido) as NOMBRE,  usu_correo  from usuario  where usu_username='" + DDLlista.Items[DDLlista.SelectedIndex].Value + "'";
+                string sql = "select usu_username, CONCAT(CONCAT(usu_nombre, ' '),usu_apellido) as NOMBRE,  usu_correo  from usuario  where usu_username='" + DDLlista.Items[DDLlista.SelectedIndex].Value + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -593,15 +589,12 @@ public partial class Propuesta : Conexion
     protected void GVsolicitud_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void cargarTabla()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-                sql = "select s.sol_id, s.sol_fecha, s.sol_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director  from solicitud_dir s, usuario u where u.usu_username=s.usu_username and s.prop_codigo='" + prop_codigo + "'";
+                string sql = "select s.dir_id, s.dir_fecha, s.dir_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director  from director s, usuario u where u.usu_username=s.usu_username and s.prop_codigo='" + prop_codigo + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

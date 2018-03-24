@@ -17,6 +17,7 @@ public partial class Estudiante : Conexion
                 Response.Redirect("MenuPrincipal.aspx");
             }
         }
+        TBcontra.Attributes.Add("value", TBcontra.Text);
     }
 
     //METODOS DE CREAR, MODIFICAR, CONSULTAR, INHABILITAR ME MANEJAN QUE SE HACE VISIBLE EN EL  FRONTED
@@ -57,13 +58,9 @@ public partial class Estudiante : Conexion
                 sql = "insert into USUARIO (USU_USERNAME,USU_CONTRASENA,USU_NOMBRE,USU_APELLIDO,USU_TELEFONO,USU_DIRECCION,USU_CORREO,USU_FCREACION, USU_FMODIFICACION) VALUES('" + TBcodigo.Text + "', '" + pass + "', '" + TBnombre.Text + "', '" + TBapellido.Text + "', '" + TBtelefono.Text + "', '" + TBdireccion.Text + "', '" + TBcorreo.Text + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
                 Ejecutar("Datos guardados satisfactoriamente", sql);
 
-                if (rol.Equals("NULL"))
-                {
-                    Linfo.ForeColor = System.Drawing.Color.Green;
-                    Linfo.Text += "Datos guardados satisfactoriamente";
-                }else{
+                if (!rol.Equals("NULL")){
                     sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES (USUARIOID.nextval,'" + cod + "','" + rol + "')";
-                    Ejecutar("Datos guardados satisfactoriamente", sql);
+                    Ejecutar("", sql);
                     string sql2 = "";
                     if (rol.Equals("EST")) {
                         sql2 = "insert into ESTUDIANTE (EST_SEMESTRE, USU_USERNAME, PROG_CODIGO) VALUES ('" + TBsemestre.Text + "','" + cod + "', '" + DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' )";
@@ -113,7 +110,7 @@ public partial class Estudiante : Conexion
     private void borrardatos()/*limpia los campos*/
     {
         TBcodigo.Text = "";
-        TBcontra.Text = "";
+        TBcontra.Attributes.Add("value", "");
         TBnombre.Text = "";
         TBapellido.Text = "";
         TBtelefono.Text = "";

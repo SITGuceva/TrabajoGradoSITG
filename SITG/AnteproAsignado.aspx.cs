@@ -29,7 +29,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
         scriptManager.RegisterPostBackControl(this.GVconsultaAA);
     }
 
-    /*Metodos que se encargan de la consulta de los anteproyectos que esten pendientes del respectivo programa(comite) */
+    /*Metodos que se encargan de la consulta de los anteproyectos le asignaron */
     protected void GVconsultaAA_RowDataBound(object sender, GridViewRowEventArgs e) { }
     protected void GVconsultaAA_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {

@@ -52,7 +52,7 @@ public partial class PropuestaAsignada : Conexion
             Linfo.Text = "No se puede agregar una observación si se encuentra vacia.";
         } else {
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Value + "','DIRECTOR', '"+ Metodo.Value + "')";
+            string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSPROPID.nextval,'" + TBdescripcion.Value + "','DIRECTOR', '"+ Metodo.Value + "')";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             CargarObservaciones();
@@ -114,7 +114,7 @@ public partial class PropuestaAsignada : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                sql = "select distinct p.prop_codigo, p.prop_titulo, TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA , INITCAP(p.PROP_ESTADO) as ESTADO from propuesta p, usuario u, solicitud_dir s where s.USU_USERNAME='" + Session["id"] + "' and p.PROP_CODIGO = s.prop_codigo and sol_estado='APROBADO'";
+                sql = "select distinct p.prop_codigo, p.prop_titulo, TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA , INITCAP(p.PROP_ESTADO) as ESTADO from propuesta p, usuario u, director s where s.USU_USERNAME='" + Session["id"] + "' and p.PROP_CODIGO = s.prop_codigo and s.dir_estado='APROBADO'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -295,8 +295,8 @@ public partial class PropuestaAsignada : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LPROF_NOMBRE, t.TEM_NOMBRE from propuesta p, lin_profundizacion l, tema t " +
-                    "where t.LPROF_CODIGO = l.LPROF_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO  and p.PROP_CODIGO = '" + Metodo.Value + "'";
+                string sql = "select p.PROP_CODIGO,p.PROP_TITULO, l.LINV_NOMBRE, t.TEM_NOMBRE from propuesta p, lin_investigacion l, tema t " +
+                    "where t.LINV_CODIGO = l.LINV_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO  and p.PROP_CODIGO = '" + Metodo.Value + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

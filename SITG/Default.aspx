@@ -7,10 +7,9 @@
             <section id="loginForm">
                 <div class="form-horizontal">
                     
-                    <font size=4 color="White" face="Arial, Bold italic"/> <%--ARREGLAR--%>
+                    <font size=4 color="White" face="Arial, Bold italic"/> 
                     <br/>
-                    <hr/>
-
+                 
                    <div class="form-group"> 
                        <img src="Images/Lprincipal.png" class="img-responsive">
                        <br />

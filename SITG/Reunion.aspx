@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Reunion.aspx.cs" Inherits="Calendario" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Reunion.aspx.cs" Inherits="Reunion" %>
 
 <asp:Content ID="CReunion" ContentPlaceHolderID="MainContent" Runat="Server">
      <div class="panel panel-default">

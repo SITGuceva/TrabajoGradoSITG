@@ -50,9 +50,9 @@ public partial class Consulta_Anteproyecto : System.Web.UI.Page
             OracleCommand cmd = null;
             if (conn != null){
                 if (crit.Equals(2)){
-                    sql = "Select a.apro_codigo, a.anp_nombre, a.anp_fecha,A.ant_Estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as revisor from anteproyecto a,propuesta p, programa pro, estudiante e, tema t, lin_profundizacion l, usuario u , evaluador r where pro.prog_codigo = e.prog_codigo and pro.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.lprof_codigo='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'and t.tem_codigo = p.tem_codigo and  l.lprof_codigo = t.lprof_codigo  and u.usu_username = R.Usu_Username and P.Prop_Codigo = A.Apro_Codigo and R.Apro_Codigo = A.Apro_Codigo";
+                    sql = "Select a.apro_codigo, a.anp_nombre, a.anp_fecha,A.ant_Estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as revisor from anteproyecto a,propuesta p, programa pro, estudiante e, tema t, lin_investigacion l, usuario u , evaluador r where pro.prog_codigo = e.prog_codigo and pro.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.linv_codigo='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'and t.tem_codigo = p.tem_codigo and  l.linv_codigo = t.linv_codigo  and u.usu_username = R.Usu_Username and P.Prop_Codigo = A.Apro_Codigo and R.Apro_Codigo = A.Apro_Codigo";
                 } else if (crit.Equals(1)){
-                    sql = "Select a.apro_codigo, a.anp_nombre, a.anp_fecha,A.ant_Estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as revisor from anteproyecto a,propuesta p, programa pro, estudiante e, tema t, lin_profundizacion l, usuario u ,evaluador r  where pro.prog_codigo = e.prog_codigo and pro.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.lprof_codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo = '" +  DDLconsultaTema.Items[DDLconsultaTema.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.lprof_codigo = t.lprof_codigo  and u.usu_username  =R.Usu_Username and P.Prop_Codigo = A.Apro_Codigo and R.Apro_Codigo = A.Apro_Codigo";
+                    sql = "Select a.apro_codigo, a.anp_nombre, a.anp_fecha,A.ant_Estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as revisor from anteproyecto a,propuesta p, programa pro, estudiante e, tema t, lin_investigacion l, usuario u ,evaluador r  where pro.prog_codigo = e.prog_codigo and pro.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.linv_codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo = '" +  DDLconsultaTema.Items[DDLconsultaTema.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.linv_codigo = t.linv_codigo  and u.usu_username  =R.Usu_Username and P.Prop_Codigo = A.Apro_Codigo and R.Apro_Codigo = A.Apro_Codigo";
                 }
 
                 cmd = new OracleCommand(sql, conn);
@@ -87,7 +87,7 @@ public partial class Consulta_Anteproyecto : System.Web.UI.Page
         else
         {
             DDLconsultaLinea.Items.Clear();
-            string sql = "SELECT LPROF_CODIGO, LPROF_NOMBRE FROM LIN_PROFUNDIZACION WHERE PROG_CODIGO='" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "'";
+            string sql = "SELECT LINV_CODIGO, LINV_NOMBRE FROM LIN_INVESTIGACION WHERE PROG_CODIGO='" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "'";
             DDLconsultaLinea.Items.AddRange(con.cargardatos(sql));
             DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
             Linfo.Text = "";
@@ -103,7 +103,7 @@ public partial class Consulta_Anteproyecto : System.Web.UI.Page
         else
         {
             DDLconsultaTema.Items.Clear();
-            string sql3 = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE LPROF_CODIGO='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'";
+            string sql3 = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE LINV_CODIGO='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'";
             DDLconsultaTema.Items.AddRange(con.cargardatos(sql3));
             DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
             Linfo.Text = "";

@@ -52,7 +52,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select DISTINCT P.ppro_Codigo, P.pf_titulo, P.pf_Fecha from estudiante e,  proyecto_final p, solicitud_dir s WHERE  P.ppro_Codigo = e.PROP_CODIGO and s.prop_codigo = P.ppro_Codigo and P.pf_aprobacion = 'PENDIENTE' and  s.usu_username='" + Session["id"] + "'";
+                string sql = "select DISTINCT P.ppro_Codigo, P.pf_titulo, P.pf_Fecha from estudiante e,  proyecto_final p, director s WHERE  P.ppro_Codigo = e.PROP_CODIGO and s.prop_codigo = P.ppro_Codigo and P.pf_aprobacion = 'PENDIENTE' and  s.usu_username='" + Session["id"] + "'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -205,13 +205,13 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
     protected void Agregar_observacion(object sender, EventArgs e)
     {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        if (string.IsNullOrEmpty(TBdescripcion.Text) == true){
+        if (string.IsNullOrEmpty(TBdescripcion.Value) == true){
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "No se puede agregar una observacion vacia";
         } else  {         
-            string sql = "insert into pf_observacion (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBdescripcion.Text.ToLower() + "','" + CodigoP.Text + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'DIRECTOR')";
+            string sql = "insert into pf_observacion (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBdescripcion.Value.ToLower() + "','" + CodigoP.Text + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'DIRECTOR')";
             Ejecutar("", sql);
-            TBdescripcion.Text = "";
+            TBdescripcion.Value = "";
             Resultado.Visible = true;
             cargarTabla();
         }

@@ -68,7 +68,7 @@ public partial class Programa : System.Web.UI.Page
                 Ejecutar(texto, sql);
 
                 if (Verificador.Value.Equals("Funciono")) {
-                    sql2 = "insert into COMITE (COM_CODIGO, COM_NOMBRE, PROG_CODIGO) VALUES (COMITEID.nextval, '" + nombre + "',programaid.currval)";
+                    sql2 = "insert into COMITE (COM_CODIGO, COM_NOMBRE) VALUES (programaid.currval, '" + nombre + "',)";
                     texto= "Datos guardados satisfactoriamente"; 
                     Ejecutar(texto, sql2);
                 }                

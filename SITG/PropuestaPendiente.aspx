@@ -58,7 +58,7 @@
                     <Columns>
                         <asp:BoundField DataField="PROP_CODIGO" HeaderText="CODIGO" />
                         <asp:BoundField DataField="PROP_TITULO" HeaderText="TITULO" />
-                        <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="LINEA INVESTIGACION" />
+                        <asp:BoundField DataField="LINV_NOMBRE" HeaderText="LINEA INVESTIGACION" />
                         <asp:BoundField DataField="TEM_NOMBRE" HeaderText="TEMA" />
                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
                              <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("PROP_CODIGO") %>'></asp:LinkButton></ItemTemplate>

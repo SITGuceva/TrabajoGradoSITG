@@ -139,9 +139,9 @@ public partial class SiteMaster : MasterPage
 
 
         for (int m = 0; m < categoria.Count; m++){
-            PHprueba.Controls.Add(new LiteralControl("<li data-toggle=\"collapse\" data-target=\"#" + categoria[m].Value + "\" class=\"collapsed\">"));
+            PHprueba.Controls.Add(new LiteralControl("<li data-toggle=\"collapse\" onclick=\"ocultartodo()\" data-target=\"#" + categoria[m].Value + "\" class=\"collapsed\">"));
             PHprueba.Controls.Add(new LiteralControl("<a href=\"#\">" + categoria[m].Value + "<i class=\"fa fa-sort-desce\"></i>  <span class=\"sub_icon " + categoria[m].Text + "\" ></span></a>"));
-            PHprueba.Controls.Add(new LiteralControl("<ul class=\"nav nav-second-level\" id=\"" + categoria[m].Value + "\">"));
+            PHprueba.Controls.Add(new LiteralControl("<ul class=\"nav nav-second-level\" name=\"opciones\" id =\"" + categoria[m].Value + "\">"));
             for (int h = 0; h < Opciones.Count; h++) {
                 if (Opciones[h][2].Contains(categoria[m].Value)) {
                     PHprueba.Controls.Add(new LiteralControl("<li><a href=" + Opciones[h][1] + ">" + Opciones[h][0] + "</a></li>"));

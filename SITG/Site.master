@@ -78,7 +78,13 @@
    
    <script type="text/javascript">
        $('.nav-second-level').collapse('hide');
-      </script>
+       function ocultartodo() {
+           var elementos = document.getElementsByName("opciones");
+           for (var i = 0; i < elementos.length; i++) {
+               elementos[i].className = "nav nav-second-level collapse";
+           }
+       }
+    </script>
 </font>
 </body>
 </html>

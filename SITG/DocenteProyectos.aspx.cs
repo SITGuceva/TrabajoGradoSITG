@@ -96,7 +96,7 @@ public partial class DocenteProyectos : System.Web.UI.Page
         else
         {
             DDLtema.Items.Clear();
-            string sql = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE TEM_ESTADO='ACTIVO' AND LPROF_CODIGO='" + DDLlprof.Items[DDLlprof.SelectedIndex].Value.ToString() + "'";
+            string sql = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE TEM_ESTADO='ACTIVO' AND LINV_CODIGO='" + DDLlprof.Items[DDLlprof.SelectedIndex].Value.ToString() + "'";
             DDLtema.Items.AddRange(con.cargardatos(sql));
             DDLtema.Items.Insert(0, "Seleccione");
         }
@@ -113,7 +113,7 @@ public partial class DocenteProyectos : System.Web.UI.Page
         else
         {
             DDLlprof.Items.Clear();
-            string sql = "SELECT LPROF_CODIGO, LPROF_NOMBRE FROM LIN_PROFUNDIZACION WHERE PROG_CODIGO='" + DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' and LPROF_ESTADO='ACTIVO' ORDER BY LPROF_CODIGO";          
+            string sql = "SELECT LINV_CODIGO, LINV_NOMBRE FROM LIN_INVESTIGACION WHERE PROG_CODIGO='" + DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' and LINV_ESTADO='ACTIVO' ORDER BY LINV_CODIGO";          
             DDLlprof.Items.AddRange(con.cargardatos(sql));
             DDLlprof.Items.Insert(0, "Seleccione");
             Linfo.Text = "";
@@ -139,7 +139,7 @@ public partial class DocenteProyectos : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select P.Proy_Id,L.Lprof_Nombre, T.Tem_Nombre ,P.Proy_Nombre, P.Proy_Descripcion, P.Proy_Cantest,P.Proy_Fecha ,P.Proy_Estado  from proyectos p, lin_profundizacion l, tema t where T.Tem_Codigo = P.Tem_Codigo and T.Lprof_Codigo = L.Lprof_Codigo and P.Usu_Username = '"+Session["id"]+"'";
+                string sql = "select P.Proy_Id,L.Linv_Nombre, T.Tem_Nombre ,P.Proy_Nombre, P.Proy_Descripcion, P.Proy_Cantest,P.Proy_Fecha ,P.Proy_Estado  from proyectos p, lin_investigacion l, tema t where T.Tem_Codigo = P.Tem_Codigo and T.Linv_Codigo = L.Linv_Codigo and P.Usu_Username = '" + Session["id"]+"'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

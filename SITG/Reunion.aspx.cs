@@ -5,7 +5,7 @@ using System.Data;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class Calendario : System.Web.UI.Page
+public partial class Reunion : System.Web.UI.Page
 {
    
    Conexion con = new Conexion();
@@ -94,12 +94,11 @@ public partial class Calendario : System.Web.UI.Page
 
     /*Metodos que se utilizan para consultar y dar inicio a la reunión*/
     private void CargarReunion(){
-        string sql = "";
         try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "select r.reu_codigo, r.reu_fprop, r.reu_estado from reunion r,comite c, profesor p where Reu_Estado='PENDIENTE' and TO_CHAR(reu_fprop,'MM')='"+ DDLmes.Items[DDLmes.SelectedIndex].Value + "' and  P.Com_Codigo=C.Com_Codigo and P.Usu_Username='" + Session["id"] + "' order by  r.reu_codigo";
+                string sql = "select r.reu_codigo, r.reu_fprop, r.reu_estado from reunion r,comite c, profesor p where Reu_Estado='PENDIENTE' and TO_CHAR(reu_fprop,'MM')='"+ DDLmes.Items[DDLmes.SelectedIndex].Value + "' and  P.Com_Codigo=C.Com_Codigo and P.Usu_Username='" + Session["id"] + "' order by  r.reu_codigo";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -107,8 +106,8 @@ public partial class Calendario : System.Web.UI.Page
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVconsulta.DataSource = dataTable;
-                   // int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
-                   // Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
+                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVconsulta.DataBind();
             }

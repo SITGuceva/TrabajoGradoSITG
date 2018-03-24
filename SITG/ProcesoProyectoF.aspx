@@ -58,7 +58,7 @@
                         <div id="MostrarAgregarObs" runat="server" style="position: relative; left: -29.4%;" visible="false">
                             <asp:Table ID="Tobservaciones" runat="server" HorizontalAlign="center">
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:TextBox ID="TBdescripcion" Enabled="true" Width="900" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                                    <asp:TableCell><TextArea id="TBdescripcion" rows="2" Enabled="true" Width="900" runat="server" CssClass="form-control"></TextArea></asp:TableCell>
                                     <asp:TableCell><asp:Button ID="BTagregar" Enabled="true" OnClick="Agregar_observacion" runat="server" Text="Agregar observacion" CssClass="form-control"></asp:Button></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>
