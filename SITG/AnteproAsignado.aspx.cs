@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -17,15 +17,19 @@ public partial class AnteproAsignado : System.Web.UI.Page
         {
             Response.Redirect("Default.aspx");
         }
-        if (!IsPostBack)
-        {
-            ResultadoConsulta();
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "AnteproAsignado.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                ResultadoConsulta();
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVconsultaAA);
     }
 
-    /*Metodos que se encargan de la consulta de las propuestas que esten pendientes del respectivo programa(comite) */
+    /*Metodos que se encargan de la consulta de los anteproyectos que esten pendientes del respectivo programa(comite) */
     protected void GVconsultaAA_RowDataBound(object sender, GridViewRowEventArgs e) { }
     protected void GVconsultaAA_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
@@ -72,31 +76,34 @@ public partial class AnteproAsignado : System.Web.UI.Page
     protected void DownloadFile(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select ANP_NOMARCHIVO, ANP_DOCUMENTO, ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" + id + "";
-        OracleConnection conn = con.crearConexion();
-        if (conn != null){
-            using (OracleCommand cmd = new OracleCommand(sql, conn)){
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader()) {
-                    drc1.Read();
-                    contentype = drc1["ANP_TIPO"].ToString();
-                    fileName = drc1["ANP_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["ANP_DOCUMENTO"];
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
-        }
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+
+        string sql = "select ANP_NOMARCHIVO, ANP_DOCUMENTO,ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" + id + "";
+        List<string> ante = con.consulta(sql, 3, 0);
+        fileName = ante[0];
+        ruta = ante[1];
+        contentype = ante[2];
+
+        try {
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        } catch (WebException a) {
+            Linfo.Text = a.ToString();
+        }
     }
 
     /*Metodos para la consulta de las observaciones del anteproyecto*/

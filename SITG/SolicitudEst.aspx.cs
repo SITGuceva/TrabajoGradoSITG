@@ -2,8 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
@@ -21,10 +19,15 @@ public partial class GDirEst : Conexion
         }
         RevisarExiste();
         if (!Page.IsPostBack){
-            table = new System.Data.DataTable();
-            table.Columns.Add("CODIGO", typeof(System.String));
-            table.Columns.Add("INTEGRANTES", typeof(System.String));
-            Session.Add("Tabla", table);
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "SolicitudEst.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                table = new System.Data.DataTable();
+                table.Columns.Add("CODIGO", typeof(System.String));
+                table.Columns.Add("INTEGRANTES", typeof(System.String));
+                Session.Add("Tabla", table);
+            }
         }
     }
 

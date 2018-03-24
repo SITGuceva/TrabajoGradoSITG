@@ -8,7 +8,7 @@
                 <ContentTemplate>
                     <div class="container-fluid">
 
-                        <div id="Ingreso" runat="server" visible="false" class="row">
+                        <div id="Ingreso" runat="server" visible="true" class="row">
                             <asp:Table ID="Tgepropuesta" runat="server" HorizontalAlign="center">
                                 <asp:TableRow>
                                     <asp:TableCell><asp:Label ID="LCodigoE" runat="server" Text="Codigo del estudiante" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
@@ -40,9 +40,9 @@
                                     <asp:BoundField DataField="PROP_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="PROP_TITULO" HeaderText="Título" />
                                     <asp:BoundField DataField="PROP_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="PROP_ESTADO" HeaderText="Estado" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
-                                    <asp:BoundField DataField="ESTADO" HeaderText="Estado director" />
+                                    <asp:BoundField DataField="DIRESTADO" HeaderText="Condición Director" />
+                                    <asp:BoundField DataField="ESTADO" HeaderText="Estado" />
                                 </Columns>
                             </asp:GridView>
                         </div>
@@ -67,9 +67,9 @@
                                     <asp:BoundField DataField="APRO_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="ANP_NOMBRE" HeaderText="Título" />
                                     <asp:BoundField DataField="ANP_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="ANT_APROBACION" HeaderText="Estado director" />
-                                    <asp:BoundField DataField="ANT_EVALUADOR" HeaderText="Evaluador" />
-                                    <asp:BoundField DataField="ANT_ESTADO" HeaderText="Estado anteproyecto" />
+                                    <asp:BoundField DataField="APROBACION" HeaderText="Autorizacion Director" />
+                                    <asp:BoundField DataField="REVISOR" HeaderText="Evaluador" /> 
+                                    <asp:BoundField DataField="ESTADO" HeaderText="Estado" />
                                 </Columns>
                             </asp:GridView>
                         </div>
@@ -94,11 +94,11 @@
                                     <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
                                     <asp:BoundField DataField="PF_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="PF_APROBACION" HeaderText="Estado director" />
+                                    <asp:BoundField DataField="APROBACION" HeaderText="Autorización director" />
                                     <asp:BoundField DataField="PF_JUR1" HeaderText="Jurado 1" />
                                     <asp:BoundField DataField="PF_JUR2" HeaderText="Jurado 2" />
                                     <asp:BoundField DataField="PF_JUR3" HeaderText="Jurado 3" />
-                                    <asp:BoundField DataField="PF_ESTADO" HeaderText="Estado Proyecto final" />
+                                    <asp:BoundField DataField="ESTADO" HeaderText="Estado" />
                                 </Columns>
                             </asp:GridView>
                         </div>

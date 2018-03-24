@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class ProyectoDisponibles : System.Web.UI.Page
@@ -15,6 +11,12 @@ public partial class ProyectoDisponibles : System.Web.UI.Page
     {
         if (Session["Usuario"] == null) {
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack) {
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "ProyectoDisponibles.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }
         }
         Consultaproyectos.Visible = true;
         ResultadoConsulta();

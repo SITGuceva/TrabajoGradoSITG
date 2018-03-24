@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Roles : Conexion
@@ -14,7 +10,13 @@ public partial class Roles : Conexion
     protected void Page_Load(object sender, EventArgs e){
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
-        } 
+        }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Roles.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }    
+        }
     }
 
     /*Metodos de crear-consultar que manejan la parte del fronted*/
@@ -73,13 +75,11 @@ public partial class Roles : Conexion
     }
     protected void GVrol_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void cargarTabla(){
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
         try{
            OracleConnection conn = con.crearConexion();
            OracleCommand cmd = null;
            if (conn != null){                   
-             sql = "SELECT ROL_ID,ROL_NOMBRE, ROL_ESTADO FROM ROL ";      
+             string sql = "SELECT ROL_ID,ROL_NOMBRE, ROL_ESTADO FROM ROL ";      
              cmd = new OracleCommand(sql, conn);
              cmd.CommandType = CommandType.Text;    
              using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -100,8 +100,7 @@ public partial class Roles : Conexion
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             DropDownList combo = GVrol.Rows[e.RowIndex].FindControl("estado") as DropDownList;
             string estado = combo.SelectedValue;
             TextBox nombre = (TextBox)GVrol.Rows[e.RowIndex].Cells[1].Controls[0];
@@ -128,4 +127,5 @@ public partial class Roles : Conexion
         GVrol.EditIndex = -1;
         cargarTabla();
     }
+
 }

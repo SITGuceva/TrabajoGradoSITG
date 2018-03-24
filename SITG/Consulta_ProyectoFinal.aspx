@@ -48,7 +48,8 @@
                                     <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
                                     <asp:BoundField DataField="PF_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="PF_ESTADO" HeaderText="Estado del anteproyecto" />                                </Columns>
+                                    <asp:BoundField DataField="PF_ESTADO" HeaderText="Estado" />          
+                                </Columns>
                             </asp:GridView>
                         </div>
 

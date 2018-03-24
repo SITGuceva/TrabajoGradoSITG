@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -9,6 +8,7 @@ using System.Data;
 using Oracle.DataAccess.Client;
 using iTextSharp.text.pdf;
 using iTextSharp.text;
+using System.Net;
 
 public partial class ProyectoFinal : Conexion
 {
@@ -21,9 +21,13 @@ public partial class ProyectoFinal : Conexion
             Response.Redirect("Default.aspx");
         }
         if (!Page.IsPostBack) {
-           
-            BloqueoSubir();
-            Page.Form.Attributes.Add("enctype", "multipart/form-data");
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "ProyectoFinal.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            } else {
+                BloqueoSubir();
+                Page.Form.Attributes.Add("enctype", "multipart/form-data");
+            }
         }
         RevisarProp(); //Recoge el codigo de la propuesta y el titulo
         ValidarPagos();
@@ -31,7 +35,6 @@ public partial class ProyectoFinal : Conexion
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.Bgenerar);
         scriptManager.RegisterPostBackControl(this.GVconsulta);
-
     }
 
     /*Validaciones*/
@@ -251,64 +254,85 @@ public partial class ProyectoFinal : Conexion
     {
         DateTime fecha = DateTime.Today;
         if (FUdocumento.HasFile){
-            if (Metodo.Value.Equals("ACTUALIZA")) {
-                string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
-                string contentType = FUdocumento.PostedFile.ContentType;
-                using (Stream fs = FUdocumento.PostedFile.InputStream){
-                    using (BinaryReader br = new BinaryReader(fs)) {
-                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
-                        OracleConnection conn = con.crearConexion();
-                        if (conn != null) {
-                            string query = "";
-                            if (responsable.Equals(1)) { query = "update proyecto_final set  pf_documento=:Data, pf_nomarchivo=:pf_nomarchivo, pf_tipo= :pf_tipo, pf_fecha=:pf_fecha, pf_aprobacion='PENDIENTE' where ppro_codigo='"+Codigop.Value+"'";}
-                            else if (responsable.Equals(2)) {
-                                query = "update proyecto_final set  pf_documento=:Data, pf_nomarchivo=:pf_nomarchivo, pf_tipo= :pf_tipo, pf_fecha=:pf_fecha, pf_estado='PENDIENTE', pf_jur1='ASIGNADO', pf_jur2='ASIGNADO', pf_jur3='ASIGNADO' where ppro_codigo='" + Codigop.Value + "'";
-                                string revision = "update jurado set jur_revisado='REVISADO' where ppro_codigo='" + Codigop.Value + "'";
-                                Ejecutar("", revision);
-                            }
-                            using (OracleCommand cmd = new OracleCommand(query)) {
-                                cmd.Connection = conn;
-                                cmd.Parameters.Add(":Data", bytes);
-                                cmd.Parameters.Add(":pf_nomarchivo", filename);
-                                cmd.Parameters.Add(":pf_tipo", contentType);
-                                cmd.Parameters.Add(":pf_fecha", fecha);
-                                cmd.ExecuteNonQuery();
-                                conn.Close();
-                            }
-                        }
+            string fileExt = System.IO.Path.GetExtension(FUdocumento.FileName);
+            if (fileExt == ".pdf" || fileExt == ".doc" || fileExt == ".docx")
+            {
+                List<string> list = con.FtpConexion();
+                string ruta = list[2] + "PROYECTOSFINAL/";
+                if (Metodo.Value.Equals("ACTUALIZA")) {
+                    EliminarPF(list[0], list[1]);
+
+                    if (responsable.Equals(1)) {
+                        CargarProyectoFinal(ruta, list[0], list[1], 1); 
+                    }else if (responsable.Equals(2)) {
+                        CargarProyectoFinal(ruta, list[0], list[1], 2);
                     }
+                }else {
+                    bool existe = con.ExisteDirectorio(ruta);
+                    if (!existe) {
+                        con.crearcarpeta(ruta);
+                        CargarProyectoFinal(ruta, list[0], list[1],0);
+                    }else { CargarProyectoFinal(ruta, list[0], list[1],0); }
                 }
-            } else { 
-                string filename = Path.GetFileName(FUdocumento.PostedFile.FileName);
-                string contentType = FUdocumento.PostedFile.ContentType;
-                using (Stream fs = FUdocumento.PostedFile.InputStream) {
-                    using (BinaryReader br = new BinaryReader(fs)){
-                        byte[] bytes = br.ReadBytes((Int32)fs.Length);
-                        OracleConnection conn = con.crearConexion();
-                        if (conn != null) {
-                            string query = "insert into proyecto_final (ppro_codigo, pf_titulo, pf_documento, pf_nomarchivo, pf_tipo, pf_fecha) values (:ppro_codigo ,:pf_titulo, :Data, :pf_nomarchivo, :pf_tipo, :pf_fecha)";
-                            using (OracleCommand cmd = new OracleCommand(query)){
-                                cmd.Connection = conn;
-                                cmd.Parameters.Add(":ppro_codigo", Codigop.Value);
-                                cmd.Parameters.Add(":pf_titulo", Titulo.Value);
-                                cmd.Parameters.Add(":Data", bytes);
-                                cmd.Parameters.Add(":pf_nomarchivo", filename);
-                                cmd.Parameters.Add(":pf_tipo", contentType);
-                                cmd.Parameters.Add(":pf_fecha", fecha);
-                                cmd.ExecuteNonQuery();
-                                conn.Close();
-                            }
-                        }
-                    }
-                }
+            } else {
+                Linfo.ForeColor = System.Drawing.Color.Red;
+                Linfo.Text = "Formato no permitido, debe subir un archivo en PDF o Word";
             }
-            Linfo.ForeColor = System.Drawing.Color.Green;
-            Linfo.Text = "El proyecto final se ha cargado satisfatoriamente";
-            quitar();
         } else {
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe elegir un archivo";
         }
+    }
+    private void EliminarPF(string usuario, string pass)
+    {
+        string ruta = "";
+        string sql = "select pf_Nomarchivo, pf_Documento from proyecto_final  where ppro_Codigo ='" + Codigop.Value + "'";
+        List<string> contenido = con.consulta(sql, 2, 0);
+        ruta = contenido[1] + contenido[0];
+
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta);
+        request.Method = WebRequestMethods.Ftp.DeleteFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (FtpWebResponse response = (FtpWebResponse)request.GetResponse()) { }
+
+        sql = "update proyecto_final set pf_nomarchivo= null, pf_Documento= null, pf_Tipo=null where ppro_Codigo='" + Codigop.Value + "'";
+        Ejecutar("", sql);
+    }
+    private void CargarProyectoFinal(string ruta, string usuario, string pass, int i)
+    {
+        string contentType = "", filename = Codigop.Value + FUdocumento.FileName;
+        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta + filename);
+        request.Method = WebRequestMethods.Ftp.UploadFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (Stream fs = FUdocumento.PostedFile.InputStream){
+            using (BinaryReader br = new BinaryReader(fs))
+            {
+                contentType = FUdocumento.PostedFile.ContentType;
+                byte[] fileContents = br.ReadBytes((Int32)fs.Length);
+                StreamReader sourceStream = new StreamReader(FUdocumento.FileContent);
+                sourceStream.Close();
+                request.ContentLength = fileContents.Length;
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(fileContents, 0, fileContents.Length);
+                requestStream.Close();
+                var response = (FtpWebResponse)request.GetResponse();
+                response.Close();
+                string query = "";
+                if(i==0){ 
+                  query = "insert into proyecto_final (ppro_codigo, pf_titulo, pf_documento, pf_nomarchivo, pf_tipo, pf_fecha) values ('" + Codigop.Value + "' ,'" + Titulo.Value + "' , '" + ruta + "', '" + filename + "', '" + contentType + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
+                }else if (i == 1){
+                    query = "update proyecto_final set  pf_documento='"+ruta+"', pf_nomarchivo='"+filename+"', pf_tipo='"+contentType+ "', pf_fecha=TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), pf_aprobacion='PENDIENTE' where ppro_codigo='" + Codigop.Value + "'";
+                } else if (i == 2){
+                    query = "update proyecto_final set  pf_documento='"+ruta+"', pf_nomarchivo='"+filename+"', pf_tipo= '"+contentType+ "', pf_fecha=TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), pf_estado='PENDIENTE', pf_jur1='ASIGNADO', pf_jur2='ASIGNADO', pf_jur3='ASIGNADO' where ppro_codigo='" + Codigop.Value + "'";
+                    string revision = "update jurado set jur_revisado='PENDIENTE' where ppro_codigo='" + Codigop.Value + "'";
+                    Ejecutar("", revision);
+                }
+                Ejecutar("El proyecto final se ha cargado satisfatoriamente", query);
+            }
+        }
+        quitar();
     }
     private void quitar()
     {
@@ -346,32 +370,34 @@ public partial class ProyectoFinal : Conexion
     }
     protected void DownloadFile(object sender, EventArgs e)
     {
-        int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PF_DOCUMENTO, PF_NOMARCHIVO, PF_TIPO FROM PROYECTO_FINAL WHERE PPRO_CODIGO=" + id + "";
+        int id = int.Parse((sender as LinkButton).CommandArgument);      
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
-        OracleConnection conn = con.crearConexion();
-        if (conn != null){
-            using (OracleCommand cmd = new OracleCommand(sql, conn)){
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader()){
-                    drc1.Read();
-                    contentype = drc1["PF_TIPO"].ToString();
-                    fileName = drc1["PF_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PF_DOCUMENTO"];
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+        string sql = "select PF_NOMARCHIVO, PF_DOCUMENTO, PF_TIPO FROM PROYECTO_FINAL WHERE PPRO_CODIGO=" + id + "";
+        List<string> pf = con.consulta(sql, 3, 0);
+        fileName = pf[0];
+        ruta = pf[1];
+        contentype = pf[2];
+
+        try {
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        } catch (WebException a){
+            Linfo.Text = a.ToString();
         }
     }
     protected void GVconsulta_RowCommand(object sender, GridViewCommandEventArgs e)

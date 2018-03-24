@@ -1,23 +1,28 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+<<<<<<< HEAD
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Web;
+=======
+>>>>>>> e9ac2557966f900d20302a08d90a458d3bda08b8
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-public partial class MenuPrincipal : Page
-{
+public partial class Menu : Page{
     Conexion con = new Conexion();
+
     protected void Page_Load(object sender, EventArgs e)
     {
         if (Session["Usuario"] == null)
         {
             Response.Redirect("Default.aspx");
         }
+<<<<<<< HEAD
 
        /* EST.Visible = true;
         ADM.Visible = false;
@@ -91,5 +96,13 @@ public partial class MenuPrincipal : Page
 
 
 
+=======
+    }
+
+    /* serverUri parameter should start with the ftp:// scheme.
+    if (serverUri.Scheme != Uri.UriSchemeFtp){
+       return false;
+    }*/
+>>>>>>> e9ac2557966f900d20302a08d90a458d3bda08b8
 }
 

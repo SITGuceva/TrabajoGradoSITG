@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -17,7 +17,12 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             Response.Redirect("Default.aspx");
         }
         if (!IsPostBack){
-            ResultadoConsulta();
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "PropuestaPendiente.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                ResultadoConsulta();
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVConsultaContenidoP);
@@ -66,7 +71,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
                     dataTable.Load(reader);
                     GVconsultaPP.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
-                    Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
+                    Linfo.Text = "Cantidad de filas encontradas: " + cantfilas ;
                 }
                 GVconsultaPP.DataBind();
             }
@@ -111,34 +116,33 @@ public partial class PropuestaPendiente : System.Web.UI.Page
     protected void DownloadFile(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
-        OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-                    contentype = drc1["PROP_TIPO"].ToString();
-                    fileName = drc1["PROP_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PROP_DOCUMENTO"];
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
-        }
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+
+        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
+        List<string> prop = con.consulta(sql, 3, 0);
+        fileName = prop[0];
+        ruta = prop[1];
+        contentype = prop[2];
+        try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        } catch (WebException a) {
+            Linfo.Text = a.ToString();
+        }
     }
 
     /*Metodos para la consulta de las observaciones*/
@@ -250,7 +254,6 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             Linfo.Text = info;
         }
     }
-
 
     /*Eventos de los botones cancelar, regresar y terminar revision */
     protected void terminar(object sender, EventArgs e)

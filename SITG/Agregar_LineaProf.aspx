@@ -22,7 +22,7 @@
                             <asp:TableCell><asp:DropDownList ID="DDLprog" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>
                         </asp:TableRow>
                          <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lnomlinea" runat="server" Text="Linea Profundización:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Lnomlinea" runat="server" Text="Linea Investigación:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:TextBox ID="TBnomlinea" runat="server"  CssClass="form-control"></asp:TextBox></asp:TableCell>
                         </asp:TableRow>                      
                         <asp:TableRow>
@@ -79,10 +79,10 @@
                         <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay lineas de profundizacion agregadas para el programa!</EmptyDataTemplate>
+                        <EmptyDataTemplate>¡No hay lineas de investigación agregadas para el programa!</EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="LPROF_CODIGO" HeaderText="ID" />   
-                            <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="PROFUNDIZACION" />
+                            <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="INVESTIGACIÓN" />
                             <asp:TemplateField HeaderText="Estado">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server">
@@ -118,7 +118,7 @@
                     
                     <asp:Table ID="TAgregartema" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lprof" runat="server" Text="Linea Profundizacion:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Lprof" runat="server" Text="Linea Investigación:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:Label ID="Lreslp" runat="server"  ForeColor="Black" CssClass="form-control"></asp:Label></asp:TableCell>               
                         </asp:TableRow>
                         <asp:TableRow>
@@ -142,7 +142,7 @@
                         <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay temas agregados para la linea profundizacion!</EmptyDataTemplate>
+                        <EmptyDataTemplate>¡No hay temas agregados para la linea investigación!</EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="TEM_CODIGO" HeaderText="ID" />   
                             <asp:BoundField DataField="TEM_NOMBRE" HeaderText="TEMA" /> 

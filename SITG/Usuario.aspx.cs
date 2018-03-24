@@ -1,20 +1,21 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Estudiante : Conexion
 {
     Conexion con = new Conexion();
-    string sql = "", texto = "";
 
     protected void Page_Load(object sender, EventArgs e){
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Usuario.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }
         }
     }
 
@@ -36,8 +37,10 @@ public partial class Estudiante : Conexion
         LlamarTablaRoles();
         Resultado.Visible = true;
     }
+  
     //METODO ACEPTAR(GUARDAR) REALIZA LAS OPERACIONES DE CREAR, MODIFICAR, INHABILITAR
-    protected void Aceptar(object sender, EventArgs e){ 
+    protected void Aceptar(object sender, EventArgs e){
+        string sql;
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
         if (Ingreso.Visible)
         {
@@ -47,39 +50,28 @@ public partial class Estudiante : Conexion
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Los campos son obligatorios";
             }
-            else
-            {
+            else{
                 string rol = DDLrol.Items[DDLrol.SelectedIndex].Value.ToString();
                 string pass = con.GetMD5(TBcontra.Text);
                 cod = Int32.Parse(TBcodigo.Text);
                 sql = "insert into USUARIO (USU_USERNAME,USU_CONTRASENA,USU_NOMBRE,USU_APELLIDO,USU_TELEFONO,USU_DIRECCION,USU_CORREO,USU_FCREACION, USU_FMODIFICACION) VALUES('" + TBcodigo.Text + "', '" + pass + "', '" + TBnombre.Text + "', '" + TBapellido.Text + "', '" + TBtelefono.Text + "', '" + TBdireccion.Text + "', '" + TBcorreo.Text + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
-                texto = "Datos guardados satisfactoriamente";
-                Ejecutar(texto, sql);
+                Ejecutar("Datos guardados satisfactoriamente", sql);
 
                 if (rol.Equals("NULL"))
                 {
                     Linfo.ForeColor = System.Drawing.Color.Green;
                     Linfo.Text += "Datos guardados satisfactoriamente";
-                }
-                else
-                {
+                }else{
                     sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES (USUARIOID.nextval,'" + cod + "','" + rol + "')";
-                    texto = "Datos guardados satisfactoriamente";
-                    Ejecutar(texto, sql);
+                    Ejecutar("Datos guardados satisfactoriamente", sql);
                     string sql2 = "";
-                    if (rol.Equals("EST"))
-                    {
+                    if (rol.Equals("EST")) {
                         sql2 = "insert into ESTUDIANTE (EST_SEMESTRE, USU_USERNAME, PROG_CODIGO) VALUES ('" + TBsemestre.Text + "','" + cod + "', '" + DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' )";
-                        texto = "Datos guardados satisfactoriamente";
-                        Ejecutar(texto, sql2);
+                        Ejecutar("Datos guardados satisfactoriamente", sql2);
                         DDLprograma.SelectedIndex = 0;
-                    }
-                    else if (rol.Equals("DOC"))
-                    {
+                    }else if (rol.Equals("DOC")){
                         sql2 = "insert into PROFESOR (USU_USERNAME) VALUES ('" + cod + "' )";
-                        texto = "Datos guardados satisfactoriamente";
-                        Ejecutar(texto, sql2);
-
+                        Ejecutar("Datos guardados satisfactoriamente", sql2);
                     }
                 }
                 DDLrol.SelectedIndex = 0;
@@ -112,7 +104,8 @@ public partial class Estudiante : Conexion
         }
         borrardatos();
     }
-    //EVENTO DEL BOTON ACEPTAR 
+    
+    /*Eventos del boton limpiar*/
     protected void Limpiar(object sender, EventArgs e){
         Linfo.Text = "";
         borrardatos();
@@ -131,9 +124,6 @@ public partial class Estudiante : Conexion
        
     }
    
-    //METODOS QUE REALIZAN LAS OPERACIONES DE CONSULTA   
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////
     /*Metodos para la consulta de las observaciones*/
     protected void GVusuarios_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
@@ -141,7 +131,6 @@ public partial class Estudiante : Conexion
         LlamarTablaRoles();
     }
     protected void GVusuarios_RowDataBound(object sender, GridViewRowEventArgs e) { }
-
     protected void LlamarTablaRoles()/*Tabla para la consulta*/
     {
         string sql = "";
@@ -177,7 +166,6 @@ public partial class Estudiante : Conexion
         }
 
     }
-
 
     /*Metodos que sirven para el modificar-eliminar de la tabla observaciones*/
     protected void GVusuarios_RowUpdating(object sender, GridViewUpdateEventArgs e)
@@ -218,13 +206,11 @@ public partial class Estudiante : Conexion
         GVusuarios.EditIndex = -1;
         LlamarTablaRoles();
     }
-
     protected void DDLconsulta_SelectedIndexChanged(object sender, EventArgs e)/*evento del ddl para cuando selecciona un item*/
     {
         Resultado.Visible = true;
         LlamarTablaRoles();
     }
-
 
 
 }

@@ -44,10 +44,10 @@
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                                 <EmptyDataTemplate>¡No ha subido ningun pago!</EmptyDataTemplate>
                                 <Columns>
-                                    <asp:BoundField DataField="PAG_ID" HeaderText="CODIGO" />
+                                    <asp:BoundField DataField="PAG_ID" HeaderText="ID" />
                                     <asp:BoundField DataField="PAG_NOMBRE" HeaderText="NOMBRE" />
                                     <asp:BoundField DataField="PAG_FECHA" HeaderText="FECHA" />
-                                    <asp:BoundField DataField="PAG_ESTADO" HeaderText="ESTADO" />
+                                    <asp:BoundField DataField="ESTADO" HeaderText="ESTADO" />
                                     <asp:BoundField DataField="PAG_OBSERVACION" HeaderText="OBSERVACIÓN" />
                                     <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
                                         <ItemTemplate>

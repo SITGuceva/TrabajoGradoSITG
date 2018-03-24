@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -12,9 +13,14 @@ public partial class PeticionDir : Conexion
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
+        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Peticiones.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVinfprof);
@@ -119,7 +125,7 @@ public partial class PeticionDir : Conexion
             CargarTablaPeticiones();
         }
     }
-    
+   
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
@@ -175,34 +181,32 @@ public partial class PeticionDir : Conexion
     protected void DownloadFile(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME=" + id + "";
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
+        List<string> prof = con.consulta(sql, 3, 0);
+        fileName = prof[0];
+        ruta = prof[1];
+        contentype = prof[2];
 
-        OracleConnection conn = con.crearConexion();
-        if (conn != null) {
-            using (OracleCommand cmd = new OracleCommand(sql, conn)){
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader()){
-                    drc1.Read();
-                    contentype = drc1["PROF_TIPO"].ToString();
-                    fileName = drc1["PROF_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PROF_DOCUMENTO"];
-
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+         try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }catch (WebException a) {
+            Linfo.Text = a.ToString();
         }
-
     }
 
     /*Metodos que se utilian para consulta - modificacion de las peticiones del estudiante*/

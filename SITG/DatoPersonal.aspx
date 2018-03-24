@@ -35,13 +35,18 @@
                                     <asp:TableCell><asp:Label ID="Lcorreo" runat="server" Text="Correo:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:TextBox ID="TBcorreo" runat="server" CssClass="form-control" TextMode="Email"></asp:TextBox></asp:TableCell>                                   
                                 </asp:TableRow>
+                                <asp:TableRow>
+                                    <asp:TableCell><asp:Label ID="Lhv" runat="server" Text="Hoja de Vida:" ForeColor="Black" Font-Bold="True" class="text-justify" Visible="false"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:LinkButton ID="LBhv" runat="server" Text="Descargar" OnClick="LBhv_Click" Visible="false" ></asp:LinkButton></asp:TableCell>                                   
+                                </asp:TableRow>
                             </asp:Table>                     
                         </div>
 
+                        <br />
                         <div id="HVdoc" runat="server" visible="false" >
-                            <asp:Table ID="Thv" runat="server" HorizontalAlign="Center">
+                            <asp:Table ID="Thv" runat="server" HorizontalAlign="Center">                              
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:Label ID="Ldocumento" runat="server" Text="Hoja de Vida:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:Label ID="Ldocumento" runat="server" Text="Documento:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:FileUpload ID="FUdocumento" runat="server" class="btn btn-default image-preview-input" /></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>
@@ -60,8 +65,9 @@
                             </asp:Table>
                          </div>
 
-
                         <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
+                        <asp:HiddenField ID="Verificar" Value="" runat="server" /> 
+
                     </div>
                 </ContentTemplate>
                 <Triggers>

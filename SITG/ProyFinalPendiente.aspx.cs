@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data;
 using Oracle.DataAccess.Client;
+using System.Net;
 
 public partial class ProyFinalPendiente : Conexion
 {
@@ -16,14 +15,18 @@ public partial class ProyFinalPendiente : Conexion
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
+        if (Session["Usuario"] == null) {
             Response.Redirect("Default.aspx");
         }
         if (!Page.IsPostBack){
-            BuscarDocumentos();
-            Consulta.Visible = true;
-            Page.Form.Attributes.Add("enctype", "multipart/form-data");
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "ProyFinalPendiente.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            } else {
+                BuscarDocumentos();
+                Consulta.Visible = true;
+                Page.Form.Attributes.Add("enctype", "multipart/form-data");
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVconsulta);
@@ -31,7 +34,6 @@ public partial class ProyFinalPendiente : Conexion
         scriptManager.RegisterPostBackControl(this.GVjurado2);
         scriptManager.RegisterPostBackControl(this.GVjurado3);
         scriptManager.RegisterPostBackControl(this.GVinfprof);
-
     }
 
     /*metodos que verifica si existe el rol */
@@ -176,34 +178,33 @@ public partial class ProyFinalPendiente : Conexion
     protected void DescargaPF(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PF_DOCUMENTO, PF_NOMARCHIVO, PF_TIPO FROM PROYECTO_FINAL WHERE PPRO_CODIGO=" + id + "";
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
-        OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-                    contentype = drc1["PF_TIPO"].ToString();
-                    fileName = drc1["PF_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PF_DOCUMENTO"];
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+        string sql = "select PF_NOMARCHIVO, PF_DOCUMENTO, PF_TIPO FROM PROYECTO_FINAL WHERE PPRO_CODIGO=" + id + "";
+        List<string> pf = con.consulta(sql, 3, 0);
+        fileName = pf[0];
+        ruta = pf[1];
+        contentype = pf[2];
+
+        try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }catch (WebException a) {
+            Linfo.Text = a.ToString();
         }
     }
 
@@ -417,32 +418,30 @@ public partial class ProyFinalPendiente : Conexion
     protected void DescargaHV(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PROF_DOCUMENTO, PROF_NOMARCHIVO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
-        OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-                    contentype = drc1["PROF_TIPO"].ToString();
-                    fileName = drc1["PROF_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PROF_DOCUMENTO"];
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" +id + "'";
+        List<string> prof = con.consulta(sql, 3, 0);
+        fileName = prof[0];
+        ruta = prof[1];
+        contentype = prof[2];
+        try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }catch (WebException a) {
+            Linfo.Text = a.ToString();
         }
     }
 
@@ -454,6 +453,7 @@ public partial class ProyFinalPendiente : Conexion
         IBregresar.Visible = false;
         DDLprofesores.Visible = false;
         BTconsultar.Visible = false;
+        infoprofesor.Visible = false;
         Jurado1.Visible = false;
         Jurado2.Visible = false;
         Jurado3.Visible = false;
@@ -466,7 +466,6 @@ public partial class ProyFinalPendiente : Conexion
         BTconsultar.Enabled = true;
         Linfo.Text = "";
         DDLprofesores.SelectedIndex = 0;
-
     }
 
     /*Metodo que se utiliza para asignar jurado*/

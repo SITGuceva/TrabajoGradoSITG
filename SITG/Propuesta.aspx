@@ -37,7 +37,7 @@
                                  <asp:Label ID="Ltin" runat="server" Text="INTEGRANTES" ForeColor="Black" Font-Bold="True"></asp:Label>
                             </asp:TableHeaderCell>
                        </asp:TableRow>
-                        <asp:TableRow>                        
+                        <asp:TableRow runat="server" ID="integra">                        
                             <asp:TableCell><asp:Label ID="Lintegrante" runat="server" Text="Codigo del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:TextBox ID="TBcodint" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
                             <asp:TableCell>
@@ -86,7 +86,7 @@
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                         <EmptyDataTemplate> ¡No se ha subido la propuesta!  </EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="PROP_CODIGO" HeaderText="CODIGO" />
+                            <asp:BoundField DataField="PROP_CODIGO" HeaderText="ID" />
                             <asp:BoundField DataField="PROP_TITULO" HeaderText="TITULO" />
                             <asp:BoundField DataField="LPROF_NOMBRE" HeaderText="LINEA INVESTIGACION" /> 
                             <asp:BoundField DataField="TEM_NOMBRE" HeaderText="TEMA" /> 

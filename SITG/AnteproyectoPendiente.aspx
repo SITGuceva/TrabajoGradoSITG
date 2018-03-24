@@ -51,7 +51,7 @@
                     <Columns>
                         <asp:BoundField DataField="APRO_CODIGO" HeaderText="CODIGO ANTEPROYECTO" />
                         <asp:BoundField DataField="ANP_NOMBRE" HeaderText="TÍTULO" />
-                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DESCARGAR">
+                        <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
                             <ItemTemplate><asp:LinkButton ID="LinkDescarga" runat="server" Text="Descargar" OnClick="DescargaAnteProyecto" CommandArgument='<%# Eval("APRO_CODIGO") %>'></asp:LinkButton></ItemTemplate>
                         </asp:TemplateField>
                     </Columns>

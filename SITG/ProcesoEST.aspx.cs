@@ -1,15 +1,11 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class ProcesoEST : Conexion
 {
     Conexion con = new Conexion();
-
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -17,10 +13,14 @@ public partial class ProcesoEST : Conexion
             Response.Redirect("Default.aspx");
         }
         if (!IsPostBack){
-            Ingreso.Visible = true;
-            LBpropuesta.Visible = false;
-            LBanteproyecto.Visible = false;
-            LBproyectofinal.Visible = false;
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "ProcesoEST.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                LBpropuesta.Visible = false;
+                LBanteproyecto.Visible = false;
+                LBproyectofinal.Visible = false;
+            }
         }
     }
 
@@ -85,18 +85,15 @@ public partial class ProcesoEST : Conexion
         Linfo.Text = "";
     }
 
-    /*Metodos que se utilizan para la consulta y el modificar el estado*/
+    /*Metodos que se utilizan para la consulta de la propuesta*/
     public void CargarPropuesta()
     {
         LBpropuesta.Visible = true;
-        string sql = "";
         try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-               
-             
-                sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha, p.prop_estado,  CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.sol_estado as Estado from propuesta p, solicitud_dir s, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo";
+               string sql = "Select p.prop_codigo, p.prop_titulo, p.prop_fecha,INITCAP(p.prop_estado) as estado,  CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, INITCAP(s.sol_estado) as direstado from propuesta p, solicitud_dir s, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='" + Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -115,22 +112,16 @@ public partial class ProcesoEST : Conexion
     }
     protected void GVgepropuesta_RowDataBound(object sender, GridViewRowEventArgs e) { }
 
-
-
-
+    /*Metodos que se utilizan para la consulta del anteproyecto*/
     public void CargarAnteproyecto()
     {
         LBanteproyecto.Visible = true;
-        string sql = "";
-        try
-        {
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-
-
-                sql = "Select distinct P.APRO_CODIGO, P.ANP_NOMBRE, P.ANP_FECHA, P.ANT_APROBACION, P.ANT_EVALUADOR, P.ANT_ESTADO from anteproyecto p, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and e.prop_codigo = p.apro_codigo";
+            if (conn != null){
+                string sql = "Select P.APRO_CODIGO, P.ANP_NOMBRE, P.ANP_FECHA, INITCAP(P.ANT_APROBACION) as aprobacion ,INITCAP(P.ANT_ESTADO) as estado, CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor from anteproyecto p, usuario o, estudiante e, comite com, profesor pro, evaluador r " +
+                    "where pro.usu_username = '"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo = e.prog_codigo and e.usu_username = '"+TBCodigoE.Text+"' and e.prop_codigo = p.apro_codigo and r.Usu_Username = o.Usu_Username and r.Apro_Codigo = e.Prop_Codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
@@ -152,26 +143,16 @@ public partial class ProcesoEST : Conexion
     }
     protected void GVanteproyecto_RowDataBound(object sender, GridViewRowEventArgs e) { }
 
-
-
-
-
-
-
-
+    /*Metodos que se utilizan para la consulta del proyecto final*/
     public void CargarProyectoFinal()
     {
         LBproyectofinal.Visible = true;
-        string sql = "";
-        try
-        {
+        try {
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null)
             {
-
-
-                sql = "Select distinct p.ppro_codigo, p.pf_titulo, p.pf_fecha, p.pf_aprobacion, p.pf_jur1, p.pf_jur2, p.pf_jur3, p.pf_estado from proyecto_final p, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and e.prop_codigo = p.ppro_codigo";
+                string sql = "Select distinct p.ppro_codigo, p.pf_titulo, p.pf_fecha, INITCAP(p.pf_aprobacion) as aprobacion, p.pf_jur1, p.pf_jur2, p.pf_jur3, INITCAP(p.pf_estado) as estado from proyecto_final p, usuario u, estudiante e, comite com, profesor pro where pro.usu_username='"+Session["id"]+"' and pro.com_codigo = com.com_codigo and com.prog_codigo=e.prog_codigo and e.usu_username='"+TBCodigoE.Text+"' and e.prop_codigo = p.ppro_codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
@@ -192,8 +173,6 @@ public partial class ProcesoEST : Conexion
         Comprobado();
     }
     protected void GVproyectofinal_RowDataBound(object sender, GridViewRowEventArgs e) { }
-
-
 
 }
 

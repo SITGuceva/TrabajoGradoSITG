@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -15,7 +16,12 @@ public partial class PropuestaAsignada : Conexion
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         } else if (!IsPostBack) {
-            CargarPropuestas();
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "PropuestaAsignada.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                CargarPropuestas();
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVConsultaContenidoP);
@@ -46,7 +52,7 @@ public partial class PropuestaAsignada : Conexion
             Linfo.Text = "No se puede agregar una observación si se encuentra vacia.";
         } else {
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Value + "','Director', '"+ Metodo.Value + "')";
+            string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSERVACIONPROP.nextval,'" + TBdescripcion.Value + "','DIRECTOR', '"+ Metodo.Value + "')";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             CargarObservaciones();
@@ -311,34 +317,33 @@ public partial class PropuestaAsignada : Conexion
     protected void DownloadFile(object sender, EventArgs e)
     {
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
-        OracleConnection conn = crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-                    contentype = drc1["PROP_TIPO"].ToString();
-                    fileName = drc1["PROP_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["PROP_DOCUMENTO"];
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
-        }
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+
+        string sql = "select PROP_NOMARCHIVO, PROP_DOCUMENTO, PROP_TIPO FROM PROPUESTA WHERE PROP_CODIGO=" + id + "";
+        List<string> prop = con.consulta(sql, 3, 0);
+        fileName = prop[0];
+        ruta = prop[1];
+        contentype = prop[2];
+        try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }catch (WebException a){
+            Linfo.Text = a.ToString();
+        }
     }
 
 

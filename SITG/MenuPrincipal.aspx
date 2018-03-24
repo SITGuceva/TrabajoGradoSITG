@@ -1,7 +1,8 @@
-﻿<%@ Page Title="SITG" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="MenuPrincipal.aspx.cs" Inherits="MenuPrincipal" %>
+﻿<%@ Page Title="SITG" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="MenuPrincipal.aspx.cs" Inherits="Menu" %>
 
 <%@ MasterType VirtualPath="~/Site.master" %>
 
+<<<<<<< HEAD
 <asp:Content ID="MenuPrincipal" ContentPlaceHolderID="MainContent" runat="Server">
 
 
@@ -669,5 +670,8 @@
 
 
     <asp:Label ID="label" runat="server" ForeColor="Red" Text=""></asp:Label>
+=======
+<asp:Content ID="MenuPrincipal" ContentPlaceHolderID="MainContent" Runat="Server"> 
+>>>>>>> e9ac2557966f900d20302a08d90a458d3bda08b8
 </asp:Content>
 

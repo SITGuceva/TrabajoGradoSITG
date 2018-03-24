@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class DocenteProyectos : System.Web.UI.Page
@@ -18,12 +14,17 @@ public partial class DocenteProyectos : System.Web.UI.Page
             Response.Redirect("Default.aspx");
         }
         if (!IsPostBack) {
-            DDLprograma.Items.Clear();
-            string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO' ORDER BY PROG_CODIGO";
-            DDLprograma.Items.AddRange(con.cargardatos(sql));
-            DDLprograma.Items.Insert(0, "Seleccione");
-            DDLlprof.Items.Insert(0, "Seleccione");
-            DDLtema.Items.Insert(0, "Seleccione");
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "DocenteProyectos.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                DDLprograma.Items.Clear();
+                string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO' ORDER BY PROG_CODIGO";
+                DDLprograma.Items.AddRange(con.cargardatos(sql));
+                DDLprograma.Items.Insert(0, "Seleccione");
+                DDLlprof.Items.Insert(0, "Seleccione");
+                DDLtema.Items.Insert(0, "Seleccione");
+            }
         }
     }
 

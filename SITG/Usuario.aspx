@@ -11,8 +11,7 @@
                             <div class="col-md-12">
                                 <ul class="breadcrumb">
                                     <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Crear</asp:LinkButton></li>
-                                    <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>
-                                 
+                                    <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>                                 
                                 </ul>
                             </div>
                         |</div>
@@ -75,12 +74,9 @@
                             </asp:Table>
                         </div>
 
-
-
-
-                               <div id="Resultado" runat="server" style="width: 100%; height: 100%;" visible="false" class="row">
-                            <asp:GridView ID="GVusuarios" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None"  OnPageIndexChanging="GVusuarios_PageIndexChanging" AutoGenerateColumns="False"  CssClass="table table-bordered bs-table" OnRowDataBound="GVusuarios_RowDataBound" PageSize="10" 
-                               OnRowUpdating="GVusuarios_RowUpdating"  OnRowEditing="GVusuarios_RowEditing" OnRowCancelingEdit="GVusuarios_RowCancelingEdit" CellSpacing="10" CellPadding="10">
+                        <div id="Resultado" runat="server" style="overflow-x: auto" visible="false" class="row">
+                            <asp:GridView ID="GVusuarios" runat="server" AllowPaging="True" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVusuarios_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVusuarios_RowDataBound" PageSize="10"
+                                OnRowUpdating="GVusuarios_RowUpdating" OnRowEditing="GVusuarios_RowEditing" OnRowCancelingEdit="GVusuarios_RowCancelingEdit" CellSpacing="10" CellPadding="10">
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
@@ -90,39 +86,32 @@
                                 <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
                                 <EditRowStyle BackColor="#ffffcc" />
                                 <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                                <EmptyDataTemplate> ¡Esta propuesta aun no tiene observaciones! </EmptyDataTemplate>
+                                <EmptyDataTemplate>¡No hay usuarios con los parametros especificados.! </EmptyDataTemplate>
                                 <Columns>
-                                     <asp:BoundField DataField="USU_USERNAME" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
+                                    <asp:BoundField DataField="USU_USERNAME" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:BoundField DataField="USU_NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
-                                    <asp:BoundField DataField="USU_APELLIDO" HeaderText="Apellido" HeaderStyle-HorizontalAlign="Center" /> 
-                                    <asp:BoundField DataField="USU_TELEFONO" HeaderText="Telefono" HeaderStyle-HorizontalAlign="Center" /> 
+                                    <asp:BoundField DataField="USU_APELLIDO" HeaderText="Apellido" HeaderStyle-HorizontalAlign="Center" />
+                                    <asp:BoundField DataField="USU_TELEFONO" HeaderText="Telefono" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:BoundField DataField="USU_DIRECCION" HeaderText="Dirección" HeaderStyle-HorizontalAlign="Center" />
-                                   <asp:TemplateField HeaderText="Estado">
-                                <EditItemTemplate>
-                                    <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
-                                        <asp:ListItem Value="ACTIVO">ACTIVO</asp:ListItem>
-                                        <asp:ListItem Value="INACTIVO">INACTIVO</asp:ListItem>
-                                    </asp:DropDownList>
-                                </EditItemTemplate>
-                                <ItemTemplate><asp:Label ID="Lestado" runat="server" Text='<%# Bind("USU_ESTADO") %>'></asp:Label></ItemTemplate>
-                            </asp:TemplateField> 
-
+                                    <asp:TemplateField HeaderText="Estado">
+                                        <EditItemTemplate>
+                                            <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
+                                                <asp:ListItem Value="ACTIVO">ACTIVO</asp:ListItem>
+                                                <asp:ListItem Value="INACTIVO">INACTIVO</asp:ListItem>
+                                            </asp:DropDownList>
+                                        </EditItemTemplate>
+                                        <ItemTemplate><asp:Label ID="Lestado" runat="server" Text='<%# Bind("USU_ESTADO") %>'></asp:Label></ItemTemplate>
+                                    </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Modificar">
-                                        <ItemTemplate>
-                                            <asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" />
-                                        </ItemTemplate>
+                                        <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" /></ItemTemplate>
                                         <EditItemTemplate>
                                             <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" />
                                             <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" />
                                         </EditItemTemplate>
                                     </asp:TemplateField>
-                                  
                                 </Columns>
                             </asp:GridView>
                         </div>
-
-                        
-
 
                         <div id="Botones" runat="server" class="row" visible="true">
                             <asp:Table ID="Tbotones" runat="server" HorizontalAlign="Center">

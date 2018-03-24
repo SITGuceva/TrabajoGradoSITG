@@ -1,8 +1,9 @@
 ﻿using Oracle.DataAccess.Client;
+
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -17,6 +18,12 @@ public partial class Consulta_Formatos : System.Web.UI.Page
         {
             Response.Redirect("Default.aspx");
         }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Consulta_Formatos.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            }
+        }      
         ResultadoConsulta();
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVformatos);
@@ -25,39 +32,42 @@ public partial class Consulta_Formatos : System.Web.UI.Page
     /*Metodos que realizan la consulta y descarga el documento*/
     protected void DownloadFile(object sender, EventArgs e)
     {
+        List<string> list = con.FtpConexion();
         int id = int.Parse((sender as LinkButton).CommandArgument);
-        byte[] bytes;
-        string fileName = "", contentype = "";
+        string fileName = "", contentype = "", ruta = "";
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
         string sql = "select FOR_NOMARCHIVO, FOR_DOCUMENTO, FOR_TIPO FROM FORMATO WHERE FOR_ID=" + id + "";
 
         OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
+        if (conn != null) {
+            using (OracleCommand cmd = new OracleCommand(sql, conn)) {
                 cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
+                using (OracleDataReader drc1 = cmd.ExecuteReader()) {
                     drc1.Read();
-
                     contentype = drc1["FOR_TIPO"].ToString();
                     fileName = drc1["FOR_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["FOR_DOCUMENTO"];
+                    ruta = drc1["FOR_DOCUMENTO"].ToString();
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                    try {
+                        byte[] bytes = request.DownloadData(ruta + fileName);
+                        string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+                        Console.WriteLine(fileString);
+                        Response.Clear();
+                        Response.Buffer = true;
+                        Response.Charset = "";
+                        Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                        Response.ContentType = contentype;
+                        Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                        Response.BinaryWrite(bytes);
+                        Response.Flush();
+                        Response.End();
+                    }catch (WebException l){
+                        Linfo.Text = l.ToString();
+                    }
                 }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
             }
         }
-
     }
     private void ResultadoConsulta()
     {

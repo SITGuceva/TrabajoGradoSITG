@@ -11,12 +11,16 @@ public partial class Asignar_Roles : Conexion
 {
     Conexion con = new Conexion();
 
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (Session["Usuario"] == null)
-        {
+    protected void Page_Load(object sender, EventArgs e) {
+        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
-        }      
+        }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Asignar_Roles.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }
+        }
     }
 
     /*Metodo que manejan el front-ed del crear-consultar*/

@@ -2,7 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -17,7 +17,12 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             Response.Redirect("Default.aspx");
         }
         if (!IsPostBack) {
-            ResultadoConsulta();
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "ProcesoProyectoF.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }else{
+                ResultadoConsulta();
+            }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.LBdescarga);
@@ -79,37 +84,34 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
     }
     protected void DownloadFile(object sender, EventArgs e)
     {
-        byte[] bytes;
-        string fileName = "", contentype = "";
-        string sql = "select ANP_DOCUMENTO, ANP_NOMARCHIVO, ANP_TIPO FROM ANTEPROYECTO WHERE APRO_CODIGO=" + CodigoP.Text + "";
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
 
-        OracleConnection conn = con.crearConexion();
-        if (conn != null)
-        {
-            using (OracleCommand cmd = new OracleCommand(sql, conn))
-            {
-                cmd.CommandText = sql;
-                using (OracleDataReader drc1 = cmd.ExecuteReader())
-                {
-                    drc1.Read();
-                    contentype = drc1["ANP_TIPO"].ToString();
-                    fileName = drc1["ANP_NOMARCHIVO"].ToString();
-                    bytes = (byte[])drc1["ANP_DOCUMENTO"];
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
 
-                    Response.Clear();
-                    Response.Buffer = true;
-                    Response.Charset = "";
-                    Response.Cache.SetCacheability(HttpCacheability.NoCache);
-                    Response.ContentType = contentype;
-                    Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+        string sql = "select PF_NOMARCHIVO, PF_DOCUMENTO, PF_TIPO FROM PROYECTO_FINAL WHERE PPRO_CODIGO=" + CodigoP.Text + "";
+        List<string> pf = con.consulta(sql, 3, 0);
+        fileName = pf[0];
+        ruta = pf[1];
+        contentype = pf[2];
 
-                }
-                Response.BinaryWrite(bytes);
-                Response.Flush();
-                Response.End();
-            }
+        try{
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        } catch (WebException a){
+            Linfo.Text = a.ToString();
         }
-
     }
     private void Ejecutar(string texto, string sql)
     {

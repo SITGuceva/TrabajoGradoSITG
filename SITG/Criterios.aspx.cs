@@ -13,9 +13,14 @@ public partial class Criterios : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Session["Usuario"] == null)
-        {
+        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Criterios.aspx");
+            if (valida.Equals("false")) {
+                Response.Redirect("MenuPrincipal.aspx");
+            }
         }
     }
 
@@ -34,7 +39,6 @@ public partial class Criterios : System.Web.UI.Page
         Linfo.Text = "";
         ResultadoConsulta();
     }
-
 
     /*Metodos que realizan el guardar */
     protected void Aceptar(object sender, EventArgs e)
@@ -75,7 +79,6 @@ public partial class Criterios : System.Web.UI.Page
         TBnom.Text = "";
         TBtipo.Text = "";
     }
-
 
     /*Metodos que realizan la consulta con el modificar e inhabilitar*/
     private void ResultadoConsulta()

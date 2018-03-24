@@ -1,10 +1,6 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Programa : System.Web.UI.Page
@@ -15,6 +11,12 @@ public partial class Programa : System.Web.UI.Page
     {
         if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
+        }
+        if (!IsPostBack){
+            string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Programa.aspx");
+            if (valida.Equals("false")){
+                Response.Redirect("MenuPrincipal.aspx");
+            }           
         }
         string sql = "SELECT FAC_CODIGO, FAC_NOMBRE FROM FACULTAD WHERE FAC_ESTADO='ACTIVO'";
         DDLfacultad.Items.AddRange(con.cargardatos(sql));
@@ -108,13 +110,11 @@ public partial class Programa : System.Web.UI.Page
     protected void GVprog_RowDataBound(object sender, GridViewRowEventArgs e) { }
     public void cargarTabla()
     {
-        string sql = "";
-        List<ListItem> list = new List<ListItem>();
         try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT DISTINCT P.PROG_CODIGO, P.PROG_NOMBRE, P.PROG_SEMESTRE, P.PROG_ESTADO FROM PROGRAMA P, FACULTAD F WHERE P.FAC_CODIGO = F.FAC_CODIGO AND F.FAC_CODIGO='"+ DDLfacultad1.Items[DDLfacultad1.SelectedIndex].Value.ToString()+ "' ORDER BY P.PROG_CODIGO ";
+                string sql = "SELECT DISTINCT P.PROG_CODIGO, P.PROG_NOMBRE, P.PROG_SEMESTRE, P.PROG_ESTADO FROM PROGRAMA P, FACULTAD F WHERE P.FAC_CODIGO = F.FAC_CODIGO AND F.FAC_CODIGO='"+ DDLfacultad1.Items[DDLfacultad1.SelectedIndex].Value.ToString()+ "' ORDER BY P.PROG_CODIGO ";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
