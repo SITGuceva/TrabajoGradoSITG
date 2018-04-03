@@ -15,6 +15,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         }
+        DDLprog.Items.Clear();
         string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
         DDLprog.Items.AddRange(con.cargardatos(sql));
         if (!Page.IsPostBack){
@@ -69,6 +70,9 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
         GVagretema.DataSource = table;
         GVagretema.DataBind();
         TBnomtema.Text = "";
+        DDLprog.Items.Clear();
+        string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
+        DDLprog.Items.AddRange(con.cargardatos(sql));
     }
   
     /*Metodos que se utilizan para guardar*/

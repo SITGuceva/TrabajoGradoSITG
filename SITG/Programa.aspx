@@ -49,7 +49,7 @@
                     </asp:Table>                  
                 </div>
       
-                <div id="Resultado" runat="server" visible="false" class="row">
+                <div id="Resultado" runat="server" visible="false" class="row" style="overflow-x: auto">
                      <asp:GridView ID="GVprog" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVprog_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVprog_RowDataBound" 
                          PageSize="8"  OnRowUpdating="GVprog_RowUpdating" OnRowEditing="GVprog_RowEditing" OnRowCancelingEdit="GVprog_RowCancelingEdit">
                         <AlternatingRowStyle BackColor="White" />
