@@ -594,7 +594,7 @@ public partial class Propuesta : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                string sql = "select s.dir_id, s.dir_fecha, s.dir_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director  from director s, usuario u where u.usu_username=s.usu_username and s.prop_codigo='" + prop_codigo + "'";
+                string sql = "select s.dir_id, s.dir_fecha, s.dir_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_observacion  from director s, usuario u where u.usu_username=s.usu_username and s.prop_codigo='" + prop_codigo + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

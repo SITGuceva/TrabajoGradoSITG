@@ -2,7 +2,7 @@
 
 <asp:Content ID="AsigLProf" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Universidad - Agregar Linea Profundización</div>
+        <div class="panel-heading">Universidad - Agregar Linea Investigación</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPasiglprof" runat="server"> <ContentTemplate>
             <div class="container-fluid">

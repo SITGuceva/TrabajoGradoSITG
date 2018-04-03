@@ -55,7 +55,7 @@ public partial class ProyectoFinal : Conexion
         try {
             OracleConnection conn = crearConexion();
             if (conn != null){
-                string sql = "select p.pag_estado from pagos p, estudiante e, anteproyecto a where e.usu_username = p.usu_username and p.pag_estado = 'APROBADO' and a.apro_codigo = e.prop_codigo and a.ant_estado = 'APROBADO' and a.apro_codigo" +
+                string sql = "select p.pag_estado from pagos p, estudiante e, anteproyecto a where e.usu_username = p.usu_username and p.pag_estado = 'APROBADO' and a.apro_codigo = e.prop_codigo and a.anp_estado = 'APROBADO' and a.apro_codigo" +
                 " in (select a.apro_codigo from estudiante e, anteproyecto a where e.prop_codigo = a.apro_codigo and e.usu_username = '" + Session["id"] + "')";
                 OracleCommand cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

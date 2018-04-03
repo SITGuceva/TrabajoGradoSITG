@@ -80,7 +80,7 @@
                                     <asp:BoundField DataField="ANP_NOMBRE" HeaderText="Título" />
                                     <asp:BoundField DataField="FECHA" HeaderText="Fecha" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
-                                    <asp:BoundField DataField="ANT_APROBACION" HeaderText="Aprobacion director" />
+                                    <asp:BoundField DataField="ANP_APROBACION" HeaderText="Aprobacion director" />
                                     <asp:BoundField DataField="REVISOR" HeaderText="Revisor" />
                                 </Columns>
                             </asp:GridView>

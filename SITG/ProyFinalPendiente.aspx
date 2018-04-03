@@ -2,7 +2,7 @@
 
 <asp:Content ID="ProyFinalPendiente" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Documentos - Proyectos Finales Pendientes</div>
+        <div class="panel-heading">Decanatura - Proyectos Finales Pendientes</div>
         <div class="panel-body">
             <asp:UpdatePanel runat="server" ID="UPasignarjur"> <ContentTemplate>
                 <div class="container-fluid">

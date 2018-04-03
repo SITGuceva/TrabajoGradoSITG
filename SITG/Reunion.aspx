@@ -2,7 +2,7 @@
 
 <asp:Content ID="CReunion" ContentPlaceHolderID="MainContent" Runat="Server">
      <div class="panel panel-default">
-        <div class="panel-heading">Reunion - Gestionar Reunion</div>
+        <div class="panel-heading">Gestionar Reunión - Reunión</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPreu" runat="server"> <ContentTemplate>
             <div class="container-fluid">

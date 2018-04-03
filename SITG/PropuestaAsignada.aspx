@@ -2,7 +2,7 @@
 
 <asp:Content ID="PropuestaAsignada" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Propuestas Asignadas</div>
+        <div class="panel-heading">Gestionar Documentos - Propuestas Asignadas</div>
         <div class="panel-body">
            <asp:UpdatePanel ID="UPpropasig" runat="server"> <ContentTemplate>
             <div class="container-fluid">

@@ -2,7 +2,7 @@
 
 <asp:Content ID="AsignarComite" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Sistema - Observaciones</div>
+        <div class="panel-heading">Universidad - Asignar Comite</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPasignarcomite" runat="server">
                 <ContentTemplate>

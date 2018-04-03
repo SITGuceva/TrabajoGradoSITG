@@ -15,7 +15,7 @@ public partial class ProcesoEST : Conexion
         if (!IsPostBack){
             string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "ProcesoEST.aspx");
             if (valida.Equals("false")){
-                Response.Redirect("MenuPrincipal.aspx");
+              Response.Redirect("MenuPrincipal.aspx");
             }else{
                 LBpropuesta.Visible = false;
                 LBanteproyecto.Visible = false;
@@ -120,7 +120,7 @@ public partial class ProcesoEST : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "Select P.APRO_CODIGO, P.ANP_NOMBRE, P.ANP_FECHA, INITCAP(P.ANT_APROBACION) as aprobacion ,INITCAP(P.ANT_ESTADO) as estado,CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor from anteproyecto p, usuario o, estudiante e, profesor d, evaluador r " +
+                string sql = "Select P.APRO_CODIGO, P.ANP_NOMBRE, P.ANP_FECHA, INITCAP(P.ANP_APROBACION) as aprobacion ,INITCAP(P.ANP_ESTADO) as estado,CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor from anteproyecto p, usuario o, estudiante e, profesor d, evaluador r " +
                              "where d.usu_username = '" + Session["id"] + "' and d.com_codigo = e.prog_codigo  and e.usu_username = '" + TBCodigoE.Text + "' and e.prop_codigo = p.apro_codigo and r.Usu_Username = o.Usu_Username and r.Apro_Codigo = e.Prop_Codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

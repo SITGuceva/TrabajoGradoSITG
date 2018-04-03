@@ -2,7 +2,7 @@
 
 <asp:Content ID="Pagos_Estudiante" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Pagos Estudiantes</div>
+        <div class="panel-heading">Decanatura - Pagos Estudiantes</div>
         <div class="panel-body">
             <asp:UpdatePanel runat="server" ID="UPpagosest"><ContentTemplate>
 

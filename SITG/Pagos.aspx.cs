@@ -38,7 +38,7 @@ public partial class Pagos : Conexion
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         if (conn != null) {
-            string sql = "select A.Apro_Codigo from anteproyecto a , estudiante e where a.apro_codigo = E.Prop_Codigo and E.Usu_Username = '"+Session["id"]+"' and a.ant_estado = 'APROBADO' and a.ant_aprobacion = 'APROBADO'";
+            string sql = "select A.Apro_Codigo from anteproyecto a , estudiante e where a.apro_codigo = E.Prop_Codigo and E.Usu_Username = '"+Session["id"]+"' and a.anp_estado = 'APROBADO' and a.anp_aprobacion = 'APROBADO'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();

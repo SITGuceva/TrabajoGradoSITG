@@ -2,7 +2,7 @@
 
 <asp:Content ID="ProcesoEST" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Consultar proceso del estudiante</div>
+        <div class="panel-heading">Gestionar Documentos - Consultar proceso del estudiante</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UProcesoEST" runat="server">
                 <ContentTemplate>

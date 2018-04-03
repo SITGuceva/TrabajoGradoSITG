@@ -16,18 +16,13 @@ public partial class DatoPersonal : Conexion
         if (Session["Usuario"] == null)
         {
             Response.Redirect("Default.aspx");
-        }else{
-            if (!IsPostBack){
-                string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "DatoPersonal.aspx");
-                if (valida.Equals("false")){
-                    Response.Redirect("MenuPrincipal.aspx");
-                }else{
-                    Page.Form.Attributes.Add("enctype", "multipart/form-data");
-                    Buscar();
-                }
-            }
-            validarol();
         }
+         if (!IsPostBack){              
+                  Page.Form.Attributes.Add("enctype", "multipart/form-data");
+                  Buscar();
+         }
+        validarol();
+        
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.LBhv);
     }

@@ -2,7 +2,7 @@
 
 <asp:Content ID="CambiarPass" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Configuracion - Cambiar Contraseña</div>
+        <div class="panel-heading">Configuración - Cambiar Contraseña</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPcambiarpass" runat="server">
                 <ContentTemplate>

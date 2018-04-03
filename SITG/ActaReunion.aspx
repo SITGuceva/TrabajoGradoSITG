@@ -3,7 +3,7 @@
 <asp:Content ID="ActaReunion" ContentPlaceHolderID="MainContent" Runat="Server">
     
      <div class="panel panel-default">
-        <div class="panel-heading">Actas - Acta de Reunion</div>
+        <div class="panel-heading">Gestionar Reunión - Acta de Reunion</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPactas" runat="server" > <ContentTemplate>
             <div class="container-fluid">

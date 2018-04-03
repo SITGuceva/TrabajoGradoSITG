@@ -2,7 +2,7 @@
 
 <asp:Content ID="ProyectoDisponible" ContentPlaceHolderID="MainContent" Runat="Server">
      <div class="panel panel-default">
-        <div class="panel-heading">Proyectos Disponibles - Proyectos</div>
+        <div class="panel-heading">Gestionar Proyectos - Proyectos Disponibles</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPproyectos" runat="server"> <ContentTemplate>
             <div class="container-fluid">

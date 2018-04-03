@@ -2,7 +2,7 @@
 
 <asp:Content ID="AnteproPendiente" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Documentos - Anteproyectos Pendientes</div>
+        <div class="panel-heading">Gestionar Reunión - Anteproyectos Pendientes</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPantepropendi" runat="server"> <ContentTemplate>
             <div class="container-fluid">

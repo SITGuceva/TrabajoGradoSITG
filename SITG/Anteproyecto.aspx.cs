@@ -57,6 +57,9 @@ public partial class Anteproyecto : Conexion
                     LBSubir.Enabled = false;
                     LBSubir.ForeColor = System.Drawing.Color.Gray;
                 }
+            } else {
+                LBSubir.Enabled = false;
+                LBSubir.ForeColor = System.Drawing.Color.Gray;
             }
             drc1.Close();
         }
@@ -68,7 +71,7 @@ public partial class Anteproyecto : Conexion
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         if (conn != null) {
-            string sql = "select an.ant_estado, an.ant_aprobacion from anteproyecto an, estudiante e where e.usu_username='" + Session["id"] + "' and an.apro_codigo = e.prop_codigo";
+            string sql = "select an.anp_estado, an.anp_aprobacion from anteproyecto an, estudiante e where e.usu_username='" + Session["id"] + "' and an.apro_codigo = e.prop_codigo";
 
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
@@ -189,9 +192,9 @@ public partial class Anteproyecto : Conexion
                 if (i == 0) { 
                      query = "insert into anteproyecto (apro_codigo, anp_nombre, anp_documento, anp_nomarchivo, anp_tipo, anp_fecha) values ('"+codprop+"' ,'"+titulo+"' , '"+ruta+"', '"+filename+"', '"+contentType+ "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
                 }else if (i == 1) {
-                    query = "update anteproyecto set anp_documento='"+ruta+"', anp_nomarchivo='"+filename+"', anp_tipo='"+contentType+ "', anp_fecha=TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), ant_aprobacion='PENDIENTE' where apro_codigo='" + codprop + "'";
+                    query = "update anteproyecto set anp_documento='"+ruta+"', anp_nomarchivo='"+filename+"', anp_tipo='"+contentType+ "', anp_fecha=TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), anp_aprobacion='PENDIENTE' where apro_codigo='" + codprop + "'";
                 } else if (i == 2){
-                    query = "update anteproyecto set anp_documento='"+ruta+"', anp_nomarchivo='"+filename+"', anp_tipo='"+contentType+ "', anp_fecha=TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), ant_estado='PENDIENTE' where apro_codigo='" + codprop + "'";
+                    query = "update anteproyecto set anp_documento='"+ruta+"', anp_nomarchivo='"+filename+"', anp_tipo='"+contentType+ "', anp_fecha=TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), anp_estado='PENDIENTE' where apro_codigo='" + codprop + "'";
                 }
                 Ejecutar("Anteproyecto cargado satisfatoriamente", query);
             }
@@ -225,7 +228,7 @@ public partial class Anteproyecto : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select an.apro_codigo, an.anp_nombre, an.ant_aprobacion, an.ant_estado, an.anp_fecha, an.ant_evaluador  from anteproyecto an, estudiante e where an.apro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
+                string sql = "select an.apro_codigo, an.anp_nombre, an.anp_aprobacion, an.anp_estado, an.anp_fecha, an.anp_evaluador  from anteproyecto an, estudiante e where an.apro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

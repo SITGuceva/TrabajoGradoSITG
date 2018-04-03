@@ -107,6 +107,7 @@ public partial class Reunion : System.Web.UI.Page
                     dataTable.Load(reader);
                     GVconsulta.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.ForeColor = System.Drawing.Color.Red;
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVconsulta.DataBind();

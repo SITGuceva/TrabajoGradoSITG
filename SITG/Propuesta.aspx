@@ -178,6 +178,7 @@
                             <asp:BoundField DataField="DIR_FECHA" HeaderText="Fecha de solicitud" />
                             <asp:BoundField DataField="DIR_ESTADO" HeaderText="Estado" />
                             <asp:BoundField DataField="director" HeaderText="Director" />
+                            <asp:BoundField DataField="DIR_OBSERVACION" HeaderText="Obsevación" />
                         </Columns>
                     </asp:GridView>
                 </div>

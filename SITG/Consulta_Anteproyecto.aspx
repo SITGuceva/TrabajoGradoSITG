@@ -48,7 +48,7 @@
                                     <asp:BoundField DataField="APRO_CODIGO" HeaderText="Código" />
                                     <asp:BoundField DataField="ANP_NOMBRE" HeaderText="Título" />
                                     <asp:BoundField DataField="ANP_FECHA" HeaderText="Fecha" />
-                                    <asp:BoundField DataField="ANT_ESTADO" HeaderText="Estado del anteproyecto" />
+                                    <asp:BoundField DataField="ANP_ESTADO" HeaderText="Estado del anteproyecto" />
                                     <asp:BoundField DataField="REVISOR" HeaderText="Revisor" />
                                 </Columns>
                             </asp:GridView>

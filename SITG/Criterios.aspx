@@ -3,7 +3,7 @@
 <asp:Content ID="CriteriosCRUD" ContentPlaceHolderID="MainContent" Runat="Server">
 
     <div class="panel panel-default">
-        <div class="panel-heading">Reunion - Criterios</div>
+        <div class="panel-heading">Universidad - Criterios</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPcriterios" runat="server"> <ContentTemplate>
             <div class="container-fluid">

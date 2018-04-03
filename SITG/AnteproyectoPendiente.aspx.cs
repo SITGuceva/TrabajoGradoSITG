@@ -106,7 +106,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select DISTINCT   an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, PROFESOR d WHERE an.apro_codigo = e.prop_codigo and an.ant_evaluador = 'SIN ASIGNAR' and d.COM_CODIGO = e.PROG_CODIGO  and An.Ant_Aprobacion = 'APROBADO' and d.USU_USERNAME = '" + Session["id"]+"'";
+                string sql = "select DISTINCT   an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, PROFESOR d WHERE an.apro_codigo = e.prop_codigo and an.anp_evaluador = 'SIN ASIGNAR' and d.COM_CODIGO = e.PROG_CODIGO  and An.Anp_Aprobacion = 'APROBADO' and d.USU_USERNAME = '" + Session["id"]+"'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -251,7 +251,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
             Ejecutar("1", sql);
             if (Verificador.Value.Equals("Funciono")){
                 Verificador.Value = "";
-                sql = "update anteproyecto set ant_evaluador='ASIGNADO' where apro_codigo='" + Metodo.Value + "'";
+                sql = "update anteproyecto set anp_evaluador='ASIGNADO' where apro_codigo='" + Metodo.Value + "'";
                 Ejecutar("1", sql);
                 if (Verificador.Value.Equals("Funciono"))
                 {

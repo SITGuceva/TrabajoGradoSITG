@@ -25,8 +25,8 @@
                         <asp:BoundField DataField="APRO_CODIGO" HeaderText="CODIGO" />
                         <asp:BoundField DataField="ANP_NOMBRE" HeaderText="TITULO" />
                         <asp:BoundField DataField="ANP_FECHA" HeaderText="FECHA" />
-                        <asp:BoundField DataField="ANT_ESTADO" HeaderText="ESTADO" />
-                        <asp:BoundField DataField="ANT_APROBACION" HeaderText="DIRECTOR" />
+                        <asp:BoundField DataField="ANP_ESTADO" HeaderText="ESTADO" />
+                        <asp:BoundField DataField="ANP_APROBACION" HeaderText="DIRECTOR" />
                         <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="DOCUMENTO">
                              <ItemTemplate><asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("APRO_CODIGO") %>'></asp:LinkButton></ItemTemplate>
                         </asp:TemplateField>

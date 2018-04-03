@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Usuario.aspx.cs" Inherits="Estudiante" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Usuario.aspx.cs" Inherits="Usuario" %>
 
 <asp:Content ID="Usuario" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
@@ -42,7 +42,7 @@
                                     <asp:TableCell><asp:TextBox ID="TBcorreo" runat="server" CssClass="form-control" TextMode="Email"></asp:TextBox></asp:TableCell>
                                     <asp:TableCell><asp:Label ID="Lrol" runat="server" Text="Rol:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:DropDownList ID="DDLrol" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLrol_SelectedIndexChanged" AutoPostBack="true">
-                                            <asp:ListItem Value="NULL" Text="NINGUNO"></asp:ListItem>
+                                            <asp:ListItem Value="0" Text="NINGUNO"></asp:ListItem>
                                             <asp:ListItem Value="EST" Text="ESTUDIANTE"></asp:ListItem>
                                             <asp:ListItem Value="DOC" Text="DOCENTE"></asp:ListItem>
                                         </asp:DropDownList></asp:TableCell>
@@ -59,18 +59,20 @@
                         </div>
 
 
-                           <div id="ConsultarUsuario" runat="server" visible="false" class="row">
+                        <div id="ConsultarUsuario" runat="server" visible="false" class="row">
                             <asp:Table ID="Tconsulta" runat="server" HorizontalAlign="Center">
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:Label ID="Label1" runat="server" Text="Rol del usuario:"  ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
-                                    <asp:DropDownList ID="DDLconsulta" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLconsulta_SelectedIndexChanged" AutoPostBack="true">
+                                    <asp:TableCell><asp:Label ID="Ltipo" runat="server" Text="Tipo Usuario:"  ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                    <asp:DropDownList ID="DDLconsulta" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLconsulta_SelectedIndexChanged" AutoPostBack="true" >
                                             <asp:ListItem Value="TODOS" Text="TODOS"></asp:ListItem>
                                             <asp:ListItem Value="EST" Text="ESTUDIANTE"></asp:ListItem>
                                             <asp:ListItem Value="DOC" Text="DOCENTE"></asp:ListItem>
                                         </asp:DropDownList>
-                                        </asp:TableCell>
-                                        
-                                </asp:TableRow>
+                                    </asp:TableCell>
+                                    <asp:TableCell><asp:Label ID="Lcod2" runat="server" Text="Codigo:"  ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:TextBox ID="TBcod2" runat="server" TextMode="Number" CssClass="form-control"></asp:TextBox></asp:TableCell>
+                                    <asp:TableCell><asp:Button ID="Bbuscar" runat="server" OnClick="Bbuscar_Click" Text="Buscar" class="btn btn-secondary"/></asp:TableCell>
+                               </asp:TableRow>
                             </asp:Table>
                         </div>
 
@@ -93,6 +95,7 @@
                                     <asp:BoundField DataField="USU_APELLIDO" HeaderText="Apellido" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:BoundField DataField="USU_TELEFONO" HeaderText="Telefono" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:BoundField DataField="USU_DIRECCION" HeaderText="Dirección" HeaderStyle-HorizontalAlign="Center" />
+                                     <asp:BoundField DataField="USU_CORREO" HeaderText="Correo" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:TemplateField HeaderText="Estado">
                                         <EditItemTemplate>
                                             <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
@@ -103,10 +106,10 @@
                                         <ItemTemplate><asp:Label ID="Lestado" runat="server" Text='<%# Bind("USU_ESTADO") %>'></asp:Label></ItemTemplate>
                                     </asp:TemplateField>
                                     <asp:TemplateField HeaderText="Modificar">
-                                        <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" /></ItemTemplate>
+                                        <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/></ItemTemplate>
                                         <EditItemTemplate>
-                                            <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" />
-                                            <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" />
+                                            <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-default"/>
+                                            <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-default"/>
                                         </EditItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>

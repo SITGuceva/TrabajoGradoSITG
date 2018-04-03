@@ -64,7 +64,7 @@ public partial class PeticionDir : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT DISTINCT S.DIR_ID, S.DIR_FECHA, S.DIR_ESTADO, p.PROP_TITULO, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, u.usu_username  FROM DIRECTOR S, USUARIO U, estudiante e, propuesta p, profesor d WHERE p.PROP_CODIGO = S.PROP_CODIGO  and S.DIR_ESTADO = 'PENDIENTE' AND U.USU_USERNAME = S.USU_USERNAME and S.PROP_CODIGO = e.PROP_CODIGO  and e.PROG_CODIGO = d.COM_CODIGO "; 
+                sql = "SELECT DISTINCT S.DIR_ID, S.DIR_FECHA, S.DIR_ESTADO, p.PROP_TITULO, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_observacion  FROM DIRECTOR S, USUARIO U, estudiante e, propuesta p, profesor d WHERE p.PROP_CODIGO = S.PROP_CODIGO  and S.DIR_ESTADO = 'PENDIENTE' AND U.USU_USERNAME = S.USU_USERNAME and S.PROP_CODIGO = e.PROP_CODIGO  and e.PROG_CODIGO = d.COM_CODIGO "; 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -85,9 +85,6 @@ public partial class PeticionDir : Conexion
     protected void GVpeticion_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         int index = Convert.ToInt32(e.CommandArgument);
-        string sql = ""; 
-        GridViewRow row;
-
         if (e.CommandName == "Ver"){
             IBregresar.Visible = true;
             CargarInfprof(index);
@@ -96,18 +93,46 @@ public partial class PeticionDir : Conexion
             Linfo.Text = "";
 
         }  
-        if (e.CommandName == "Aprobar") {
-            row = GVpeticion.Rows[index]; 
-            sql = "update DIRECTOR set DIR_ESTADO='APROBADO' where DIR_ID='" + row.Cells[0].Text + "'";
-            Ejecutar("Solicitud de Director Aprobada", sql);
-            ExisteRol(row.Cells[0].Text);
+    }
+    protected void GVpeticion_RowUpdating(object sender, GridViewUpdateEventArgs e)
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        GridViewRow row = (GridViewRow)GVpeticion.Rows[e.RowIndex];
+        if (conn != null)
+        {
+            DropDownList combo = GVpeticion.Rows[e.RowIndex].FindControl("estado") as DropDownList;
+            string estado = combo.SelectedValue;
+            TextBox codigo = (TextBox)GVpeticion.Rows[e.RowIndex].Cells[0].Controls[0];
+            TextBox observacion = (TextBox)GVpeticion.Rows[e.RowIndex].Cells[4].Controls[0];
+            if (estado.Equals("APROBADO"))
+            {
+                ExisteRol(codigo.Text);
+            }
+
+            string sql = "update DIRECTOR set DIR_ESTADO='" + estado + "', DIR_OBSERVACION='" + observacion.Text + "' where DIR_ID='" + codigo.Text + "'";
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            using (OracleDataReader reader = cmd.ExecuteReader())
+            {
+                GVpeticion.EditIndex = -1;
+                CargarTablaPeticiones();
+            }
         }
-        if (e.CommandName == "Rechazar"){
-            row = GVpeticion.Rows[index];
-            sql = "update DIRECTOR set DIR_ESTADO='RECHAZADO' where DIR_ID='" + row.Cells[0].Text + "'";
-            Ejecutar("Solicitud de Director Rechazada", sql);
-            CargarTablaPeticiones();
-        }   
+    }
+    protected void GVpeticion_RowEditing(object sender, GridViewEditEventArgs e)
+    {
+        int indice = GVpeticion.EditIndex = e.NewEditIndex;
+        CargarTablaPeticiones();
+        GVpeticion.Rows[indice].Cells[0].Enabled = false;
+        GVpeticion.Rows[indice].Cells[1].Enabled = false;
+        GVpeticion.Rows[indice].Cells[2].Enabled = false;
+        GVpeticion.Rows[indice].Cells[3].Enabled = false;
+    }
+    protected void GVpeticion_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
+    {
+        GVpeticion.EditIndex = -1;
+        CargarTablaPeticiones();
     }
     private void ExisteRol(string id)
     {
@@ -125,6 +150,7 @@ public partial class PeticionDir : Conexion
         }
     }
    
+
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
@@ -301,6 +327,7 @@ public partial class PeticionDir : Conexion
             }
         }
     }
+
 
 }
 

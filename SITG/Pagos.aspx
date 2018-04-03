@@ -2,7 +2,7 @@
 
 <asp:Content ID="Pagos" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Pagos</div>
+        <div class="panel-heading">Gestionar Documentos - Pagos</div>
         <div class="panel-body">
             <asp:UpdatePanel runat="server" ID="UPpagos"><ContentTemplate>
                     <div class="container-fluid">

@@ -41,7 +41,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select DISTINCT an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, director s, usuario u WHERE  an.apro_codigo = e.PROP_CODIGO and s.prop_codigo = an.apro_codigo and an.ant_aprobacion = 'PENDIENTE' and  s.usu_username='"+Session["id"]+"'";
+                string sql = "select DISTINCT an.apro_codigo, an.anp_nombre, an.anp_fecha from estudiante e, anteproyecto an, director s, usuario u WHERE  an.apro_codigo = e.PROP_CODIGO and s.prop_codigo = an.apro_codigo and an.anp_aprobacion = 'PENDIENTE' and  s.usu_username='"+Session["id"]+"'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -228,7 +228,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             Linfo.Text = "Debe seleccionar una calificación.";
         } else {
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "update anteproyecto set ant_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Codigo.Value + "'";
+            string sql = "update anteproyecto set anp_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Codigo.Value + "'";
             Ejecutar("El anteproyecto ha sido revisada con exito, presione click en regresar para revisar otra", sql);
 
             Resultado.Visible = false;

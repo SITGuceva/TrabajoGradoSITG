@@ -2,7 +2,7 @@
 
 <asp:Content ID="PropuestaPendiente" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Documentos - Propuestas Pendientes</div>
+        <div class="panel-heading">Gestionar Reunión - Propuestas Pendientes</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPproppendi" runat="server"> <ContentTemplate>
             <div class="container-fluid">
