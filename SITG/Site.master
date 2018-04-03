@@ -8,9 +8,15 @@
     <title>SITG</title>
     <asp:PlaceHolder runat="server"><%: Scripts.Render("~/bundles/modernizr") %></asp:PlaceHolder>
     <webopt:BundleReference runat="server" Path="~/Content/css" />
-    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <link href="Images/icono.jpeg" rel="shortcut icon" type="image/x-icon" />
     <link href="~/Content/SubMenu.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Menu.css" rel="stylesheet" type="text/css" />
+     <link href="~/Content/Cards.css" rel="stylesheet" type="text/css" />
+     <link href="~/Content/Cards3.css" rel="stylesheet" type="text/css" />
+     <link href="~/Content/Cards4.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Carousel.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/Inicio.css" rel="stylesheet" type="text/css" />
+
 </head>
 
 <body onkeypress="return pulsar(event)">
@@ -75,6 +81,9 @@
 
     </form>
    <script type="text/javascript" src="/Scripts/Menu.js"></script>
+   <script type="text/javascript" src="/Scripts/Cards.js"></script>
+   <script type="text/javascript" src="/Scripts/Cards2.js"></script>
+   
    
    <script type="text/javascript">
        $('.nav-second-level').collapse('hide');

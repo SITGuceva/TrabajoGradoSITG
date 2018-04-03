@@ -1,0 +1,31 @@
+﻿#skills span {
+    top: -30px;
+    left: 2%;
+    position: relative;
+    font-size: 1.2em;
+    font-family: Helvetica-Normal;
+    color: #fff;
+}
+
+progress {
+    opacity: 50;
+    background-color: #f3f3f3;
+    border: 0;
+    height: 2.5em;
+    width: 100%;
+}
+
+    progress::-webkit-progress-bar {
+        opacity: 50;
+        background-color: #AFAFAF;
+    }
+
+    progress::-webkit-progress-value {
+        opacity: 50;
+        background-color: #1F1F1F;
+    }
+
+    progress::-moz-progress-bar {
+        opacity: 50;
+        background-color: #1F1F1F;
+    }
