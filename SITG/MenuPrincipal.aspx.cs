@@ -65,9 +65,14 @@ public partial class Menu : Page{
     public string antepenasignacion;// cantidad de anteproyectos pendientes por asignar evaluador
     public string dirpeticion;// cantidad de anteproyectos pendientes por asignar evaluador
     public string solicom;// solicitudes estudiantes comite
+    public string cantreunionescom;// cantidad de reuniones comite en un determinado mes
+    public string reunionescontaduria;// cantidad de reuniones del comite de contaduria en un determinado mes
+    public string reunionesadme;// cantidad de reuniones del comite de adm de empresas en un determinado mes
+    public string reunionescomer;// cantidad de reuniones del comite de comercio internacional en un determinado mes
     public int sumapropuesta;
     public int sumaanteproyecto;
     public int sumaproyectofinal;
+    public int sumareunion;
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -1078,6 +1083,96 @@ public partial class Menu : Page{
     }
 
 
+    //Cantidad de reuniones en el mes actual contaduria
+
+    protected void reucontaduria()
+    {
+
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            DateTime fecha = DateTime.Now;
+            int mes = fecha.Month;
+            string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='1' AND TO_CHAR(reu.reu_fprop,'MM')='"+mes+"'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows)
+            {
+                reunionescontaduria = drc1.GetInt32(0).ToString();
+                int Valor = Convert.ToInt32(reunionescontaduria);
+                sumareunion = sumareunion + Valor;
+            }
+            drc1.Close();
+
+        }
+
+
+    }
+
+
+    //Cantidad de reuniones en el mes actual contaduria
+
+    protected void reuadmempresas()
+    {
+
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            DateTime fecha = DateTime.Now;
+            int mes = fecha.Month;
+            string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='2' AND TO_CHAR(reu.reu_fprop,'MM')='" + mes + "'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows)
+            {
+                reunionesadme = drc1.GetInt32(0).ToString();
+                int Valor = Convert.ToInt32(reunionesadme);
+                sumareunion = sumareunion + Valor; 
+            }
+            drc1.Close();
+
+        }
+
+
+    }
+
+
+    //Cantidad de reuniones en el mes actual comercio
+
+    protected void reucomercio()
+    {
+
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            DateTime fecha = DateTime.Now;
+            int mes = fecha.Month;
+            string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='3' AND TO_CHAR(reu.reu_fprop,'MM')='" + mes + "'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows)
+            {
+                reunionescomer = drc1.GetInt32(0).ToString();
+                int Valor = Convert.ToInt32(reunionescomer);
+                sumareunion = sumareunion + Valor;
+            }
+            drc1.Close();
+
+        }
+
+
+    }
+
+
 
 
 
@@ -1403,8 +1498,32 @@ public partial class Menu : Page{
     }
 
 
+    //Cantidad de reuniones en el mes
 
+    protected void cantreucom()
+    {
 
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+
+            DateTime fecha = DateTime.Now;
+            int mes = fecha.Month;
+            string sql = "SELECT COUNT(*) FROM reunion r, comite c, profesor d WHERE r.com_codigo=c.com_codigo AND C.Com_Codigo=D.Com_Codigo and D.Usu_Username='"+Session["id"]+"' AND TO_CHAR(r.reu_fprop,'MM')='"+mes+"'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows)
+            {
+                cantreunionescom = drc1.GetInt32(0).ToString();
+            }
+            drc1.Close();
+
+        }
+
+    }
 
 
     protected void consultaroles() {
@@ -1481,6 +1600,7 @@ public partial class Menu : Page{
                 antependientecom();
                 dirpendientecom();
                 solicitudespencom();
+                cantreucom();
             }
             if (ciclo[i].Equals("DIR"))
             {
@@ -1525,6 +1645,9 @@ public partial class Menu : Page{
                 proyfinalrecha();
                 proyfinalpen();
                 proyfinaljur();
+                reucontaduria();
+                reuadmempresas();
+                reucomercio();
             }
             Notificaciones.Controls.Add(new LiteralControl("<li style='background-color:black'><a href =\"#"+ciclo[i]+ "\" data-toggle=\"tab\" style=\"color:gray;\" > " +nombre+"</a></li>"));
             
