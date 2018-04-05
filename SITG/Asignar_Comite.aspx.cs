@@ -43,6 +43,7 @@ public partial class Asignar_Comite : Conexion
         ResultadoUsuario.Visible = false;
         ResultadoComite.Visible = false;
         Roles.Visible = false;
+        Miembros.Visible = false;
     }
 
     /*Metodo que llama a cargarTabla2 el cual muestra la información de un usuario*/

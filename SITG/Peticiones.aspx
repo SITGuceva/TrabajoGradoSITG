@@ -18,7 +18,7 @@
 
                         <div id="TPeticiones" runat="server" visible="false" class="row" style="overflow-x: auto">
                             <asp:GridView ID="GVpeticion" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"  OnPageIndexChanging="GVpeticion_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table"
-                                OnRowDataBound="GVpeticion_RowDataBound" PageSize="8"  OnRowUpdating="GVpeticion_RowUpdating" OnRowEditing="GVpeticion_RowEditing" OnRowCancelingEdit="GVpeticion_RowCancelingEdit" OnRowCommand="GVpeticion_RowCommand">
+                                OnRowDataBound="GVpeticion_RowDataBound" PageSize="8" OnRowCommand="GVpeticion_RowCommand">
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
@@ -35,26 +35,12 @@
                                     <asp:BoundField DataField="PROP_TITULO" HeaderText="Propuesta" />
                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director solicitante" />
                                     <asp:BoundField DataField="DIR_OBSERVACION" HeaderText="Observación" />
-                                    <asp:TemplateField HeaderText="Estado">
-                                        <EditItemTemplate>
-                                            <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
-                                                <asp:ListItem Value="APROBADO">Aprobar</asp:ListItem>
-                                                <asp:ListItem Value="RECHAZADO">Rechazar</asp:ListItem>
-                                            </asp:DropDownList>
-                                        </EditItemTemplate>
-                                        <ItemTemplate><asp:Label ID="Lestado" runat="server" Text='<%# Bind("DIR_ESTADO") %>'></asp:Label></ItemTemplate>
-                                    </asp:TemplateField>
+                                    <asp:BoundField DataField="DIR_ESTADO" HeaderText="Observación" />
                                     <asp:TemplateField HeaderText="Informacion del profesor">
-                                        <ItemTemplate>
-                                            <asp:Button ID="Ver" runat="server" Text="Ver" CommandName="Ver" CssClass="btn btn-default" CommandArgument='<%# Bind("USU_USERNAME") %>' /> 
-                                        </ItemTemplate>
+                                        <ItemTemplate> <asp:Button ID="Ver" runat="server" Text="Ver" CommandName="Ver" CssClass="btn btn-default" CommandArgument='<%# Bind("USU_USERNAME") %>' /> </ItemTemplate>
                                     </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Modificar">
-                                        <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/></ItemTemplate>
-                                        <EditItemTemplate>
-                                            <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-default"/>
-                                            <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-default"/>
-                                        </EditItemTemplate>
+                                    <asp:TemplateField HeaderText="Revisar">
+                                       <ItemTemplate><asp:Button ID="Calificar" runat="server" Text="Calificar" CommandName="Calificar" CssClass="btn btn-default" CommandArgument='<%# Bind("DIR_ID") %>' /> </ItemTemplate>
                                     </asp:TemplateField>
                                 </Columns>
                             </asp:GridView>
@@ -83,6 +69,23 @@
                                 </Columns>
                             </asp:GridView>    
                         </div>
+
+                     <div id="CalificarPdir" runat="server" visible="false" class="row">
+                      <asp:Table ID="Tcalificar" runat="server" HorizontalAlign="Center" >                
+                          <asp:TableRow>
+                             <asp:TableCell><asp:Label ID="Lestad" runat="server" Text="Estado: " ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
+                             <asp:TableCell><asp:DropDownList ID="DDLestado" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" style="width:700px;">
+                                       <asp:ListItem Value="0" Text="Seleccione"/>
+                                      <asp:ListItem Value="APROBADO">Aprobar</asp:ListItem>
+                                      <asp:ListItem Value="RECHAZADO">Rechazar</asp:ListItem>
+                            </asp:DropDownList></asp:TableCell>   
+                            <asp:TableCell><asp:Label ID="Lobs" runat="server" Text="Observaciones: " ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>    
+                              <asp:TableCell><textarea id="TAobs" runat="server" CssClass="form-control" rows="2"></textarea></asp:TableCell>                 
+                            <asp:TableCell><asp:Button ID="Bcalificar" runat="server" Text="Guardar" OnClick="Bcalificar_Click" class="btn btn-default"/>
+                                           <asp:Button ID="Bcancel" runat="server" Text="Cancelar" OnClick="regresar" class="btn btn-default"/></asp:TableCell>
+                          </asp:TableRow> 
+                       </asp:Table>
+                     </div>
 
 
                      <div id="PetiEstudiante" runat="server" visible="false" class="row">

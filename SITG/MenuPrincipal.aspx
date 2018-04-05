@@ -178,8 +178,7 @@
                                                     </div>
                                                 </div>
                                             </section>
-
-                                              </li>
+                                          </li>
                                     </ul>
                                 </div>                            
                             </div>

@@ -48,6 +48,7 @@ public class Conexion : System.Web.UI.Page
         string server = "ASUS VX199H";
         list.Add(server);
         string password = "cole1";
+    
         list.Add(password);
         string url = "ftp://192.168.1.7/";
         list.Add(url);

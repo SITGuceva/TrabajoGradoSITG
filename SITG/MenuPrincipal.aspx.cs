@@ -1,16 +1,7 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Data;
-
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Web;
-
 using System.Web.UI;
-using System.Web.UI.WebControls;
 
 public partial class Menu : Page{
     Conexion con = new Conexion();
@@ -69,10 +60,7 @@ public partial class Menu : Page{
     public string reunionescontaduria;// cantidad de reuniones del comite de contaduria en un determinado mes
     public string reunionesadme;// cantidad de reuniones del comite de adm de empresas en un determinado mes
     public string reunionescomer;// cantidad de reuniones del comite de comercio internacional en un determinado mes
-    public int sumapropuesta;
-    public int sumaanteproyecto;
-    public int sumaproyectofinal;
-    public int sumareunion;
+    public int sumapropuesta, sumaanteproyecto, sumaproyectofinal, sumareunion;
 
 
     protected void Page_Load(object sender, EventArgs e)
@@ -81,270 +69,182 @@ public partial class Menu : Page{
         {
             Response.Redirect("Default.aspx");
         }
-
-
-       /* EST.Visible = true;
-        ADM.Visible = false;
-        estudianterol.Visible = false;
-        profesorrol.Visible = false;
-        comiterol.Visible = false;
-        directorrol.Visible = false;*/
-
-        consultaroles();
-        
+        consultaroles();      
     }
 
-
-
-    //--------------------------------------ADMINISTRADOR-------------------------------------
-
-
-    protected void consultarfacultades()
-    {
-
+    /*--------------------------------------ADMINISTRADOR-------------------------------------*/
+    protected void consultarfacultades(){
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM facultad";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 facultad = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
         }
     }
-
     protected void consultarusuarios()
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(*) FROM usuario";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 usuarios = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
         }
     }
-
     protected void consultarestudiantes()
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM estudiante";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 estudiantes = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
         }
     }
-
     protected void consultarprofesor()
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM  profesor";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 profesores = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
         }
     }
-
     protected void consultarprogramas()
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(*) FROM  programa";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 programas = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
         }
     }
 
-
-
-    //--------------------------------------ESTUDIANTE-------------------------------------
-
+    /*--------------------------------------ESTUDIANTE-------------------------------------*/
     //**PROPUESTA**//
-
-    protected void estadodirector()
-    {
-
+    protected void estadodirector() {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT INITCAP(d.dir_Estado) AS estado FROM director d, estudiante e WHERE d.prop_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"' order by d.dir_estado ASC";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 edirector = drc1.GetString(0).ToString();
-
-                if (edirector.Equals("Aprobado"))
-                {
+                if (edirector.Equals("Aprobado")){
                     daprobado.Visible = true;
                 }
-                if (edirector.Equals("Rechazado"))
-                {
+                if (edirector.Equals("Rechazado")) {
                     drechazado.Visible = true;
                 }
-                if (edirector.Equals("Pendiente"))
-                {
+                if (edirector.Equals("Pendiente")){
                     dpendiente.Visible = true;
                 }
-            }
-            else
-            {
+            } else {
                 dsinsolicitud.Visible = true;
             }
             drc1.Close();
         }
     }
-
-
     protected void obsdirectorpropuesta()
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(*) FROM observacion o, estudiante e WHERE o.prop_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"' AND o.obs_realizada='DIRECTOR'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 obsdirectorp = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
         }
     }
-
     protected void estadopropuesta()
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT INITCAP(P.Prop_Estado) AS estado FROM propuesta p, estudiante e WHERE E.Prop_Codigo=P.Prop_Codigo AND E.Usu_Username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 epropuesta = drc1.GetString(0).ToString();
-
-                if (epropuesta.Equals("Aprobado"))
-                {
+                if (epropuesta.Equals("Aprobado")){
                     paprobado.Visible = true;
                 }
-                if (epropuesta.Equals("Rechazado"))
-                {
+                if (epropuesta.Equals("Rechazado")){
                     prechazado.Visible = true;
                 }
-                if (epropuesta.Equals("Pendiente"))
-                {
+                if (epropuesta.Equals("Pendiente")){
                     ppendiente.Visible = true;
                 }
-            }
-            else
-            {
+            } else{
                 psinsubir.Visible = true;
             }
             drc1.Close();
         }
     }
-
-
     protected void obscomitepropuesta()
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(*) FROM observacion o, estudiante e WHERE o.prop_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"' AND o.obs_realizada='COMITE'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 obscomitep = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
         }
     }
-
-
-//**ANTEPROYECTO**
-
-        //---evaluador---
-    protected void anteproyectoeva() // saber si el evaluador fue asignado
+    //**ANTEPROYECTO**//
+    protected void anteproyectoeva()// saber si el evaluador fue asignado
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT INITCAP(a.anp_evaluador) AS evaluador FROM anteproyecto a, estudiante e WHERE a.apro_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 anteasigeva = drc1.GetString(0).ToString();
-
-                    aevaluador.Visible = true;
-            }
-            else
-            {
+                aevaluador.Visible = true;
+            } else{
                 sinaevaluador.Visible = true;
             }
             drc1.Close();
@@ -352,1190 +252,774 @@ public partial class Menu : Page{
     }
     protected void anteproyectoevacal() // saber calificación evaluador
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT INITCAP(a.anp_estado) AS estado FROM anteproyecto a, estudiante e WHERE a.apro_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
-                antecaleva = drc1.GetString(0).ToString();
-               
+            if (drc1.HasRows){
+                antecaleva = drc1.GetString(0).ToString();              
             }
             drc1.Close();
         }
     }
-
     protected void anteproyectoevaobs() // saber cantidad observaciones evaluador
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM ante_observacion a, estudiante e WHERE a.aprop_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"' AND a.aobs_realizada='EVALUADOR'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 anteobseva = drc1.GetInt32(0).ToString();
-
             }
             drc1.Close();
         }
     }
-
-    //---director---
-
-
+    //**DIRECTOR**//
     protected void anteproyectodircal() // saber calificación director
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT INITCAP(a.anp_aprobacion) AS director FROM anteproyecto a, estudiante e WHERE a.apro_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 antecaldir = drc1.GetString(0).ToString();
-
-                if (antecaldir.Equals("Aprobado"))
-                {
+                if (antecaldir.Equals("Aprobado")){
                    adirectoraprobado.Visible = true;
                 }
-                if (antecaldir.Equals("Rechazado"))
-                {
+                if (antecaldir.Equals("Rechazado")){
                     adirectorrechazado.Visible = true;
                 }
-                if (antecaldir.Equals("Pendiente"))
-                {
+                if (antecaldir.Equals("Pendiente")){
                     adirectorpendiente.Visible = true;
                 }
-            }
-            else
-            {
+            }else{
                 sindirectorante.Visible = true;
             }
             drc1.Close();
         }
     }
-
     protected void anteproyectodirobs() // saber cantidad observaciones director
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM ante_observacion a, estudiante e WHERE a.aprop_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"' AND a.aobs_realizada='DIRECTOR'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 anteobsedir = drc1.GetInt32(0).ToString();
-
             }
             drc1.Close();
         }
     }
-
-
-
-    //**PROYECTO FINAL**
-
-
-    //---pagos---
-
-    protected void pagosestudiante()
+    //**PROYECTO FINAL**//
+    protected void pagosestudiante()  // saber pagos
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT pag_estado FROM pagos WHERE usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 epago = drc1.GetString(0).ToString();
-
-                if (epago.Equals("APROBADO"))
-                {
+                if (epago.Equals("APROBADO")){
                     pagoaprobado.Visible = true;
                 }
-                if (epago.Equals("RECHAZADO"))
-                {
+                if (epago.Equals("RECHAZADO")){
                     pagorechazado.Visible = true;
                 }
-                if (epago.Equals("PENDIENTE"))
-                {
+                if (epago.Equals("PENDIENTE")) {
                     pagopendiente.Visible = true;
                 }
-            }
-            else
-            {
+            } else {
                 pagosinsubir.Visible = true;
             }
             drc1.Close();
         }
 
     }
-
-
-
-    //---Aceptación director proyecto final---
-
-
-    protected void proyfinaldirector()
+    protected void proyfinaldirector() // Aceptación director proyecto final
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT INITCAP(p.pf_aprobacion) AS director from proyecto_final p, estudiante e where p.ppro_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 edirproyfinal = drc1.GetString(0).ToString();
-
-                if (edirproyfinal.Equals("Aprobado"))
-                {
+                if (edirproyfinal.Equals("Aprobado")) {
                     aproyfinaldiraprobado.Visible = true;
                 }
-                if (edirproyfinal.Equals("Rechazado"))
-                {
+                if (edirproyfinal.Equals("Rechazado")){
                     aproyfinaldirrechazado.Visible = true;
                 }
-                if (edirproyfinal.Equals("Pendiente"))
-                {
+                if (edirproyfinal.Equals("Pendiente")) {
                     aproyfinaldirpendiente.Visible = true;
                 }
-            }
-            else
-            {
+            }else{
                 aproyfinalsinsubir.Visible = true;
             }
             drc1.Close();
         }
-
     }
-
-
-    //---observaciones director proyecto final---
-    protected void proyfinaldirectorobs()
+    protected void proyfinaldirectorobs() // observaciones director proyecto final
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM pf_observaciones p, estudiante e where p.ppro_codigo=e.prop_codigo AND  e.usu_username='"+Session["id"]+"' AND p.pfobs_realizada='DIRECTOR'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 edirproyfinalobs = drc1.GetInt32(0).ToString();
-
             } 
             drc1.Close();
-
         }
-
     }
-
-
-
-    //---Aceptación jurado proyecto final---
-    protected void proyfinaljurado()
+    protected void proyfinaljurado()// Aceptación jurado proyecto final
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT INITCAP(p.pf_estado) AS estado FROM proyecto_final p, estudiante e WHERE p.ppro_codigo=e.prop_codigo AND e.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 ejurproyfinal = drc1.GetString(0).ToString();
-
-                if (ejurproyfinal.Equals("Aprobado"))
-                {
+                if (ejurproyfinal.Equals("Aprobado")){
                     proyfinaljuraprobado.Visible = true;
                 }
-                if (ejurproyfinal.Equals("Rechazado"))
-                {
+                if (ejurproyfinal.Equals("Rechazado")){
                     proyfinaljurrechazado.Visible = true;
                 }
-                if (ejurproyfinal.Equals("Pendiente"))
-                {
+                if (ejurproyfinal.Equals("Pendiente")) {
                     proyfinaljurpendiente.Visible = true;
                 }
-            }
-            else
-            {
+            } else {
                sinproyfinaljur.Visible = true;
             }
             drc1.Close();
         }
-
-    }
-
-
-    //---observaciones jurado proyecto final---
-    protected void proyfinaljuradoobs()
+     }   
+    protected void proyfinaljuradoobs() // observaciones jurado proyecto final
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(*) FROM pf_observaciones p, estudiante e where p.ppro_codigo=e.prop_codigo AND  e.usu_username='"+Session["id"]+"' AND p.pfobs_realizada='JURADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 ejurproyfinalobs = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
 
-
-
-
-    //--------------------------------------EVALUADOR-------------------------------------
-
-        //Cantidad de anteproyectos asignados
-    protected void anteproasignado()
+    /*--------------------------------------EVALUADOR-------------------------------------*/    
+    protected void anteproasignado() //Cantidad de anteproyectos asignados
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(*) FROM evaluador WHERE usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantantreproeva = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-        //Cantidad de anteproyectos que faltan por revisar
-    protected void anteprorevisareva()
+    protected void anteprorevisareva()//Cantidad de anteproyectos que faltan por revisar
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(A.Apro_Codigo) AS ante_pendientes FROM anteproyecto a, estudiante e, evaluador r WHERE r.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = A.Apro_Codigo and A.Anp_Estado = 'PENDIENTE' and A.Anp_Aprobacion='APROBADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantrevisar = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
 
-
-
-    //--------------------------------------DOCENTE-------------------------------------
-
-    //Cantidad de proyectos subidos
-    protected void proyectosdocente()
+    /*--------------------------------------DOCENTE-------------------------------------*/   
+    protected void proyectosdocente() //Cantidad de proyectos subidos
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(*) FROM proyectos WHERE usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 cantproyectosdoc = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
 
-
-
-    //--------------------------------------DIRECTOR-------------------------------------
-
-
-    //cantidad de proyectos asignados
-    protected void proyectodir()
+    /*--------------------------------------DIRECTOR-------------------------------------*/
+    protected void proyectodir()  //cantidad de proyectos asignados
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM  director WHERE usu_username='"+Session["id"]+"' AND dir_estado='APROBADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 proyectosasigdir = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
-    }
-
-    //cantidad de propuestas sin revisar
-    protected void propuestaspen()
+    }  
+    protected void propuestaspen() //cantidad de propuestas sin revisar
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM  propuesta p, director s WHERE P.Prop_Estado='RECHAZADO' AND  P.Prop_Codigo=s.prop_codigo AND s.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 proppendiente = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-    //cantidad de anteproyectos sin revisar
-    protected void anteproyectopen()
+    protected void anteproyectopen()//cantidad de anteproyectos sin revisar
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM  anteproyecto a, director s WHERE a.anp_aprobacion='PENDIENTE' AND  a.apro_codigo=s.prop_codigo AND s.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 antependiente = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
-    }
-
-    //cantidad de anteproyectos sin revisar
-    protected void proyectofinalpen()
+    }   
+    protected void proyectofinalpen()//cantidad de anteproyectos sin revisar
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM proyecto_final p,director s where p.pf_aprobacion='PENDIENTE' AND s.prop_codigo=p.ppro_codigo AND s.usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 proyfinalpendiente = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
 
-
-    //--------------------------------------JURADO-------------------------------------
-
-
-    //cantidad de proyectos finales asignados
-    protected void proyfinaleasig()
+    /*--------------------------------------JURADO---------------------------------------*/
+    protected void proyfinaleasig()//cantidad de proyectos finales asignados
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM jurado WHERE usu_username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 proyfinalasignado = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-    //cantidad de proyectos finales sin revisar
-    protected void proyfinalrevision()
+    protected void proyfinalrevision() //cantidad de proyectos finales sin revisar
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(P.Ppro_Codigo) FROM proyecto_final p, estudiante e, jurado j WHERE J.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = P.Ppro_Codigo and P.Pf_Estado = 'PENDIENTE' and P.Pf_Aprobacion = 'APROBADO' and J.Ppro_Codigo = P.Ppro_Codigo and J.Jur_Revisado = 'PENDIENTE'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 proyfinalrevjur = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
 
-
-    //--------------------------------------DECANO-------------------------------------
-
-
-    //Cantidad de propuestas
-
-
-    protected void propuestasaprob()
+    /*----------------------------------------DECANO-------------------------------------*/
+    protected void propuestasaprob() //Cantidad de propuestas
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Prop_Estado) AS propuestas_aprobadas FROM propuesta p, estudiante e WHERE e.prop_codigo=p.prop_codigo AND P.Prop_Estado='APROBADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantpropaprob = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
     protected void propuestasrecha()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Prop_Estado) AS propuestas_aprobadas FROM propuesta p, estudiante e WHERE e.prop_codigo=p.prop_codigo AND P.Prop_Estado='RECHAZADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantproprecha = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
     protected void propuestaspendiente()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Prop_Estado) AS propuestas_aprobadas FROM propuesta p, estudiante e WHERE e.prop_codigo=p.prop_codigo AND P.Prop_Estado='PENDIENTE'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantproppen = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-
-    //Cantidad de anteproyectos
-
-
-    protected void anteproyectosaprob()
+    protected void anteproyectosaprob() //Cantidad de anteproyectos
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(A.Anp_Estado) AS anteproyectos_aprobados FROM anteproyecto a, estudiante e WHERE e.prop_codigo=a.apro_codigo AND A.Anp_Estado='APROBADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
-                cantanteaprob = drc1.GetInt32(0).ToString();
-                
+            if (drc1.HasRows){
+                cantanteaprob = drc1.GetInt32(0).ToString();               
             };
             drc1.Close();
-
         }
-
     }
-
-
     protected void anteproyectosrecha()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(A.Anp_Estado) AS anteproyectos_aprobados FROM anteproyecto a, estudiante e WHERE e.prop_codigo=a.apro_codigo AND A.Anp_Estado='RECHAZADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 cantanterecha = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
     protected void anteproyectospen()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(A.Anp_Estado) AS anteproyectos_aprobados FROM anteproyecto a, estudiante e WHERE e.prop_codigo=a.apro_codigo AND A.Anp_Estado='PENDIENTE'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantantepen = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-    //Cantidad de proyectos finales
-
-
-    protected void proyfinalaprob()
+    protected void proyfinalaprob()//Cantidad de proyectos finales
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Pf_Estado) AS proyectosf_aprobados FROM proyecto_final p, estudiante e WHERE e.prop_codigo=p.ppro_codigo AND P.Pf_Estado='APROBADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantproyaprob = drc1.GetInt32(0).ToString();
-
-            };
+            }
             drc1.Close();
-
         }
-
     }
-
-
     protected void proyfinalrecha()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Pf_Estado) AS proyectosf_aprobados FROM proyecto_final p, estudiante e WHERE e.prop_codigo=p.ppro_codigo AND P.Pf_Estado='RECHAZADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantproyrecha = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
     protected void proyfinalpen()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Pf_Estado) AS proyectosf_aprobados FROM proyecto_final p, estudiante e WHERE e.prop_codigo=p.ppro_codigo AND P.Pf_Estado='PENDIENTE'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantproypen = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-
-    //Cantidad de proyectos finales sin jurado
-
-    protected void proyfinaljur()
+    protected void proyfinaljur() //Cantidad de proyectos finales sin jurado
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(*) FROM proyecto_final WHERE (pf_jur1='PENDIENTE' OR pf_jur2='PENDIENTE' OR pf_jur3='PENDIENTE') AND pf_aprobacion='APROBADO'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 proyfinalsinjur = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
-
     }
-
-
-    //Cantidad de reuniones en el mes actual contaduria
-
-    protected void reucontaduria()
+    protected void reucontaduria()//Cantidad de reuniones en el mes actual contaduria
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
-            DateTime fecha = DateTime.Now;
-            int mes = fecha.Month;
+        if (conn != null) {
+            int mes = DateTime.Now.Month;
             string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='1' AND TO_CHAR(reu.reu_fprop,'MM')='"+mes+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 reunionescontaduria = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(reunionescontaduria);
                 sumareunion = sumareunion + Valor;
             }
             drc1.Close();
-
         }
-
-
     }
-
-
-    //Cantidad de reuniones en el mes actual contaduria
-
-    protected void reuadmempresas()
+    protected void reuadmempresas()//Cantidad de reuniones en el mes actual administracion
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
-            DateTime fecha = DateTime.Now;
-            int mes = fecha.Month;
+        if (conn != null) {
+            int mes = DateTime.Now.Month;
             string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='2' AND TO_CHAR(reu.reu_fprop,'MM')='" + mes + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 reunionesadme = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(reunionesadme);
                 sumareunion = sumareunion + Valor; 
             }
             drc1.Close();
-
         }
-
-
     }
-
-
-    //Cantidad de reuniones en el mes actual comercio
-
-    protected void reucomercio()
+    protected void reucomercio()//Cantidad de reuniones en el mes actual comercio
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
-            DateTime fecha = DateTime.Now;
-            int mes = fecha.Month;
+        if (conn != null) {
+            int mes = DateTime.Now.Month;
             string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='3' AND TO_CHAR(reu.reu_fprop,'MM')='" + mes + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 reunionescomer = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(reunionescomer);
                 sumareunion = sumareunion + Valor;
             }
             drc1.Close();
-
         }
-
-
     }
 
-
-
-
-
-    //--------------------------------------COMITE-------------------------------------
-
-
-    //Cantidad de propuestas
-
-
-    protected void propuestasaprobcom()
+    /*-----------------------------------------COMITE-------------------------------------*/
+    protected void propuestasaprobcom()//Cantidad de propuestas
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(p.PROP_CODIGO) FROM propuesta p, estudiante e, profesor d WHERE p.PROP_CODIGO = e.PROP_CODIGO AND p.PROP_ESTADO = 'APROBADO' AND D.Com_Codigo= E.Prog_Codigo AND D.Usu_Username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantpropaprobcom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(cantpropaprobcom);
                 sumapropuesta = sumapropuesta + Valor;
             }
             drc1.Close();
-
         }
-
     }
-
-
     protected void propuestasrechacom()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(p.PROP_CODIGO) FROM propuesta p, estudiante e, profesor d WHERE p.PROP_CODIGO = e.PROP_CODIGO AND p.PROP_ESTADO = 'RECHAZADO' AND D.Com_Codigo= E.Prog_Codigo AND D.Usu_Username='" + Session["id"] + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantproprechacom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(cantproprechacom);
                 sumapropuesta = sumapropuesta + Valor;
             }
             drc1.Close();
-
         }
     }
-
     protected void propuestaspencom()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(p.PROP_CODIGO) FROM propuesta p, estudiante e, profesor d WHERE p.PROP_CODIGO = e.PROP_CODIGO AND p.PROP_ESTADO = 'PENDIENTE' AND D.Com_Codigo= E.Prog_Codigo AND D.Usu_Username='" + Session["id"] + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 cantproppencom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(cantproppencom);
                 sumapropuesta = sumapropuesta + Valor;
             }
             drc1.Close();
-
         }
     }
-
-
-
-    //Cantidad de anteproyectos
-
-
-    protected void anteproyectosaprobcom()
+    protected void anteproyectosaprobcom()//Cantidad de anteproyectos
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(A.Apro_Codigo) FROM  anteproyecto a, estudiante e, profesor d WHERE a.Apro_Codigo = e.PROP_CODIGO and a.Anp_Estado = 'APROBADO'  AND d.Com_Codigo= e.Prog_Codigo AND d.Usu_Username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantanteaprobcom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(cantanteaprobcom);
                 sumaanteproyecto = sumaanteproyecto + Valor;
             }
             drc1.Close();
-
         }
-
     }
-
-
     protected void anteproyectorechacom()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(A.Apro_Codigo) FROM  anteproyecto a, estudiante e, profesor d WHERE a.Apro_Codigo = e.PROP_CODIGO and a.Anp_Estado = 'RECHAZADO'  AND d.Com_Codigo= e.Prog_Codigo AND d.Usu_Username='" + Session["id"] + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantanterechacom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(cantanterechacom);
                 sumaanteproyecto = sumaanteproyecto + Valor;
             }
             drc1.Close();
-
         }
     }
-
     protected void anteproyectopencom()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(A.Apro_Codigo) FROM  anteproyecto a, estudiante e, profesor d WHERE a.Apro_Codigo = e.PROP_CODIGO and a.Anp_Estado = 'PENDIENTE'  AND d.Com_Codigo= e.Prog_Codigo AND d.Usu_Username='" + Session["id"] + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantantepencom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(cantantepencom);
                 sumaanteproyecto = sumaanteproyecto + Valor;
             }
             drc1.Close();
-
         }
     }
-
-
-
-    //Cantidad de proyectos finales
-
-
-    protected void proyfinalaprobcom()
+    protected void proyfinalaprobcom() //Cantidad de proyectos finales
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Ppro_Codigo) FROM  proyecto_final p, estudiante e, profesor d WHERE P.Ppro_Codigo= e.PROP_CODIGO AND P.Pf_Estado ='APROBADO' AND d.Com_Codigo= e.Prog_Codigo AND d.Usu_Username='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 finalaprobcom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(finalaprobcom);
                 sumaproyectofinal = sumaproyectofinal + Valor;
-
             }
             drc1.Close();
-
         }
-
-    }
-    
+    }   
     protected void proyfinalrechacom()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT COUNT(P.Ppro_Codigo) FROM  proyecto_final p, estudiante e, profesor d WHERE P.Ppro_Codigo= e.PROP_CODIGO AND P.Pf_Estado ='RECHAZADO' AND d.Com_Codigo= e.Prog_Codigo AND d.Usu_Username='" + Session["id"] + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                finalrechacom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(finalrechacom);
                 sumaproyectofinal = sumaproyectofinal + Valor;
             }
             drc1.Close();
-
         }
     }
-
     protected void proyfinalpencom()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT COUNT(P.Ppro_Codigo) FROM  proyecto_final p, estudiante e, profesor d WHERE P.Ppro_Codigo= e.PROP_CODIGO AND P.Pf_Estado ='PENDIENTE' AND d.Com_Codigo= e.Prog_Codigo AND d.Usu_Username='" + Session["id"] + "'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows) {
                 finalpencom = drc1.GetInt32(0).ToString();
                 int Valor = Convert.ToInt32(finalpencom);
                 sumaproyectofinal = sumaproyectofinal + Valor;
             }
             drc1.Close();
-
         }
     }
-
-
-    //Cantidad de propuestas pendientes
-
-    protected void proppendientecom()
+    protected void proppendientecom() //Cantidad de propuestas pendientes
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT DISTINCT COUNT(p.PROP_CODIGO) FROM estudiante e, PROPUESTA p, PROFESOR d, director s WHERE e.prop_codigo = s.prop_codigo AND s.prop_codigo=p.prop_codigo AND p.PROP_CODIGO = e.PROP_CODIGO AND p.PROP_ESTADO = 'PENDIENTE' AND d.COM_CODIGO=e.PROG_CODIGO AND d.USU_USERNAME = '"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                propuestapencom = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-    //Cantidad de anteproyectos pendientes por asignar evaluador
-
-    protected void antependientecom()
+    protected void antependientecom()//Cantidad de anteproyectos pendientes por asignar evaluador
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT DISTINCT COUNT(a.apro_codigo) FROM  estudiante e, anteproyecto a, profesor d WHERE a.apro_codigo = e.prop_codigo AND a.anp_evaluador = 'SIN ASIGNAR' AND d.COM_CODIGO = e.Prog_Codigo AND a.Anp_Aprobacion = 'APROBADO' AND  d.usu_username = '"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 antepenasignacion = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-
-    //Cantidad de peticiones director pendientes
-
-    protected void dirpendientecom()
+    protected void dirpendientecom()//Cantidad de peticiones director pendientes
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null){
             string sql = "SELECT DISTINCT COUNT(s.dir_id) FROM director s, estudiante e, propuesta p, profesor d WHERE p.PROP_CODIGO = s.PROP_CODIGO AND s.PROP_CODIGO = e.PROP_CODIGO AND s.DIR_ESTADO = 'PENDIENTE' AND e.PROG_CODIGO = D.Com_Codigo AND D.Usu_Username ='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 dirpeticion = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-    //Cantidad de peticiones director pendientes
-
-    protected void solicitudespencom()
+    protected void solicitudespencom()//Cantidad de peticiones director pendientes
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
+        if (conn != null) {
             string sql = "SELECT DISTINCT COUNT(s.SOLE_ID) FROM solicitud_est s, propuesta p, estudiante e, profesor d WHERE s.PROP_CODIGO = p.PROP_CODIGO AND s.SOLE_TIPO = 'Cambio Propuesta'  AND s.SOLE_ESTADO='Pendiente' AND e.PROG_CODIGO = D.Com_Codigo AND D.Usu_Username ='"+Session["id"]+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 solicom = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
-
-
-    //Cantidad de reuniones en el mes
-
-    protected void cantreucom()
+    protected void cantreucom()//Cantidad de reuniones en el mes
     {
-
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
-        if (conn != null)
-        {
-
-            DateTime fecha = DateTime.Now;
-            int mes = fecha.Month;
+        if (conn != null){
+            int mes = DateTime.Now.Month;
             string sql = "SELECT COUNT(*) FROM reunion r, comite c, profesor d WHERE r.com_codigo=c.com_codigo AND C.Com_Codigo=D.Com_Codigo and D.Usu_Username='"+Session["id"]+"' AND TO_CHAR(r.reu_fprop,'MM')='"+mes+"'";
-
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows)
-            {
+            if (drc1.HasRows){
                 cantreunionescom = drc1.GetInt32(0).ToString();
             }
             drc1.Close();
-
         }
-
     }
 
-
-    protected void consultaroles() {
-        
+    //**ROLES DEL USUARIO**//
+    protected void consultaroles() {     
         string rol = Session["rol"].ToString().Trim();
         String[] ciclo = rol.Split(' ');
-
         string nombre = "";
-       for(int i=0; i<ciclo.Length; i++) {
-
-            if (ciclo[i].Equals("EST"))
-            {
+        for(int i=0; i<ciclo.Length; i++) {
+            if (ciclo[i].Equals("EST")){
                 nombre = "Estudiante";
                 daprobado.Visible = false;
                 drechazado.Visible = false;
@@ -1576,16 +1060,13 @@ public partial class Menu : Page{
                 proyfinaldirector();
                 proyfinaldirectorobs();
                 proyfinaljurado();
-                proyfinaljuradoobs();
-                
+                proyfinaljuradoobs();   
             }
-            if (ciclo[i].Equals("DOC"))
-            {
+            if (ciclo[i].Equals("DOC")) {
                 nombre = "Docente";
                 proyectosdocente();
             }
-            if (ciclo[i].Equals("COM"))
-            {
+            if (ciclo[i].Equals("COM")){
                 nombre = "Comité";
                 propuestasaprobcom();
                 propuestasrechacom();
@@ -1602,16 +1083,14 @@ public partial class Menu : Page{
                 solicitudespencom();
                 cantreucom();
             }
-            if (ciclo[i].Equals("DIR"))
-            {
+            if (ciclo[i].Equals("DIR")){
                 nombre = "Director";
                 proyectodir();
                 propuestaspen();
                 anteproyectopen();
                 proyectofinalpen();
             }
-            if (ciclo[i].Equals("ADM"))
-            {
+            if (ciclo[i].Equals("ADM")) {
                 nombre = "Administrador";
                 consultarfacultades();
                 consultarusuarios();
@@ -1620,20 +1099,17 @@ public partial class Menu : Page{
                 consultarprofesor();
                
             }
-            if (ciclo[i].Equals("JUR"))
-            {
+            if (ciclo[i].Equals("JUR")){
                 nombre = "Jurado";
                 proyfinaleasig();
                 proyfinalrevision();
             }
-            if (ciclo[i].Equals("EVA"))
-            {
+            if (ciclo[i].Equals("EVA")){
                 nombre = "Evaluador";
                 anteproasignado();
                 anteprorevisareva();
             }
-            if (ciclo[i].Equals("DEC"))
-            {
+            if (ciclo[i].Equals("DEC")){
                 nombre = "Decana";
                 propuestasaprob();
                 propuestasrecha();
@@ -1650,12 +1126,7 @@ public partial class Menu : Page{
                 reucomercio();
             }
             Notificaciones.Controls.Add(new LiteralControl("<li style='background-color:black'><a href =\"#"+ciclo[i]+ "\" data-toggle=\"tab\" style=\"color:gray;\" > " +nombre+"</a></li>"));
-            
-         
         }
     }
 
-
-
-
-    }
+}
