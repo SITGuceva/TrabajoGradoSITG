@@ -120,6 +120,7 @@ public partial class PeticionDir : Conexion
            
             Ejecutar("La solicitud se ha revisado correctamente", sql);
             IBregresar.Visible = true;
+            CalificarPdir.Visible = false;
             Tipo.Value = "";
         }
     }
@@ -198,25 +199,29 @@ public partial class PeticionDir : Conexion
         request.Credentials = new NetworkCredential(list[0], list[1]);
         string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
         List<string> prof = con.consulta(sql, 3, 0);
-        fileName = prof[0];
-        ruta = prof[1];
-        contentype = prof[2];
-
-         try{
-            byte[] bytes = request.DownloadData(ruta + fileName);
-            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
-            Console.WriteLine(fileString);
-            Response.Clear();
-            Response.Buffer = true;
-            Response.Charset = "";
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.ContentType = contentype;
-            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
-            Response.BinaryWrite(bytes);
-            Response.Flush();
-            Response.End();
-        }catch (WebException a) {
-            Linfo.Text = a.ToString();
+        if (prof.Count.Equals(0)){
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "El profesor no ha subido la hoja de vida.";
+        } else { 
+            fileName = prof[0];
+            ruta = prof[1];
+            contentype = prof[2];
+             try{
+                byte[] bytes = request.DownloadData(ruta + fileName);
+                string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+                Console.WriteLine(fileString);
+                Response.Clear();
+                Response.Buffer = true;
+                Response.Charset = "";
+                Response.Cache.SetCacheability(HttpCacheability.NoCache);
+                Response.ContentType = contentype;
+                Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+                Response.BinaryWrite(bytes);
+                Response.Flush();
+                Response.End();
+             }catch (WebException a) {
+                Linfo.Text = a.ToString();
+             }        
         }
     }
 
@@ -296,7 +301,7 @@ public partial class PeticionDir : Conexion
             if (estado.Equals("Aceptada")) {
                 int caso = Convert.ToInt32(Tipo.Value);
                 switch (caso){
-                    case 1: sql = "update estudiante set prop_codigo = 0 where  EXISTS (select 1 from estudiante e, SOLICITUD_EST s where e.PROP_CODIGO=s.PROP_CODIGO and s.SOLE_ID='" + codigo.Text + "')";
+                    case 1: sql = "update estudiante set prop_codigo = 0 where  usu_username in (select e.usu_username from estudiante e, SOLICITUD_EST s where e.PROP_CODIGO=s.PROP_CODIGO and s.SOLE_ID='" + codigo.Text + "')";
                             break;
                     case 2: sql = "update estudiante set prop_codigo = 0 where usu_username =(select solicitud_est.USU_USERNAME as estudiante from solicitud_est where SOLE_ID = '" + codigo.Text + "') ";
                             break;
@@ -317,9 +322,6 @@ public partial class PeticionDir : Conexion
             }
         }
     }
-
-
-
    
 }
 

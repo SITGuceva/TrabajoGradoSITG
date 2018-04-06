@@ -138,7 +138,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = " SELECT PFOBS_CODIGO, PFOBS_DESCRIPCION FROM PF_OBSERVACION WHERE PPRO_CODIGO = '" + CodigoP.Text + "'";
+                string sql = " SELECT PFOBS_CODIGO, PFOBS_DESCRIPCION FROM PF_OBSERVACIONES WHERE PPRO_CODIGO = '" + CodigoP.Text + "'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -209,7 +209,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "No se puede agregar una observacion vacia";
         } else  {         
-            string sql = "insert into pf_observacion (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBdescripcion.Value.ToLower() + "','" + CodigoP.Text + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'DIRECTOR')";
+            string sql = "insert into pf_observaciones (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBdescripcion.Value.ToLower() + "','" + CodigoP.Text + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'DIRECTOR')";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             Resultado.Visible = true;

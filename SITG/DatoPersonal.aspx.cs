@@ -75,11 +75,11 @@ public partial class DatoPersonal : Conexion
         int id = Int32.Parse(Session["id"].ToString());
         string sql = "SELECT USU_NOMBRE,USU_APELLIDO, USU_DIRECCION,USU_CORREO, USU_TELEFONO FROM USUARIO WHERE USU_USERNAME='" + id + "'";
         List<string> list = con.consulta(sql, 5, 1);
-        TBnombre.Text = list[0];
-        TBapellido.Text = list[1];
-        TBdireccion.Text = list[2];
-        TBcorreo.Text = list[3];
-        TBtelefono.Text = list[4];
+         TBnombre.Text = list[0];
+         TBapellido.Text = list[1];
+         TBdireccion.Text = list[2];
+         TBcorreo.Text = list[3];
+         TBtelefono.Text = list[4];
         Lanscod.Text = Session["id"].ToString();
     }
 
@@ -108,8 +108,8 @@ public partial class DatoPersonal : Conexion
                         Linfo.Text = "Formato no permitido, debe subir un archivo en PDF o un documento de Word";
                     }  
                 } else {
-                    Linfo.ForeColor = System.Drawing.Color.Red;
-                    Linfo.Text = "Debe elegir un archivo";
+                    string sql = "UPDATE USUARIO SET USU_NOMBRE='" + TBnombre.Text + "', USU_APELLIDO='" + TBapellido.Text + "', USU_TELEFONO='" + TBtelefono.Text + "', USU_DIRECCION='" + TBdireccion.Text + "', USU_CORREO='" + TBcorreo.Text + "'WHERE USU_USERNAME='" + Lanscod.Text + "'";
+                    Ejecutar("Datos Modificados Satisfactoriamente", sql);
                 }
             } else {
                 string sql = "UPDATE USUARIO SET USU_NOMBRE='" + TBnombre.Text + "', USU_APELLIDO='" + TBapellido.Text + "', USU_TELEFONO='" + TBtelefono.Text + "', USU_DIRECCION='" + TBdireccion.Text + "', USU_CORREO='" + TBcorreo.Text + "'WHERE USU_USERNAME='" + Lanscod.Text + "'";

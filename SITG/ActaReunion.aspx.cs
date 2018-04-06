@@ -55,12 +55,19 @@ public partial class ActaReunion : System.Web.UI.Page
     /*Metodos que manejan el fronted en el acta*/
     protected void LBgenerar_Click(object sender, EventArgs e)
     {
+        limpiar();
+        DDLreu.Items.Clear();
+        string sql = "SELECT r.reu_codigo FROM reunion r, profesor p WHERE r.reu_estado='ACTIVO' AND r.COM_CODIGO = p.COM_CODIGO and p.USU_USERNAME = '" + Session["id"] + "'";
+        DDLreu.Items.AddRange(con.cargarDDLid(sql));
+        DDLreu.Items.Insert(0, "Seleccione");
+        CargarAsistente();
+
         Linfo.Text = "";
         SubirActa.Visible = false;
         Ingreso.Visible = true;
         ConsultarActa.Visible = false;
         TBhasta.Text = "";
-        TBdesde.Text = "";
+        TBdesde.Text = ""; 
     }
     protected void LBconsultar_Click(object sender, EventArgs e)
     {

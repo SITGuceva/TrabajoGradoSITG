@@ -186,7 +186,7 @@ public class Conexion : System.Web.UI.Page
                     while (drc1.Read()){
                         for (int i = 0; i < cant; i++){
                             if (i >= cant - enteros){
-                                list.Add(drc1.GetInt32(i).ToString());
+                                list.Add(drc1.GetInt64(i).ToString());
                                 enteros--;
                             }else{
                                 list.Add(drc1.GetString(i).ToString());

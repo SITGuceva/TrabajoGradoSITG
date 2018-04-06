@@ -101,7 +101,7 @@ public partial class DocumentosCom : System.Web.UI.Page
             if (conn != null) {
                 if (crit.Equals(2)){
                       sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo,TO_CHAR( P.Pf_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director,  P.Pf_Aprobacion from proyecto_final p, estudiante e, director s, usuario u, profesor d" +
-                            " where P.Ppro_Codigo= e.PROP_CODIGO and P.Pf_Estado ='" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() +"' and u.USU_USERNAME = s.USU_USERNAME  and s.Prop_Codigo= P.Ppro_Codigo and d.com_codio=e.prog_codigo";
+                            " where P.Ppro_Codigo= e.PROP_CODIGO and P.Pf_Estado ='" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() +"' and u.USU_USERNAME = s.USU_USERNAME  and s.Prop_Codigo= P.Ppro_Codigo and d.com_codigo=e.prog_codigo";
                 }
                 else if (crit.Equals(1)) {
                     sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo,TO_CHAR( P.Pf_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '),u.usu_apellido) as director,  P.Pf_Aprobacion from Propuesta n, Tema t, Lin_investigacion l, proyecto_final p, estudiante e, director s, usuario u " +
@@ -191,7 +191,7 @@ public partial class DocumentosCom : System.Web.UI.Page
             OracleCommand cmd = null;
             if (conn != null) {
                 if (crit.Equals(2)){
-                    sql = "select Distinct p.PROP_CODIGO,p.PROP_TITULO, l.LINV_NOMBRE, t.TEM_NOMBRE,TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_estado as Estado from propuesta p, estudiante e, lin_investigacion l, tema t, director s, usuario u, docente d" +
+                    sql = "select Distinct p.PROP_CODIGO,p.PROP_TITULO, l.LINV_NOMBRE, t.TEM_NOMBRE,TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_estado as Estado from propuesta p, estudiante e, lin_investigacion l, tema t, director s, usuario u, profesor d" +
                         " where t.LINV_CODIGO = l.LINV_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = '" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() + "'and u.USU_USERNAME = s.USU_USERNAME and s.PROP_CODIGO = p.PROP_CODIGO and d.com_codigo = e.prog_codigo";
                 }
                 else if (crit.Equals(1)){

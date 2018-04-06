@@ -190,6 +190,104 @@
                     </div> <!-- /.col-xs-12 -->
                 </div> <!-- /.container -->
             </div>
+
+            <!-----------------------------------------------------DIRECTOR--------------------------------------------------------------------------->
+             <div class="tab-pane fade" id="DIR">
+                <br />
+                <div id="DIR2" class="container" runat="server">
+                    <div class="col-xs-12">
+                        <div class="carousel slide" id="car12">
+                            <div class="carousel-inner">
+                                <div class="item active">
+                                    <ul class="thumbnails">
+                                         <li class="col-sm-4">
+                                            <section class="statistics text-center" style="position: relative; left: -1%;">
+                                                <div class="data">
+                                                    <div class="container">
+                                                        <h2>CANTIDAD DE PROYECTOS ASIGNADOS</h2>
+                                                        <div class="row">
+                                                            <div class="col-md-3 col-sm-6 col-xs-12">
+                                                                <div class="stats">
+                                                                    <i class="fa fa-file-word-o fa-5x"></i>
+                                                                    <p><%= proyectosasigdir %></p>
+                                                                    <span></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </li>
+                                        <li class="col-sm-4">
+                                             <section class="statistics text-center" style="position: relative; left: -1%;">
+                                                <div class="data">
+                                                    <div class="container">
+                                                        <h2>PROPUESTAS PENDIENTES POR REVISION</h2>
+                                                        <div class="row">
+                                                            <div class="col-md-3 col-sm-6 col-xs-12">
+                                                                <div class="stats">
+                                                                    <i class="fa fa-file-word-o fa-5x"></i>
+                                                                    <p><%= proppendiente %></p>
+                                                                    <span></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </li>
+                                        <li class="col-sm-4">
+                                             <section class="statistics text-center" style="position: relative; left: -1%;">
+                                                <div class="data">
+                                                    <div class="container">
+                                                        <h2>CANTIDAD DE ANTEPROYECTOS SIN REVISION</h2>
+                                                        <div class="row">
+                                                            <div class="col-md-3 col-sm-6 col-xs-12">
+                                                                <div class="stats">
+                                                                    <i class="fa fa-file-word-o fa-5x"></i>
+                                                                    <p><%= antependiente %></p>
+                                                                    <span></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </li>   
+                                    </ul>
+                                </div>
+                                <div class="item">
+                                    <ul class="thumbnails">
+                                        <li class="col-sm-4">
+                                             <section class="statistics text-center" style="position: relative; left: -1%;">
+                                                <div class="data">
+                                                    <div class="container">
+                                                        <h2>CANTIDAD DE PROYECTOS FINALES SIN REVISION</h2>
+                                                        <div class="row">
+                                                            <div class="col-md-3 col-sm-6 col-xs-12">
+                                                                <div class="stats">
+                                                                    <i class="fa fa-file-word-o fa-5x"></i>
+                                                                    <p><%= proyfinalpendiente %></p>
+                                                                    <span></span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </section>
+                                        </li>
+                                    </ul>
+                                </div>                                                  
+                            </div>
+                            <nav><ul class="control-box pager">
+                                <li class="left"><a data-slide="prev" href="#car12" class="arrowStil"><i class="glyphicon glyphicon-chevron-left"></i></a></li>
+                                <li class="right"><a data-slide="next" href="#car12" class="arrowStil"><i class="glyphicon glyphicon-chevron-right"></i></a></li>
+                            </ul></nav><!-- /.control-box -->
+                        </div> <!-- /#myCarousel -->
+                    </div> <!-- /.col-xs-12 -->
+                </div> <!-- /.container -->
+            </div>
+
             <!-----------------------------------------------------ESTUDIANTE--------------------------------------------------------------------------->
             <div class="tab-pane fade" id="EST">
                 <br />
@@ -765,13 +863,13 @@
                                             <section class="statistics text-center" style="position: relative; left: -1%;">
                                                 <div class="data">
                                                     <div class="container">
-                                                        <h2>EVALUADOR</h2>
+                                                        <h2>ANTEPROYECTOS ASIGNADOS</h2>
                                                         <div class="row">
                                                             <div class="col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="stats">
                                                                     <i class="fa fa-legal fa-5x"></i>
                                                                     <p><%= cantantreproeva %></p>
-                                                                    <span>Anteproyectos asignados</span>
+                                                                    <span></span>
                                                                 </div>
                                                            </div>
                                                        </div>
@@ -783,13 +881,13 @@
                                             <section class="statistics text-center" style="position: relative; left: -1%;">
                                                 <div class="data">
                                                     <div class="container">
-                                                        <h2>EVALUADOR</h2>
+                                                        <h2>ANTEPROYECTOS POR REVISAR</h2>
                                                         <div class="row">
                                                             <div class="col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="stats">
                                                                     <i class="fa fa-check-circle fa-5x"></i>
                                                                     <p><%= cantrevisar %></p>
-                                                                    <span>Anteproyectos por revisar</span>
+                                                                    <span></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -821,13 +919,13 @@
                                             <section class="statistics text-center" style="position: relative; left: -1%;">
                                                 <div class="data">
                                                     <div class="container">
-                                                        <h2>JURADO</h2>
+                                                        <h2>PROYECTOS FINALES ASIGNADOS</h2>
                                                         <div class="row">
                                                             <div class="col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="stats">
                                                                     <i class="fa fa-file-word-o fa-5x"></i>
                                                                     <p><%= proyfinalasignado %></p>
-                                                                    <span>Proyectos finales asignados</span>
+                                                                    <span></span>
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -839,13 +937,13 @@
                                             <section class="statistics text-center" style="position: relative; left: -1%;">
                                                 <div class="data">
                                                     <div class="container">
-                                                        <h2>JURADO</h2>
+                                                        <h2>PROYECTO FINALES SIN REVISAR</h2>
                                                         <div class="row">
                                                             <div class="col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="stats">
                                                                     <i class="fa fa-file-word-o fa-5x"></i>
                                                                     <p><%= proyfinalrevjur %></p>
-                                                                    <span>Proyecto finales sin revisar</span>
+                                                                    <span></span>
                                                                 </div>
                                                             </div>
                                                         </div>

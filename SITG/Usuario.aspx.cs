@@ -66,7 +66,7 @@ public partial class Usuario : Conexion
         string rol = DDLrol.Items[DDLrol.SelectedIndex].Value.ToString();
         string pass = con.GetMD5(TBcontra.Text);
         int  cod = Int32.Parse(TBcodigo.Text);
-        string sql = "insert into USUARIO (USU_USERNAME,USU_CONTRASENA,USU_NOMBRE,USU_APELLIDO,USU_TELEFONO,USU_DIRECCION,USU_CORREO,USU_FCREACION, USU_FMODIFICACION) VALUES('" + TBcodigo.Text + "', '" + pass + "', '" + TBnombre.Text + "', '" + TBapellido.Text + "', '" + TBtelefono.Text + "', '" + TBdireccion.Text + "', '" + TBcorreo.Text + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
+        string sql = "insert into USUARIO (USU_USERNAME,USU_CONTRASENA,USU_NOMBRE,USU_APELLIDO,USU_TELEFONO,USU_DIRECCION,USU_CORREO,USU_FCREACION, USU_FMODIFICACION) VALUES('" + TBcodigo.Text + "', '" + pass + "', '" + TBnombre.Text.ToLower() + "', '" + TBapellido.Text.ToLower() + "', '" + TBtelefono.Text + "', '" + TBdireccion.Text.ToLower() + "', '" + TBcorreo.Text + "', TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
         Ejecutar("Datos guardados satisfactoriamente.", sql);
 
         if (!DDLrol.SelectedIndex.Equals(0)){

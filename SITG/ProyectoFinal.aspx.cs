@@ -60,9 +60,14 @@ public partial class ProyectoFinal : Conexion
                 OracleCommand cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 OracleDataReader dr = cmd.ExecuteReader();
-                while (dr.Read()){
-                    list.Add(new System.Web.UI.WebControls.ListItem(dr[0].ToString()));
+                if (dr.HasRows){
+                    while (dr.Read()){
+                        list.Add(new System.Web.UI.WebControls.ListItem(dr[0].ToString()));
+                    }
+                } else{
+                    Linfo.Text = "No ha enviado los pagos requeridos para subir el proyecto final.";
                 }
+                
             }
             conn.Close();
         } catch (Exception ex) {
@@ -74,9 +79,9 @@ public partial class ProyectoFinal : Conexion
             if (list[0].ToString(). Equals("APROBADO")) {
                 RevisarProyectoF();
             } else {
-                Linfo.Text = "No ha enviado o no ha sido aprobado los pagos requeridos para subir el proyecto final.";
+                Linfo.Text = "No ha sido aprobado los pagos requeridos para subir el proyecto final.";
             }
-        }else {
+        }else if (list.Count>1) {
             for (int i = 0; i < list.Count; i++) {
                 if (list[i].Text.Equals("APROBADO")) {
                     aprobo++;
@@ -86,7 +91,7 @@ public partial class ProyectoFinal : Conexion
                 Linfo.Text = "";
                 RevisarProyectoF();
             }else {
-                Linfo.Text = "No ha enviado o no ha sido aprobados los pagos requeridos para subir el proyecto final los integrantes";
+                Linfo.Text = "No han sido aprobados los pagos requeridos para subir el proyecto final los integrantes";
             }
         }
     }
@@ -426,7 +431,7 @@ public partial class ProyectoFinal : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "SELECT PFOBS_CODIGO,PFOBS_DESCRIPCION, PFOBS_REALIZADA FROM PF_OBSERVACION  WHERE PPRO_CODIGO ='" + Codigop.Value + "'";
+                string sql = "SELECT PFOBS_CODIGO,PFOBS_DESCRIPCION, PFOBS_REALIZADA FROM PF_OBSERVACIONES  WHERE PPRO_CODIGO ='" + Codigop.Value + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

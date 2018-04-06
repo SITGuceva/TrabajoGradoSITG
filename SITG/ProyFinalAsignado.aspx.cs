@@ -145,7 +145,7 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
         }
         if(string.IsNullOrEmpty(TBbs.Value) == false){
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "insert into pf_observacion (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBbs.Value.ToLower() + "','" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'JURADO')";
+            string sql = "insert into pf_observaciones (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBbs.Value.ToLower() + "','" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'JURADO')";
             Ejecutar("", sql);
         }
         CambiaEstado();

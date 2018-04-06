@@ -72,6 +72,7 @@ public partial class SiteMaster : MasterPage
         if (Session["Usuario"] != null){
             if (!IsPostBack){
                 logged.Visible = true;
+                IBprincipal.Visible = true;
                 Lwelcome.Text += Session["Usuario"].ToString().ToUpper();          
             }
             sidebarwrapper.Visible = true;
@@ -79,6 +80,7 @@ public partial class SiteMaster : MasterPage
         }else{
             sidebarwrapper.Visible = false;
             logged.Visible = false;
+            IBprincipal.Visible = false;
         }
     }
 
@@ -157,6 +159,10 @@ public partial class SiteMaster : MasterPage
         Session["id"] = null;
         sidebarwrapper.Visible = false;
         Response.Redirect("Default.aspx");
+    }
+    protected void IBprincipal_Click(object sender, ImageClickEventArgs e)
+    {
+        Response.Redirect("MenuPrincipal.aspx");
     }
 
 }

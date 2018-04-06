@@ -72,17 +72,21 @@
 
                      <div id="CalificarPdir" runat="server" visible="false" class="row">
                       <asp:Table ID="Tcalificar" runat="server" HorizontalAlign="Center" >                
-                          <asp:TableRow>
-                             <asp:TableCell><asp:Label ID="Lestad" runat="server" Text="Estado: " ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
-                             <asp:TableCell><asp:DropDownList ID="DDLestado" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" style="width:700px;">
-                                       <asp:ListItem Value="0" Text="Seleccione"/>
-                                      <asp:ListItem Value="APROBADO">Aprobar</asp:ListItem>
-                                      <asp:ListItem Value="RECHAZADO">Rechazar</asp:ListItem>
-                            </asp:DropDownList></asp:TableCell>   
-                            <asp:TableCell><asp:Label ID="Lobs" runat="server" Text="Observaciones: " ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>    
-                              <asp:TableCell><textarea id="TAobs" runat="server" CssClass="form-control" rows="2"></textarea></asp:TableCell>                 
-                            <asp:TableCell><asp:Button ID="Bcalificar" runat="server" Text="Guardar" OnClick="Bcalificar_Click" class="btn btn-default"/>
-                                           <asp:Button ID="Bcancel" runat="server" Text="Cancelar" OnClick="regresar" class="btn btn-default"/></asp:TableCell>
+                            <asp:TableRow>
+                                 <asp:TableCell><asp:Label ID="Lestad" runat="server" Text="Estado: " ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
+                                 <asp:TableCell><asp:DropDownList ID="DDLestado" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" style="width:700px;">
+                                           <asp:ListItem Value="0" Text="Seleccione"/>
+                                          <asp:ListItem Value="APROBADO">Aprobar</asp:ListItem>
+                                          <asp:ListItem Value="RECHAZADO">Rechazar</asp:ListItem>
+                                </asp:DropDownList></asp:TableCell> 
+                            </asp:TableRow> 
+                            <asp:TableRow>
+                                <asp:TableCell><asp:Label ID="Lobs" runat="server" Text="Observaciones: " ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>    
+                                <asp:TableCell><textarea id="TAobs" runat="server" CssClass="form-control" rows="2"></textarea></asp:TableCell>                 
+                            </asp:TableRow> 
+                            <asp:TableRow>
+                                <asp:TableCell><asp:Button ID="Bcalificar" runat="server" Text="Guardar" OnClick="Bcalificar_Click" class="btn btn-default"/></asp:TableCell>
+                                <asp:TableCell><asp:Button ID="Bcancel" runat="server" Text="Cancelar" OnClick="regresar" class="btn btn-default"/></asp:TableCell>
                           </asp:TableRow> 
                        </asp:Table>
                      </div>
@@ -141,6 +145,7 @@
 
                           
                         <asp:ImageButton id="IBregresar" OnClick="regresar" runat="server" ImageUrl="/Images/flecha.png" ToolTip="Regresar" ImageAlign="Baseline" Visible="false"></asp:ImageButton>
+                        <br />
                         <asp:Label ID="Linfo" runat="server" Text="" ForeColor="red" Font-Bold="True"></asp:Label>
                         <asp:HiddenField ID="Tipo" runat="server" Value=""/>
                     </div>

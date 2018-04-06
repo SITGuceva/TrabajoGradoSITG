@@ -152,7 +152,7 @@ public partial class Programa : System.Web.UI.Page
             {
                 GVprog.EditIndex = -1;
                 
-                sql= "update comite set com_nombre = '" + nombre.Text + "', com_estado = '" + estado + "' where prog_codigo = '" + codigo.Text + "'";
+                sql= "update comite set com_nombre = '" + nombre.Text + "', com_estado = '" + estado + "' where com_codigo = '" + codigo.Text + "'";
                 Ejecutar("", sql);
 
                 cargarTabla();

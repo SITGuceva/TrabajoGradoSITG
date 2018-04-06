@@ -15,33 +15,32 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
        if (Session["Usuario"] == null){
             Response.Redirect("Default.aspx");
         }
-        DDLprog.Items.Clear();
-        string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
-        DDLprog.Items.AddRange(con.cargardatos(sql));
+        
         if (!Page.IsPostBack){
             string valida = con.Validarurl(Convert.ToInt32(Session["id"]), "Agregar_LineaProf.aspx");
             if (valida.Equals("false")){
                 Response.Redirect("MenuPrincipal.aspx");
-            } else { 
+            } else {
+                DDLprog.Items.Clear();
+                string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
+                DDLprog.Items.AddRange(con.cargardatos(sql));
+
                 table = new System.Data.DataTable();
                 table.Columns.Add("TEMAS", typeof(System.String));
                 Session.Add("Tabla", table);
             }
         }
-        
     }
 
     /*Metodos de crear-consultar que manejan la parte del fronted*/
     protected void Crear(object sender, EventArgs e)
     {
         Ingreso.Visible = true;
-        DDLprog.Items.Clear();
-        string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
-        DDLprog.Items.AddRange(con.cargardatos(sql)); 
         Linfo.Text = "";
         DIVBuscar.Visible = false;
         SolTema.Visible = false;
         SolLinProf.Visible = false;
+        Quitar();
     }
     protected void Consultar(object sender, EventArgs e)
     {
@@ -62,17 +61,21 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
     /*Metodo que se utiliza para la busqueda del insertar tema*/
     protected void AgregarFila(object sender, EventArgs e)
     {
-        table = (System.Data.DataTable)(Session["Tabla"]);
-        row = table.NewRow();
-        row["TEMAS"] = TBnomtema.Text;
+        if(string.IsNullOrEmpty(TBnomtema.Text) == true)
+        {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "No puede agregar un tema en blanco";
+        } else { 
+            table = (System.Data.DataTable)(Session["Tabla"]);
+            row = table.NewRow();
+            row["TEMAS"] = TBnomtema.Text.ToLower();
 
-        table.Rows.Add(row);
-        GVagretema.DataSource = table;
-        GVagretema.DataBind();
-        TBnomtema.Text = "";
-        DDLprog.Items.Clear();
-        string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
-        DDLprog.Items.AddRange(con.cargardatos(sql));
+            table.Rows.Add(row);
+            GVagretema.Visible = true;
+            GVagretema.DataSource = table;
+            GVagretema.DataBind();
+            TBnomtema.Text = "";
+        }
     }
   
     /*Metodos que se utilizan para guardar*/
@@ -87,7 +90,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Los campos son obligatorios";
             }else{
-                sql = "insert into LIN_INVESTIGACION (LINV_CODIGO,LINV_NOMBRE,PROG_CODIGO) VALUES(linvid.nextval, '" + TBnomlinea.Text + "', '" + DDLprog.Items[DDLprog.SelectedIndex].Value.ToString() + "')";
+                sql = "insert into LIN_INVESTIGACION (LINV_CODIGO,LINV_NOMBRE,PROG_CODIGO) VALUES(linvid.nextval, '" + TBnomlinea.Text.ToLower() + "', '" + DDLprog.Items[DDLprog.SelectedIndex].Value.ToString() + "')";
                 texto = "Datos guardados satisfactoriamente";
                 Ejecutar(texto, sql);
 
@@ -96,9 +99,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
                     texto = "Datos guardados satisfactoriamente";
                     Ejecutar(texto, sql);    
                 }
-                table.Rows.Clear();
-                GVagretema.DataSource = table;
-                GVagretema.Visible = false;
+                Quitar();
             }
         }
     }       
@@ -116,8 +117,19 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
 
     /*Evento del boton limpiar*/
     protected void Limpiar(object sender, EventArgs e){
+        Quitar();
         Linfo.Text = "";
+    }
+    private void Quitar()
+    {
         TBnomlinea.Text = "";
+        table = (System.Data.DataTable)(Session["Tabla"]);
+        table.Clear();
+        GVagretema.DataSource = table;
+        GVagretema.Visible = false;
+        DDLprog.Items.Clear();
+        string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
+        DDLprog.Items.AddRange(con.cargardatos(sql));
     }
 
     /*Metodos que se utilizan para la consulta de la linea profundizacion*/
@@ -228,7 +240,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
     }
     protected void AgregarT(object sender, EventArgs e)
     {
-       string sql = "insert into TEMA (TEM_CODIGO,TEM_NOMBRE,LINV_CODIGO) VALUES(temaid.nextval, '" + TBagregt.Text+ "', '"+Metodo.Value+"')";
+       string sql = "insert into TEMA (TEM_CODIGO,TEM_NOMBRE,LINV_CODIGO) VALUES(temaid.nextval, '" + TBagregt.Text.ToLower()+ "', '"+Metodo.Value+"')";
        string texto = "";    
        Ejecutar(texto, sql);
        ResultadoTemas();
