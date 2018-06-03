@@ -2,17 +2,16 @@
 
 <asp:Content ID="DatoPersonal" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Configuracion - Actualizar Datos Personales</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Configuración - Actualizar Datos Personales</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPdatopersonal" runat="server">
                 <ContentTemplate>
                     <div class="container-fluid">  
-                        <asp:Label ID="Ltitulo" runat="server" ForeColor="Black" Font-Bold="True" class="text-justify" Text="Actualizar Datos Personales"></asp:Label>                    
-                       
+                        
                          <div id="Actualizar" runat="server" visible="true" class="row">
                             <asp:Table ID="Tdatopersonal" runat="server" HorizontalAlign="Center">
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:Label ID="Lcodigo" runat="server" Text="Codigo:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:Label ID="Lcodigo" runat="server" Text="Código:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:Label ID="Lanscod" runat="server" Text="" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>                                   
                                 </asp:TableRow>                               
                                 <asp:TableRow>
@@ -20,11 +19,11 @@
                                     <asp:TableCell><asp:TextBox ID="TBnombre" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
                                 </asp:TableRow>
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:Label ID="Lapellido" runat="server" Text="Apellido:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:Label ID="Lapellido" runat="server" Text="Apellidos:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:TextBox ID="TBapellido" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>                                    
                                 </asp:TableRow>
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:Label ID="Ltelefono" runat="server" Text="Telefono:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:Label ID="Ltelefono" runat="server" Text="Teléfono:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:TextBox ID="TBtelefono" runat="server" TextMode="Number" CssClass="form-control"></asp:TextBox></asp:TableCell>
                                 </asp:TableRow>
                                 <asp:TableRow>
@@ -32,7 +31,7 @@
                                     <asp:TableCell><asp:TextBox ID="TBdireccion" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>                                  
                                 </asp:TableRow>
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:Label ID="Lcorreo" runat="server" Text="Correo:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                                    <asp:TableCell><asp:Label ID="Lcorreo" runat="server" Text="Correo Electrónico:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                                     <asp:TableCell><asp:TextBox ID="TBcorreo" runat="server" CssClass="form-control" TextMode="Email"></asp:TextBox></asp:TableCell>                                   
                                 </asp:TableRow>
                                 <asp:TableRow>
@@ -56,10 +55,10 @@
                             <asp:Table ID="TBotones" runat="server" HorizontalAlign="Center">
                                 <asp:TableRow>
                                     <asp:TableCell>
-                                        <asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar Cambios" class="btn btn-default" />
+                                        <asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar Cambios" class="btn btn-success"  ForeColor="White"/>
                                     </asp:TableCell>
                                     <asp:TableCell>
-                                        <asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" />
+                                        <asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-danger" ForeColor="White" />
                                     </asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>

@@ -17,7 +17,7 @@
     width: 230px;
     background: #222;
     position: fixed;
-    height: 510px;
+    height: 650px;
     z-index: 10000;
     transition: all .4s ease 0s;
 }
@@ -48,7 +48,7 @@
 }
 
 #sidebar_menu li a, .sidebar-nav li a {
-    color: #999;
+    color: #FFF;
     display: block;
     float: left;
     text-decoration: none;
@@ -74,7 +74,7 @@
 }
 
 .sidebar-nav li a {
-  color: #999999;
+  color: #ffffff;
   display: block;
   text-decoration: none;
 }
@@ -195,7 +195,7 @@
 }
 .nav-side-menu ul :not(collapsed) .arrow:before,
 .nav-side-menu li :not(collapsed) .arrow:before {
-  c
+  
 }
 .nav-side-menu ul .active,
 .nav-side-menu li .active {

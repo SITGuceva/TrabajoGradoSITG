@@ -2,7 +2,7 @@
 
 <asp:Content ID="DocenteProyectos" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Proyectos - Proyectos</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Proyectos - Proyectos</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPproyectosdoc" runat="server"> <ContentTemplate>
             <div class="container-fluid">
@@ -23,7 +23,7 @@
                         <asp:TableCell><asp:DropDownList ID="DDLprograma" class="btn btn-secondary btn-lg dropdown-toggle" runat="server" OnSelectedIndexChanged="DDLconsultaPrograma_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></asp:TableCell>
                         </asp:TableRow>
                         <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Llprof" runat="server" Text="Linea Investigacion:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Llprof" runat="server" Text="Línea Investigación:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                             <asp:TableCell><asp:DropDownList ID="DDLlprof" runat="server" class="btn btn-secondary btn-lg dropdown-toggle" AutoPostBack="true" OnSelectedIndexChanged="DDLlprof_SelectedIndexChanged"></asp:DropDownList></asp:TableCell>                    
                         </asp:TableRow>
                         <asp:TableRow>
@@ -31,7 +31,7 @@
                             <asp:TableCell><asp:DropDownList ID="DDLtema" runat="server" class="btn btn-secondary btn-lg dropdown-toggle"> </asp:DropDownList></asp:TableCell>
                         </asp:TableRow>
                         <asp:TableRow>
-                            <asp:TableCell><asp:Label ID="Lnom" runat="server" Text="Titulo:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
+                            <asp:TableCell><asp:Label ID="Lnom" runat="server" Text="Título:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label></asp:TableCell>
                             <asp:TableCell ColumnSpan="3"><asp:TextBox ID="TBnombre" runat="server"  CssClass="form-control"></asp:TextBox></asp:TableCell>
                         </asp:TableRow>
                         <asp:TableRow>
@@ -46,8 +46,8 @@
                    
                     <asp:Table ID="botones" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" /></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Cancelar" class="btn btn-danger" ForeColor="White" /></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
                 </div>
@@ -56,22 +56,22 @@
                      <asp:GridView ID="GVproyectos" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVproyectos_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table"   OnRowDataBound="GVproyectos_RowDataBound" PageSize="8" OnRowUpdating="GVproyectos_RowUpdating" OnRowEditing="GVproyectos_RowEditing" OnRowCancelingEdit="GVproyectos_RowCancelingEdit" caption="PROYECTOS" captionalign="Top">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No tienes proyectos creados!</EmptyDataTemplate>
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" /> 
+                        <EmptyDataTemplate>¡No tiene proyectos creados!</EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="PROY_ID" HeaderText="ID" />   
-                            <asp:BoundField DataField="LINV_NOMBRE" HeaderText="LINEA INVESTIGACION" />
-                            <asp:BoundField DataField="TEM_NOMBRE" HeaderText="TEMA" />
-                            <asp:BoundField DataField="PROY_NOMBRE" HeaderText="NOMBRE" />
-                            <asp:BoundField DataField="PROY_DESCRIPCION" HeaderText="DESCRIPCION" />
-                            <asp:BoundField DataField="PROY_CANTEST" HeaderText="CANT ESTUDIANTE" />
-                            <asp:BoundField DataField="PROY_FECHA" HeaderText="FECHA" />
+                            <asp:BoundField DataField="PROY_ID" HeaderText="Id" />   
+                            <asp:BoundField DataField="LINV_NOMBRE" HeaderText="Línea Investigación" />
+                            <asp:BoundField DataField="TEM_NOMBRE" HeaderText="Tema" />
+                            <asp:BoundField DataField="PROY_NOMBRE" HeaderText="Título" />
+                            <asp:BoundField DataField="PROY_DESCRIPCION" HeaderText="Descripción" />
+                            <asp:BoundField DataField="PROY_CANTEST" HeaderText="Cant Estudiantes" />
+                            <asp:BoundField DataField="PROY_FECHA" HeaderText="Fecha Creación" />
                             <asp:TemplateField HeaderText="ESTADO">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server">
@@ -83,13 +83,13 @@
                                     <asp:Label ID="Lestado" runat="server" Text='<%# Bind("PROY_ESTADO") %>'></asp:Label>
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="MODIFICAR">
+                            <asp:TemplateField HeaderText="Modificar">
                                 <ItemTemplate>
                                     <asp:Button ID="btn_Edit" runat="server" Text="Modificar" class="btn btn-default" CommandName="Edit" />
                                 </ItemTemplate>
                                 <EditItemTemplate>
-                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" class="btn btn-default" CommandName="Update" />
-                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" class="btn btn-default" CommandName="Cancel" />
+                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" class="btn btn-success" ForeColor="White" CommandName="Update" />
+                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" class="btn btn-danger" ForeColor="White" CommandName="Cancel" />
                                 </EditItemTemplate>
                             </asp:TemplateField>
                         </Columns>

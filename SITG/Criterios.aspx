@@ -3,7 +3,7 @@
 <asp:Content ID="CriteriosCRUD" ContentPlaceHolderID="MainContent" Runat="Server">
 
     <div class="panel panel-default">
-        <div class="panel-heading">Universidad - Criterios</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Universidad - Criterios</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPcriterios" runat="server"> <ContentTemplate>
             <div class="container-fluid">
@@ -31,8 +31,8 @@
                    
                     <asp:Table ID="botones" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" /></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Cancelar" class="btn btn-danger" ForeColor="White"/></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
                 </div>
@@ -41,21 +41,21 @@
                      <asp:GridView ID="GVcriterios" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                          OnPageIndexChanging="GVcriterios_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" 
                          OnRowDataBound="GVcriterios_RowDataBound" PageSize="6" OnRowUpdating="GVcriterios_RowUpdating" OnRowEditing="GVcriterios_RowEditing"
-                         OnRowCancelingEdit="GVcriterios_RowCancelingEdit" caption="CRITERIOS" captionalign="Top">
+                         OnRowCancelingEdit="GVcriterios_RowCancelingEdit">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay criterios!</EmptyDataTemplate>
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />   
+                        <EmptyDataTemplate>¡No existen criterios!</EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="CRIT_CODIGO" HeaderText="ID" />   
-                            <asp:BoundField DataField="CRIT_NOMBRE" HeaderText="NOMBRE" />
-                            <asp:BoundField DataField="CRIT_TIPO" HeaderText="VALOR" />
+                            <asp:BoundField DataField="CRIT_CODIGO" HeaderText="Id" />   
+                            <asp:BoundField DataField="CRIT_NOMBRE" HeaderText="Nombre" />
+                            <asp:BoundField DataField="CRIT_TIPO" HeaderText="Tipo" />
                             <asp:TemplateField HeaderText="Estado">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server">
@@ -69,18 +69,17 @@
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Modificar">
                                 <ItemTemplate>
-                                    <asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" />
+                                    <asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/>
                                 </ItemTemplate>
                                 <EditItemTemplate>
-                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" />
-                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" />
+                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-success" ForeColor="White" />
+                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-danger" ForeColor="White"/>
                                 </EditItemTemplate>
                             </asp:TemplateField>
                         </Columns>
                      </asp:GridView>
                 </div>
-
-             
+ 
                 <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True" ></asp:Label>                    
                 </div>
            </ContentTemplate></asp:UpdatePanel>

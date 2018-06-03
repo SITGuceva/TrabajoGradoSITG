@@ -29,6 +29,10 @@ public partial class Asignar_Roles : Conexion
         ResultadoUsuRol.Visible = false;
         ResultadoRoles.Visible = false;
         AgregarRol.Visible = false;
+        Bnueva.Visible = false;
+        Bconsultar.Visible = true;
+        TBcodigo.Enabled = true;
+        TBcodigo.Text = "";
     }
     protected void Consultar(object sender, EventArgs e)
     {

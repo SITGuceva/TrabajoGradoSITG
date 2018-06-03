@@ -245,7 +245,7 @@ public partial class PeticionDir : Conexion
             OracleCommand cmd = null;
             if (conn != null){
                 string sql = "select DISTINCT s.SOLE_ID, s.SOLE_FECHA, s.SOLE_MOTIVO, p.PROP_TITULO,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as ESTUDIANTE,s.SOLE_ESTADO " +
-                    "from solicitud_est s, propuesta p, usuario u, estudiante e, profesor d where s.PROP_CODIGO = p.PROP_CODIGO  and u.USU_USERNAME = s.USU_USERNAME and s.SOLE_TIPO = '" + DDLsol.Items[DDLsol.SelectedIndex].Text + "'  and s.SOLE_ESTADO='Pendiente' " +
+                    "from solicitud_est s, propuesta p, usuario u, estudiante e, profesor d where s.PROP_CODIGO = p.PROP_CODIGO  and u.USU_USERNAME = s.USU_USERNAME and s.SOLE_TIPO = '" + DDLsol.Items[DDLsol.SelectedIndex].Text + "'  and s.SOLE_ESTADO='PENDIENTE' " +
                     "and e.PROG_CODIGO=d.COM_CODIGO  and  d.USU_USERNAME = '" + Session["id"] + "'  order by s.sole_id";
 
                 cmd = new OracleCommand(sql, conn);

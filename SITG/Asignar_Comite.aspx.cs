@@ -224,7 +224,7 @@ public partial class Asignar_Comite : Conexion
                     {
                         ResultadoComite.Visible = true;
                         Linfo.ForeColor = System.Drawing.Color.Red;
-                        Linfo.Text = "Este usuario ya tiene un comite asignado, para agregarlo a un nuevo comite este usuario debe ser eliminado del comite al que pertenece actualmente.";
+                        Linfo.Text = "Este usuario ya se encuentra en un comité, para agregarlo a un nuevo comité deberá ser eliminado del comité al que pertenece actualmente.";
                         Roles.Visible = false;                       
                   
                     } else {

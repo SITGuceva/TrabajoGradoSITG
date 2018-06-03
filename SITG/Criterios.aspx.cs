@@ -119,7 +119,7 @@ public partial class Criterios : System.Web.UI.Page
             TextBox porcentaje = (TextBox)GVcriterios.Rows[e.RowIndex].Cells[2].Controls[0];
             TextBox codigo = (TextBox)GVcriterios.Rows[e.RowIndex].Cells[0].Controls[0];
 
-            string sql = "update criterios set crit_nombre = '" + nombre.Text + "', crit_porcentaje='"+porcentaje.Text+"', crit_estado='" + estado + "' where  crit_codigo ='" + codigo.Text + "'";
+            string sql = "update criterios set crit_nombre = '" + nombre.Text + "', crit_tipo='"+porcentaje.Text+"', crit_estado='" + estado + "' where  crit_codigo ='" + codigo.Text + "'";
              cmd = new OracleCommand(sql, conn);
              cmd.CommandType = CommandType.Text;
              using (OracleDataReader reader = cmd.ExecuteReader())

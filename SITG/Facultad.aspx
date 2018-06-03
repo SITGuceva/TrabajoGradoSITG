@@ -2,7 +2,7 @@
 
 <asp:Content ID="Facultad" ContentPlaceHolderID="MainContent" Runat="Server">
 <div class="panel panel-default">
-        <div class="panel-heading">Universidad - Facultad</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Universidad - Facultad</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPfac" runat="server"> <ContentTemplate>
             <div class="container-fluid">
@@ -18,14 +18,14 @@
                  <div id="Ingreso" runat="server" visible="true" class="row">
                     <asp:Table ID="TFac" runat="server" HorizontalAlign="Center" >                     
                          <asp:TableRow>
-                           <asp:TableCell><asp:Label ID="Lnombre" runat="server" Text="NOMBRE:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
+                           <asp:TableCell><asp:Label ID="Lnombre" runat="server" Text="Nombre Facultad:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
                            <asp:TableCell><asp:TextBox ID="TBnombre" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
                         </asp:TableRow>                                             
                     </asp:Table>  
                       <asp:Table ID="TBotonoes" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" /></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White" OnClientClick="return confirm('hacer el postback del control ?');"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-danger" ForeColor="White" /></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
                 </div>
@@ -35,17 +35,17 @@
                          PageSize="8"  OnRowUpdating="GVfac_RowUpdating" OnRowEditing="GVfac_RowEditing" OnRowCancelingEdit="GVfac_RowCancelingEdit">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="#EFF3FB" />
-                        <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay facultad!</EmptyDataTemplate>
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />                               
+                        <EmptyDataTemplate>¡No Existen Facultades!</EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="FAC_CODIGO" HeaderText="ID" />
-                            <asp:BoundField DataField="FAC_NOMBRE" HeaderText="NOMBRE" />
+                            <asp:BoundField DataField="FAC_CODIGO" HeaderText="Id" />
+                            <asp:BoundField DataField="FAC_NOMBRE" HeaderText="Nombre" />
                             <asp:TemplateField HeaderText="Estado">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
@@ -58,8 +58,8 @@
                             <asp:TemplateField HeaderText="Modificar">
                                 <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/></ItemTemplate>
                                 <EditItemTemplate>
-                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-default"/>
-                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-default" />
+                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-success"/>
+                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-danger" />
                                 </EditItemTemplate>
                             </asp:TemplateField>
                         </Columns>
@@ -72,4 +72,22 @@
            </ContentTemplate></asp:UpdatePanel>
         </div>
     </div>
+    <script type="text/javascript">
+ 
+        function Confirmacion() {
+ 
+            var seleccion = confirm("acepta el mensaje ?");
+ 
+            if (seleccion)
+                alert("se acepto el mensaje");
+            else
+                alert("NO se acepto el mensaje");
+ 
+            //usado para que no haga postback el boton de asp.net cuando 
+            //no se acepte el confirm
+            return seleccion;
+         
+        }
+     
+    </script>
 </asp:Content>

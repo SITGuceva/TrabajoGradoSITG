@@ -2,7 +2,7 @@
 
 <asp:Content ID="Categoria" ContentPlaceHolderID="MainContent" Runat="Server">
 <div class="panel panel-default">
-        <div class="panel-heading">Sistema - Categorias</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Sistema - Categorías</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPcategoria" runat="server"> <ContentTemplate>
             <div class="container-fluid">
@@ -19,7 +19,7 @@
                     <asp:Table ID="Tcategoria" runat="server" HorizontalAlign="Center" >
                         <asp:TableRow>
                             <asp:TableCell>
-                                <asp:Label ID="Lid" runat="server" Text="ID:" ForeColor="Black" Font-Bold="True" ></asp:Label>
+                                <asp:Label ID="Lid" runat="server" Text="Id:" ForeColor="Black" Font-Bold="True" ></asp:Label>
                             </asp:TableCell>                 
                             <asp:TableCell>
                                 <asp:TextBox ID="TBid" runat="server" CssClass="form-control"></asp:TextBox>    
@@ -27,7 +27,7 @@
                         </asp:TableRow>                   
                          <asp:TableRow>
                            <asp:TableCell>
-                               <asp:Label ID="Lnombre" runat="server" Text="NOMBRE:" ForeColor="Black" Font-Bold="True"></asp:Label>
+                               <asp:Label ID="Lnombre" runat="server" Text="Nombre:" ForeColor="Black" Font-Bold="True"></asp:Label>
                             </asp:TableCell>                         
                             <asp:TableCell>
                                 <asp:TextBox ID="TBnombre" runat="server" CssClass="form-control"></asp:TextBox>    
@@ -35,7 +35,7 @@
                         </asp:TableRow>                                             
                           <asp:TableRow>
                              <asp:TableCell>
-                               <asp:Label ID="Licono" runat="server" Text="ICONO:" ForeColor="Black" Font-Bold="True" ></asp:Label>
+                               <asp:Label ID="Licono" runat="server" Text="Icono:" ForeColor="Black" Font-Bold="True" ></asp:Label>
                             </asp:TableCell>                         
                             <asp:TableCell ColumnSpan="3">
                                 <asp:TextBox ID="TBicono" runat="server" CssClass="form-control"></asp:TextBox>    
@@ -46,10 +46,10 @@
                       <asp:Table ID="Tbotones" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
                             <asp:TableCell>
-                                <asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-default" />
+                                <asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White" />
                             </asp:TableCell>
                             <asp:TableCell>
-                                <asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" />
+                                <asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Cancelar" class="btn btn-danger" ForeColor="White" />
                             </asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
@@ -60,20 +60,18 @@
                          PageSize="8" OnRowUpdating="GVcategoria_RowUpdating" OnRowEditing="GVcategoria_RowEditing" OnRowCancelingEdit="GVcategoria_RowCancelingEdit">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>
-                            ¡No hay categorias!  
-                        </EmptyDataTemplate>
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" /> 
+                        <EmptyDataTemplate>¡No existen categorías!  </EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="CATS_ID" HeaderText="ID" />
-                            <asp:BoundField DataField="CATS_NOMBRE" HeaderText="NOMBRE" />
-                            <asp:BoundField DataField="CATS_ICONO" HeaderText="ICONO" />    
+                            <asp:BoundField DataField="CATS_ID" HeaderText="Id" />
+                            <asp:BoundField DataField="CATS_NOMBRE" HeaderText="Nombre" />
+                            <asp:BoundField DataField="CATS_ICONO" HeaderText="Icono" />    
                             <asp:TemplateField HeaderText="Estado">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
@@ -86,8 +84,8 @@
                             <asp:TemplateField HeaderText="Modificar">
                                 <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/></ItemTemplate>
                                 <EditItemTemplate>
-                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-default"/>
-                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-default" />
+                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-success" ForeColor="White"/>
+                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-danger" ForeColor="White"/>
                                 </EditItemTemplate>
                             </asp:TemplateField>                        
                         </Columns>

@@ -2,7 +2,7 @@
 
 <asp:Content ID="CReunion" ContentPlaceHolderID="MainContent" Runat="Server">
      <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Reunión - Reunión</div>
+        <div class="panel-heading"style="background-color:#1C2833 ;color:white">Gestionar Reunión - Reunión</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPreu" runat="server"> <ContentTemplate>
             <div class="container-fluid">
@@ -18,7 +18,7 @@
               <div id="Ingreso" runat="server" visible="true" class="row">
                     <asp:Table ID="Treu" runat="server" HorizontalAlign="Center" >                 
                          <asp:TableRow>
-                           <asp:TableCell><asp:Label ID="Lcomi" runat="server" Text="Comite:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
+                           <asp:TableCell><asp:Label ID="Lcomi" runat="server" Text="Comité:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
                             <asp:TableCell><asp:Label ID="Rcomite" runat="server" CssClass="form-control"></asp:Label>    </asp:TableCell>
                         </asp:TableRow>                      
                         <asp:TableRow>
@@ -32,8 +32,8 @@
                     </asp:Table>                  
                     <asp:Table ID="Tbotones" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-secondary" /></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-secondary" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Cancelar" class="btn btn-danger" ForeColor="White"/></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
                 </div>
@@ -57,7 +57,7 @@
                                    <asp:ListItem Value="11" Text="Noviembre" />
                                    <asp:ListItem Value="12" Text="Diciembre" />
                             </asp:DropDownList></asp:TableCell>    
-                            <asp:TableCell><asp:Button ID="Bbuscar" runat="server" Text="Buscar" OnClick="Bbuscar_Click" class="btn btn-default"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bbuscar" runat="server" Text="BUSCAR" OnClick="Bbuscar_Click" class="btn btn-default"/></asp:TableCell>
                          </asp:TableRow>
                     </asp:Table>    
 
@@ -65,14 +65,14 @@
                         OnRowDataBound="GVconsulta_RowDataBound" PageSize="8" OnRowCommand="GVconsulta_RowCommand">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="White" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay reuniones estipuladas con el parametro seleccionado.!</EmptyDataTemplate>
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />  
+                        <EmptyDataTemplate>¡No hay reuniones estipuladas con el parámetro seleccionado.!</EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="REU_CODIGO" HeaderText="Código" />
                             <asp:BoundField DataField="REU_FPROP" HeaderText="Fecha Propuesta" />

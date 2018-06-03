@@ -2,14 +2,14 @@
 
 <asp:Content ID="Asignar_Roles" ContentPlaceHolderID="MainContent" Runat="Server">
         <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Usuarios - Asignar Roles</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Usuarios - Asignar Roles</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPasigrol" runat="server"> <ContentTemplate>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
                         <ul class="breadcrumb">
-                            <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black" ><span class="glyphicon glyphicon-plus"></span>Asignar Rol</asp:LinkButton></li>
+                            <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black" ><span class="glyphicon glyphicon-plus"></span>Asignar</asp:LinkButton></li>
                             <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>
                         </ul>
                     </div>
@@ -30,9 +30,9 @@
                     <asp:Table ID="Tasigrol2" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
                               <asp:TableCell>
-                                  <asp:Label ID="LRol2" runat="server" Text="Rol:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                                  <asp:Label ID="LRol2" runat="server" Text="Roles:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
                                    <asp:DropDownList ID="DDLroles2" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList>
-                                   <asp:Button ID="Bconsultar2" runat="server" OnClick="ConsultarRoles" Text="Consultar" class="btn btn-default" />
+                                   <asp:Button ID="Bconsultar2" runat="server" OnClick="ConsultarRoles" Text="Buscar" class="btn btn-default" />
                             </asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
@@ -44,13 +44,13 @@
                      <asp:GridView ID="GVnombre" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVnombre_RowDataBound" >
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="White" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" /> 
                         <EmptyDataTemplate>¡El usuario esta inactivo o no existe!</EmptyDataTemplate>
                         <Columns> <asp:BoundField DataField="USUARIO" HeaderText="Nombre del usuario" /> </Columns>
                      </asp:GridView>
@@ -62,18 +62,18 @@
                      <asp:GridView ID="GVasigrol" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVasigrol_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVasigrol_RowDataBound" PageSize="8" OnRowDeleting="GVasigrol_RowDeleting">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="White" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" /> 
                         <EmptyDataTemplate>¡El usuario no tiene roles asignados!</EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="USUROL_ID" HeaderText="Rol id" />
-                            <asp:BoundField DataField="ROL_NOMBRE" HeaderText="Roles de este usuario" />
-                            <asp:CommandField ShowDeleteButton="true" HeaderText="Eliminar rol" ShowHeader="true"></asp:CommandField>                    
+                            <asp:BoundField DataField="USUROL_ID" HeaderText="Id" />
+                            <asp:BoundField DataField="ROL_NOMBRE" HeaderText="Roles" />
+                            <asp:CommandField ShowDeleteButton="true" HeaderText="Eliminar" ShowHeader="true"></asp:CommandField>                    
                         </Columns>
                      </asp:GridView>
                      <br>
@@ -84,14 +84,14 @@
                      <asp:GridView ID="GVrolusuario" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" OnPageIndexChanging="GVasigrol_PageIndexChanging" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowDataBound="GVrolusuario_RowDataBound" PageSize="8">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="White" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡Aún no hay usuarios asignados al rol!</EmptyDataTemplate>
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" /> 
+                        <EmptyDataTemplate>¡Aún no existen usuarios asignados al rol seleccionado!</EmptyDataTemplate>
                         <Columns>
                             <asp:BoundField DataField="USUARIO" HeaderText="Usuario" />   
                             <asp:BoundField DataField="USU_ESTADO" HeaderText="Estado" />                                    
@@ -105,9 +105,9 @@
                     <asp:Table ID="Tasignarol3" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
                           <asp:TableCell>
-                              <asp:Label ID="LRol" runat="server" Text="Rol:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
+                              <asp:Label ID="LRol" runat="server" Text="Roles:" ForeColor="Black" Font-Bold="True" class="text-justify"></asp:Label>
                               <asp:DropDownList ID="DDLroles" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"> </asp:DropDownList>
-                              <asp:Button ID="BTagregarrol" runat="server" OnClick="InsertarRol" Text="Asignar rol" class="btn btn-default" />
+                              <asp:Button ID="BTagregarrol" runat="server" OnClick="InsertarRol" Text="Asignar" class="btn btn-success" ForeColor="White" />
                           </asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>       

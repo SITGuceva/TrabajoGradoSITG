@@ -2,7 +2,7 @@
 
 <asp:Content ID="SolicitudEst" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Documentos - Solicitudes</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Documentos - Solicitudes</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPSolicitudes" runat="server"> <ContentTemplate>
             <div class="container-fluid">
@@ -39,7 +39,7 @@
                              <asp:TableHeaderCell><asp:Label ID="Ltin" runat="server" Text="INTEGRANTE" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableHeaderCell>
                            </asp:TableRow>
                             <asp:TableRow>                        
-                                <asp:TableCell><asp:Label ID="Lintegrante" runat="server" Text="Codigo del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
+                                <asp:TableCell><asp:Label ID="Lintegrante" runat="server" Text="Código del Estudiante:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>
                                 <asp:TableCell><asp:TextBox ID="TBcodint" runat="server" CssClass="form-control"></asp:TextBox></asp:TableCell>
                                 <asp:TableCell>
                                     <asp:Button ID="Bintegrante" runat="server" Text="Buscar" OnClick="Bintegrante_Click" class="btn btn-default"/>
@@ -57,15 +57,15 @@
                     <asp:GridView  ID="GVagreinte" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False" CssClass="table table-bordered bs-table"  PageSize="6">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EditRowStyle BackColor="#ffffcc" />
                         <Columns>
-                            <asp:BoundField DataField="CODIGO" HeaderText="CODIGO" />                                   
-                            <asp:BoundField DataField="INTEGRANTES" HeaderText="NOMBRE" />                                   
+                            <asp:BoundField DataField="CODIGO" HeaderText="Código" />                                   
+                            <asp:BoundField DataField="INTEGRANTES" HeaderText="Nombre" />                                   
                         </Columns>
                      </asp:GridView>
                  </div>
@@ -73,8 +73,8 @@
                 <div>
                     <asp:Table ID="Tbotones" runat="server" Visible="true" HorizontalAlign="Center" >                
                         <asp:TableRow>
-                           <asp:TableCell> <asp:Button ID="Bsolicitar" runat="server"  Text="Solicitar " OnClick="Bsolicitar_Click" class="btn btn-default" /></asp:TableCell>
-                           <asp:TableCell><asp:Button ID="Blimpiar" runat="server" OnClick="Blimpiar_Click" Text="Cancelar" class="btn btn-default" /></asp:TableCell>
+                           <asp:TableCell> <asp:Button ID="Bsolicitar" runat="server"  Text="Solicitar " OnClick="Bsolicitar_Click" class="btn btn-success" ForeColor="White" /></asp:TableCell>
+                           <asp:TableCell><asp:Button ID="Blimpiar" runat="server" OnClick="Blimpiar_Click" Text="Cancelar" class="btn btn-danger" ForeColor="White" /></asp:TableCell>
                         </asp:TableRow>                           
                    </asp:Table>  
                 </div>
@@ -82,18 +82,19 @@
                 <div id="ConsultaSol" runat="server" visible="false" class="row">                  
                     <asp:GridView ID="GVconsulta" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                        AutoGenerateColumns="False" CssClass="table table-bordered bs-table"  OnRowDataBound="GVconsulta_RowDataBound">                   
-                        <PagerStyle BackColor="#2461BF" ForeColor="White" HorizontalAlign="Center" /> 
-                        <RowStyle BackColor="White" />
-                        <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                         <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
                         <EmptyDataTemplate> ¡No tienes solicitudes!  </EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="SOLE_ID" HeaderText="ID" />
-                            <asp:BoundField DataField="SOLE_FECHA" HeaderText="FECHA" />
-                            <asp:BoundField DataField="SOLE_TIPO" HeaderText="TIPO" />
-                            <asp:BoundField DataField="SOLE_MOTIVO" HeaderText="MOTIVO" />
-                            <asp:BoundField DataField="SOLE_ESTADO" HeaderText="ESTADO" /> 
+                            <asp:BoundField DataField="SOLE_ID" HeaderText="Id" />
+                            <asp:BoundField DataField="SOLE_FECHA" HeaderText="Fecha" />
+                            <asp:BoundField DataField="SOLE_TIPO" HeaderText="Tipo" />
+                            <asp:BoundField DataField="SOLE_MOTIVO" HeaderText="Motivo" />
+                            <asp:BoundField DataField="SOLE_ESTADO" HeaderText="Estado" /> 
                         </Columns>
                     </asp:GridView>
                 </div>

@@ -244,6 +244,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
        string texto = "";    
        Ejecutar(texto, sql);
        ResultadoTemas();
+       TBagregt.Text = "";
     }     
     public void ResultadoTemas()
     {        

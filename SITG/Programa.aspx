@@ -2,7 +2,7 @@
 
 <asp:Content ID="Programa" ContentPlaceHolderID="MainContent" Runat="Server">
      <div class="panel panel-default">
-        <div class="panel-heading">Universidad - Programa</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Universidad - Programa</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPprog" runat="server"> <ContentTemplate>
             <div class="container-fluid">
@@ -18,23 +18,23 @@
                  <div id="Ingreso" runat="server" visible="true" class="row">
                     <asp:Table ID="TProg" runat="server" HorizontalAlign="Center" >                  
                          <asp:TableRow>
-                           <asp:TableCell><asp:Label ID="Lnombre" runat="server" Text="NOMBRE:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
+                           <asp:TableCell><asp:Label ID="Lnombre" runat="server" Text="Nombre:" ForeColor="Black" Font-Bold="True"></asp:Label></asp:TableCell>                         
                             <asp:TableCell><asp:TextBox ID="TBnombre" runat="server" CssClass="form-control"></asp:TextBox>    </asp:TableCell>
                         </asp:TableRow>                      
                         <asp:TableRow>
-                             <asp:TableCell><asp:Label ID="Lfacultad" runat="server" Text="FACULTAD:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                         
+                             <asp:TableCell><asp:Label ID="Lfacultad" runat="server" Text="Facultad:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                         
                             <asp:TableCell ColumnSpan="3"><asp:DropDownList ID="DDLfacultad" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>                         
                         </asp:TableRow>
                           <asp:TableRow>
-                             <asp:TableCell><asp:Label ID="Lsemestre" runat="server" Text="SEMESTRE:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                         
+                             <asp:TableCell><asp:Label ID="Lsemestre" runat="server" Text="Semestres:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                         
                             <asp:TableCell> <asp:TextBox ID="TBsemestre" runat="server" CssClass="form-control" TextMode="Number"></asp:TextBox>    </asp:TableCell>                         
                         </asp:TableRow>
                     </asp:Table>                  
                     
                      <asp:Table ID="Tbotones" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-secondary" /></asp:TableCell>
-                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-secondary" /></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bacpetar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Cancelar" class="btn btn-danger" ForeColor="White"/></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
                 </div>
@@ -44,7 +44,7 @@
                         <asp:TableRow>
                            <asp:TableCell><asp:Label ID="Lfacultad1" runat="server" Text="Facultad:" ForeColor="Black" Font-Bold="True" ></asp:Label></asp:TableCell>                 
                            <asp:TableCell><asp:DropDownList ID="DDLfacultad1" class="btn btn-secondary btn-lg dropdown-toggle" runat="server"></asp:DropDownList></asp:TableCell>                           
-                                  <asp:TableCell><asp:Button ID="Bbuscar" runat="server" OnClick="Buscar" Text="Buscar" class="btn btn-secondary" /></asp:TableCell>
+                                  <asp:TableCell><asp:Button ID="Bbuscar" runat="server" OnClick="Buscar" Text="Buscar" class="btn btn-default" /></asp:TableCell>
                         </asp:TableRow>                                    
                     </asp:Table>                  
                 </div>
@@ -54,18 +54,18 @@
                          PageSize="8"  OnRowUpdating="GVprog_RowUpdating" OnRowEditing="GVprog_RowEditing" OnRowCancelingEdit="GVprog_RowCancelingEdit">
                         <AlternatingRowStyle BackColor="White" />
                         <EditRowStyle BackColor="#2461BF" />
-                        <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                        <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
-                        <RowStyle BackColor="#EFF3FB" />
-                        <SelectedRowStyle BackColor="#D1DDF1" Font-Bold="True" ForeColor="#333333" />
-                        <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                        <EditRowStyle BackColor="White" />
-                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                        <EmptyDataTemplate>¡No hay programas!</EmptyDataTemplate>
+                        <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                        <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                        <RowStyle BackColor="white" />
+                        <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                        <EditRowStyle BackColor="#ffffcc" />
+                        <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" /> 
+                        <EmptyDataTemplate>¡No existen programas en la facultad seleccionada!</EmptyDataTemplate>
                         <Columns>
-                            <asp:BoundField DataField="PROG_CODIGO" HeaderText="ID" />
-                            <asp:BoundField DataField="PROG_NOMBRE" HeaderText="NOMBRE" />                           
-                            <asp:BoundField DataField="PROG_SEMESTRE" HeaderText="SEMESTRE" />         
+                            <asp:BoundField DataField="PROG_CODIGO" HeaderText="Id" />
+                            <asp:BoundField DataField="PROG_NOMBRE" HeaderText="Nombre" />                           
+                            <asp:BoundField DataField="PROG_SEMESTRE" HeaderText="Semestres" />         
                             <asp:TemplateField HeaderText="Estado">
                                 <EditItemTemplate>
                                     <asp:DropDownList ID="estado" runat="server" class="btn btn-secondary btn-sm dropdown-toggle">
@@ -78,8 +78,8 @@
                             <asp:TemplateField HeaderText="Modificar">
                                 <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" CommandName="Edit" class="btn btn-default"/></ItemTemplate>
                                 <EditItemTemplate>
-                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-default"/>
-                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-default" />
+                                    <asp:Button ID="btn_Update" runat="server" Text="Actualizar" CommandName="Update" class="btn btn-success" ForeColor="White"/>
+                                    <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" CommandName="Cancel" class="btn btn-danger" ForeColor="White" />
                                 </EditItemTemplate>
                             </asp:TemplateField>
                         </Columns>

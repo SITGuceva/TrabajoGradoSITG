@@ -38,6 +38,7 @@ public partial class Propuesta : Conexion
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVconsulta);
         scriptManager.RegisterPostBackControl(this.GVinfprof);
+        scriptManager.RegisterPostBackControl(this.GVsolicitud);
     }
   
     /*Metodos de consulta que se necesitan hacer antes de cargar la pagina*/
@@ -137,14 +138,66 @@ public partial class Propuesta : Conexion
     /*Evento que envia la solicitud*/
     protected void SolicitarDir(object sender, EventArgs e)
     {
+        if (FUdirector.HasFile)
+        {
+            string fileExt = System.IO.Path.GetExtension(FUdirector.FileName);
+            if (fileExt == ".pdf" || fileExt == ".doc" || fileExt == ".docx" )
+            {
+                List<string> list = con.FtpConexion();
+                string ruta = list[2] + "DIRECTOR/";
+                bool existe = con.ExisteDirectorio(ruta);
+                if (!existe)
+                {
+                    con.crearcarpeta(ruta);
+                    Guardar(ruta, list[0], list[1]);
+                }
+                else { Guardar(ruta, list[0], list[1]); }
+            }
+            else
+            {
+                Linfo.ForeColor = System.Drawing.Color.Red;
+                Linfo.Text = "Formato no permitido, debe subir un archivo en PDF, Word";
+            }
+        }
+        else
+        {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Debe elegir un archivo";
+        }
+    }
+    private void Guardar(string ruta, string usuario, string pass)
+    {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        string sql = "insert into DIRECTOR (DIR_ID, DIR_FECHA, PROP_CODIGO, USU_USERNAME) values(DIRECTORID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "')";
-        string texto = "Solicitud realizada correctamente";
-        Ejecutar(texto, sql);
+        string filename = Session["id"] + FUdirector.FileName;
+        string contentType = "";
+        FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta + FUdirector.FileName);
+        request.Method = WebRequestMethods.Ftp.UploadFile;
+        request.Credentials = new NetworkCredential(usuario, pass);
+        using (Stream fs = FUdirector.PostedFile.InputStream)
+        {
+            using (BinaryReader br = new BinaryReader(fs))
+            {
+                filename = Path.GetFileName(FUdirector.PostedFile.FileName);
+                contentType = FUdirector.PostedFile.ContentType;
+                byte[] fileContents = br.ReadBytes((Int32)fs.Length);
+                StreamReader sourceStream = new StreamReader(FUdirector.FileContent);
+                sourceStream.Close();
+                request.ContentLength = fileContents.Length;
+                Stream requestStream = request.GetRequestStream();
+                requestStream.Write(fileContents, 0, fileContents.Length);
+                requestStream.Close();
+                var response = (FtpWebResponse)request.GetResponse();
+                Linfo.Text = response.StatusDescription;
+                response.Close();
+                string sql = "insert into DIRECTOR (DIR_ID, DIR_FECHA, PROP_CODIGO, USU_USERNAME, DIR_DOCUMENTO, DIR_NOMARCHIVO, DIR_TIPO) values(DIRECTORID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "','" + ruta + "', '" + filename + "','" + contentType + "')";
+                Ejecutar("Solicitud realizada correctamente", sql);
+            }
+        }
         Solicitar.Visible = false;
         LBSolicitar.Enabled = false;
         LBSolicitar.ForeColor = System.Drawing.Color.Gray;
     }
+
 
     /*Metodos que manejar la interfaz del subir-consultar- solicitar dir- consultar dir*/
     protected void Subir_propuesta(object sender, EventArgs e)
@@ -212,9 +265,15 @@ public partial class Propuesta : Conexion
         GVinfprof.Visible = false;
         Linfo.Text = "";
         Tbotones2.Visible = false;
+        Tcarta.Visible = false;
         DDLlista.Enabled = true;
         DDLlista.Items.Clear();
-        string sql = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido)from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
+        string sql="";
+        if (RBexterno.Checked){
+            sql= "select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from usuario_rol e, usuario u where u.usu_username = E.Usu_Username and u.USU_ESTADO = 'ACTIVO' and E.Rol_Id = 'EXT'";
+        } else { 
+            sql = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido)from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
+        }
         DDLlista.Items.AddRange(con.cargardatos(sql));
         table = (System.Data.DataTable)(Session["Tabla"]);
         table.Clear();
@@ -518,6 +577,7 @@ public partial class Propuesta : Conexion
         DDLlista.Enabled = false;
         Bconsulta.Visible = false;
         Tbotones2.Visible = true;
+        Tcarta.Visible = true;
         CargarInfoProfesor();
         GVinfprof.Visible = true;
         Blimpiar.Visible = true;
@@ -557,6 +617,7 @@ public partial class Propuesta : Conexion
         string fileName = "", contentype = "", ruta = "";
         WebClient request = new WebClient();
         request.Credentials = new NetworkCredential(list[0], list[1]);
+
         string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
         List<string> prof = con.consulta(sql, 3, 0);
         fileName = prof[0];
@@ -612,6 +673,65 @@ public partial class Propuesta : Conexion
             conn.Close();
         } catch (Exception ex){
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+    }
+
+
+    protected void RBtipodirector_CheckedChanged(object sender, EventArgs e)
+    {
+        Linfo.Text = "";
+        if (RBexterno.Checked) {
+            TSolicitar.Visible = true;
+            Lprof.Text = "Externos:";
+            DDLlista.Items.Clear();
+            string sql = "select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from usuario_rol e, usuario u where u.usu_username = E.Usu_Username and u.USU_ESTADO = 'ACTIVO' and E.Rol_Id = 'EXT'";
+            DDLlista.Items.AddRange(con.cargardatos(sql));
+            Tbotones2.Visible = false;
+            Tcarta.Visible = false;
+            GVinfprof.Visible = false;
+        } else if (RBinterno.Checked) {
+            TSolicitar.Visible = true;
+            Lprof.Text = "Profesores:";
+            DDLlista.Items.Clear();
+            string sql = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido)from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
+            DDLlista.Items.AddRange(con.cargardatos(sql));
+            Tbotones2.Visible = false;
+            Tcarta.Visible = false;
+            GVinfprof.Visible = false;
+        }
+    }
+    protected void DescargarCarta(object sender, EventArgs e)
+    {
+        int id = int.Parse((sender as LinkButton).CommandArgument);
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
+
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+
+        string sql = "select DIR_NOMARCHIVO, DIR_DOCUMENTO, DIR_TIPO FROM DIRECTOR WHERE DIR_ID=" + id + "";
+        List<string> prop = con.consulta(sql, 3, 0);
+        fileName = prop[0];
+        ruta = prop[1];
+        contentype = prop[2];
+        try
+        {
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }
+        catch (WebException a)
+        {
+            Linfo.Text = a.ToString();
         }
     }
 

@@ -45,12 +45,12 @@ public class Conexion : System.Web.UI.Page
     public List<string> FtpConexion()
     {
         List<string> list = new List<string>();
-        string server = "ASUS VX199H";
+        string server = "gr24.daniela@outlook.com";//"ASUS VX199H";
         list.Add(server);
-        string password = "cole1";
+        string password = "GODallisforyou15";//"cole1";
     
         list.Add(password);
-        string url = "ftp://192.168.1.7/";
+        string url = "ftp://127.0.0.1/";
         list.Add(url);
 
         return list;
@@ -60,7 +60,7 @@ public class Conexion : System.Web.UI.Page
     {
         FtpWebRequest ftpReq = (FtpWebRequest)WebRequest.Create(ruta);
         ftpReq.Method = WebRequestMethods.Ftp.MakeDirectory;
-        ftpReq.Credentials = new NetworkCredential("ASUS VX199H", "cole1");
+        ftpReq.Credentials = new NetworkCredential("gr24.daniela@outlook.com", "GODallisforyou15");
         FtpWebResponse ftpResp = (FtpWebResponse)ftpReq.GetResponse();
     }
 
@@ -69,7 +69,7 @@ public class Conexion : System.Web.UI.Page
         bool bExiste = true;
         try {
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create(ruta);
-            request.Credentials = new NetworkCredential("ASUS VX199H", "cole1");
+            request.Credentials = new NetworkCredential("gr24.daniela@outlook.com", "GODallisforyou15");
             request.Method = WebRequestMethods.Ftp.ListDirectory;
             FtpWebResponse respuesta = (FtpWebResponse)request.GetResponse();
         } catch (WebException ex) {

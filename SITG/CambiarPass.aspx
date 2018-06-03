@@ -2,13 +2,12 @@
 
 <asp:Content ID="CambiarPass" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Configuración - Cambiar Contraseña</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Configuración - Cambiar Contraseña</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPcambiarpass" runat="server">
                 <ContentTemplate>
                     <div class="container-fluid">  
-                        <asp:Label ID="Ltitulo" runat="server" ForeColor="Black" Font-Bold="True" class="text-justify" Text="Cambiar Contraseña"></asp:Label>                    
-                       
+                      
                          <div id="Actualizar" runat="server" visible="true" class="row">
                             <asp:Table ID="Tcambiarpass" runat="server" HorizontalAlign="Center">
                                 <asp:TableRow>
@@ -27,8 +26,8 @@
                      
                             <asp:Table ID="TBotones" runat="server" HorizontalAlign="Center">
                                 <asp:TableRow>
-                                    <asp:TableCell><asp:Button ID="LBacpetar" runat="server" OnClick="Aceptar" Text="Guardar Cambios" class="btn btn-default"/></asp:TableCell>
-                                    <asp:TableCell><asp:Button ID="LBcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-default" /></asp:TableCell>
+                                    <asp:TableCell><asp:Button ID="LBacpetar" runat="server" OnClick="Aceptar" Text="Guardar Cambios" class="btn btn-success" ForeColor="White" /></asp:TableCell>
+                                    <asp:TableCell><asp:Button ID="LBcancelar" runat="server" OnClick="Limpiar" Text="Cancelar" class="btn btn-danger" ForeColor="White"/></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>
                         </div>

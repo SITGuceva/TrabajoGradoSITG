@@ -15,7 +15,6 @@
      <link href="~/Content/Cards3.css" rel="stylesheet" type="text/css" />
      <link href="~/Content/Cards4.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Carousel.css" rel="stylesheet" type="text/css" />
-
 </head>
 
 <body onkeypress="return pulsar(event)">
@@ -51,7 +50,7 @@
                     <div class="navbar-collapse collapse">          
                         <ul class="nav navbar-nav navbar-right" id="logged" runat="server" visible="false">                          
                              <li style="padding-top:20px;"> <asp:Label ID="Lwelcome" runat="server" CssClass="label label-success" Text="BIENVENIDO "></asp:Label></li>
-                            <li style="padding-top:10px;"><a runat="server"   onserverclick="Evento_salir">Salir</a></li>                                                       
+                            <li style="padding-top:10px;"><a runat="server" onserverclick="Evento_salir" style="color:#ffffff; font-weight: bold">SALIR</a></li>                                                       
                        </ul>                                        
                     </div>
                 </div>

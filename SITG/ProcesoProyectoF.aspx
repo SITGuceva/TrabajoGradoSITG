@@ -2,7 +2,7 @@
 
 <asp:Content ID="ProcesoPF" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
-        <div class="panel-heading">Gestionar Documentos - Proceso Proyecto Final</div>
+        <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Documentos - Proceso Proyecto Final</div>
         <div class="panel-body">
             <asp:UpdatePanel runat="server" ID="UPprocesopf">
                 <ContentTemplate>
@@ -12,19 +12,19 @@
                             <asp:GridView ID="GVproyfinalp" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"  OnPageIndexChanging="GVproyfinalp_PageIndexChanging" AutoGenerateColumns="False"   CssClass="table table-bordered bs-table" OnRowDataBound="GVproyfinalp_RowDataBound" PageSize="8" OnRowCommand="GVproyfinalp_RowCommand">
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
-                                <FooterStyle BackColor="#507CD1" Font-Bold="True" ForeColor="White" />
-                                <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
-                                <RowStyle BackColor="White" />
-                                <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                                <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                                <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
+                                <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
+                                <RowStyle BackColor="white" />
+                                <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                                <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                                 <EditRowStyle BackColor="#ffffcc" />
-                                <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
+                                <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />   
                                 <EmptyDataTemplate> ¡No tiene proyectos finales pendientes por revisar!   </EmptyDataTemplate>
                                 <Columns>
-                                    <asp:BoundField DataField="PPRO_CODIGO" HeaderText="CODIGO" />
-                                    <asp:BoundField DataField="PF_TITULO" HeaderText="TÍTULO" />
-                                    <asp:BoundField DataField="PF_FECHA" HeaderText="FECHA DE ENTREGA" />
-                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="REVISAR PROYECTO FINAL">
+                                    <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
+                                    <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
+                                    <asp:BoundField DataField="PF_FECHA" HeaderText="Fecha de Entrega" />
+                                    <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Revisar">
                                         <ItemTemplate>
                                             <asp:Button ID="BTrevisar" runat="server" Text="REVISAR" class="btn btn-default" AutoPostBack="true" CommandName="RevisaPF" CommandArgument="<%# ((GridViewRow) Container).RowIndex %>" />
                                         </ItemTemplate>
@@ -35,10 +35,10 @@
 
                         <!--RESULTADO DE UN PROYECTO FINAL PARA REVISAR -->
                         <div id="InformacionP" runat="server" visible="false" class="row">
-                            <asp:Label ID="Lcodigo" runat="server" Text="Codigo:" ForeColor="Gray" Font-Bold="True"></asp:Label>
+                            <asp:Label ID="Lcodigo" runat="server" Text="Código:" ForeColor="Gray" Font-Bold="True"></asp:Label>
                             <asp:Label ID="CodigoP" runat="server" Text="" ForeColor="Black" Font-Bold="True"></asp:Label>
                             <br/>
-                            <asp:Label ID="Ltitulo" runat="server" Text="Titulo:" ForeColor="Gray" Font-Bold="True"></asp:Label>
+                            <asp:Label ID="Ltitulo" runat="server" Text="Título:" ForeColor="Gray" Font-Bold="True"></asp:Label>
                             <asp:Label ID="TituloP" runat="server" Text="" ForeColor="Black" Font-Bold="True"></asp:Label>
                             <br/>
                             <asp:Label ID="Ldocumento" runat="server" Text="Documento:" ForeColor="Gray" Font-Bold="True"></asp:Label>
@@ -47,7 +47,7 @@
 
                         <div id="MostrarDDLestadoP" runat="server" visible="false" style="text-align: center;">
                             <asp:DropDownList ID="DDLestadoP" class="btn btn-secondary btn-lg dropdown-toggle" runat="server">
-                                <asp:ListItem Value="Calificar Proyecto" Text="Calificar Anteproyecto"></asp:ListItem>
+                                <asp:ListItem Value="Calificar Proyecto" Text="Calificar"></asp:ListItem>
                                 <asp:ListItem Value="APROBADO" Text="Aprobar"></asp:ListItem>
                                 <asp:ListItem Value="RECHAZADO" Text="Rechazar"></asp:ListItem>
                             </asp:DropDownList>
@@ -59,7 +59,7 @@
                             <asp:Table ID="Tobservaciones" runat="server" HorizontalAlign="center">
                                 <asp:TableRow>
                                     <asp:TableCell><TextArea id="TBdescripcion" rows="2" Enabled="true" Width="900" runat="server" CssClass="form-control"></TextArea></asp:TableCell>
-                                    <asp:TableCell><asp:Button ID="BTagregar" Enabled="true" OnClick="Agregar_observacion" runat="server" Text="Agregar observacion" CssClass="form-control"></asp:Button></asp:TableCell>
+                                    <asp:TableCell><asp:Button ID="BTagregar" Enabled="true" OnClick="Agregar_observacion" runat="server" Text="AGREGAR" class="btn btn-default"></asp:Button></asp:TableCell>
                                 </asp:TableRow>
                             </asp:Table>
                         </div>
@@ -70,21 +70,21 @@
                                 <AlternatingRowStyle BackColor="White" />
                                 <EditRowStyle BackColor="#2461BF" />
                                 <FooterStyle BackColor="white" Font-Bold="True" ForeColor="White" />
-                                <PagerStyle BackColor="Gray" ForeColor="White" HorizontalAlign="Center" />
+                                <PagerStyle BackColor="#1C2833" ForeColor="White" HorizontalAlign="Center" />
                                 <RowStyle BackColor="white" />
-                                <SelectedRowStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
-                                <HeaderStyle BackColor="Gray" Font-Bold="True" ForeColor="White" />
+                                <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                                <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
                                 <EditRowStyle BackColor="#ffffcc" />
-                                <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />
-                                <EmptyDataTemplate>¡El proyecto final aun no tiene observaciones! </EmptyDataTemplate>
+                                <EmptyDataRowStyle ForeColor="Red" CssClass="table table-bordered" />   
+                                <EmptyDataTemplate>¡El proyecto final aún no tiene observaciones! </EmptyDataTemplate>
                                 <Columns>
-                                    <asp:BoundField DataField="PFOBS_CODIGO" HeaderText="Codigo" HeaderStyle-HorizontalAlign="Center" />
+                                    <asp:BoundField DataField="PFOBS_CODIGO" HeaderText="Código" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:BoundField DataField="PFOBS_DESCRIPCION" HeaderText="Descripción" HeaderStyle-HorizontalAlign="Center" />
                                     <asp:TemplateField HeaderText="Modificar">
                                         <ItemTemplate><asp:Button ID="btn_Edit" runat="server" Text="Modificar" class="btn btn-default" CommandName="Edit" /> </ItemTemplate>
                                         <EditItemTemplate>
-                                            <asp:Button ID="btn_Update" runat="server" Text="Actualizar" class="btn btn-default" CommandName="Update" />
-                                            <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" class="btn btn-default" CommandName="Cancel" />
+                                            <asp:Button ID="btn_Update" runat="server" Text="Actualizar" class="btn btn-success"  ForeColor="White" CommandName="Update" />
+                                            <asp:Button ID="btn_Cancel" runat="server" Text="Cancelar" class="btn btn-danger" ForeColor="White" CommandName="Cancel" />
                                         </EditItemTemplate>
                                     </asp:TemplateField>
                                     <asp:CommandField ShowDeleteButton="true" HeaderText="Eliminar" ShowHeader="true"></asp:CommandField>
@@ -94,8 +94,8 @@
 
                         <div id="Terminar" runat="server" visible="false" style="text-align: center;" class="row">
                             <br/>
-                            <asp:Button ID="BTterminar" OnClick="terminar" runat="server" Text="Terminar" class="btn btn-default" />
-                            <asp:Button ID="BTcancelar" OnClick="cancelar" runat="server" Text="Cancelar" class="btn btn-default" />
+                            <asp:Button ID="BTterminar" OnClick="terminar" runat="server" Text="Terminar" class="btn btn-success" ForeColor="White" />
+                            <asp:Button ID="BTcancelar" OnClick="cancelar" runat="server" Text="Cancelar" class="btn btn-danger" ForeColor="White"/>
                         </div>
 
                         <asp:ImageButton id="IBregresar" OnClick="regresar" runat="server" Visible="false" ImageUrl="/Images/flecha.png" ToolTip="Regresar" ImageAlign="Baseline"></asp:ImageButton>

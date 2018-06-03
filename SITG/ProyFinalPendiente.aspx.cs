@@ -74,7 +74,7 @@ public partial class ProyFinalPendiente : Conexion
         OracleCommand cmd = null;
         if (conn != null)
         {
-            string sql = "select * from jurado where usu_username='"+evaluador+"'";
+            string sql = "select * from jurado where usu_username='"+evaluador+"' and ppro_codigo='"+Metodo.Value+"'";
 
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;

@@ -63,6 +63,7 @@ public partial class Programa : System.Web.UI.Page
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Los campos son obligatorios";
             }else{
+
                 sql = "insert into PROGRAMA (PROG_CODIGO,PROG_NOMBRE,FAC_CODIGO,PROG_SEMESTRE) VALUES(programaid.nextval, '" + nombre+ "', '" + DDLfacultad.Items[DDLfacultad.SelectedIndex].Value.ToString() + "', '" + TBsemestre.Text + "')";
                 texto = "1";
                 Ejecutar(texto, sql);
