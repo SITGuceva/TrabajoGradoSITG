@@ -56,29 +56,29 @@
                                     <ul class="thumbnails">
                                         <li class="col-sm-4">
                                                 <section id="skills" style="position: relative; top: auto;">
-                                                <h2>PROPUESTAS </h2>
+                                                <h2 style="color:black;">PROPUESTAS </h2>
                                                 <progress value="<%= cantpropaprobcom %>" max="<%= sumapropuesta %>" style="background-color: black;"></progress><span>Aprobados <%=  cantpropaprobcom %></span>
                                                 <progress value="<%= cantproprechacom %>" max="<%= sumapropuesta %>" style="background-color: black;"></progress><span>Rechazados <%= cantproprechacom %></span>
                                                 <progress value="<%= cantproppencom %>" max="<%= sumapropuesta %>" style="background-color: black;"></progress><span>Pendiente <%=  cantproppencom %></span>
-                                                 <h3>Total: <%= sumapropuesta %></h3>
+                                                 <h3 style="color:black;">Total: <%= sumapropuesta %></h3>
                                                 </section>
                                         </li>
                                         <li class="col-sm-4">
                                                <section id="skills" style="position: relative; top: auto;">
-                                                <h2>ANTEPROYECTOS </h2>
+                                                <h2 style="color:black;">ANTEPROYECTOS </h2>
                                                 <progress value="<%= cantanteaprobcom %>" max="<%= sumaanteproyecto %>" style="background-color: black;"></progress><span>Aprobados <%=  cantanteaprobcom %></span>
                                                 <progress value="<%= cantanterechacom %>" max="<%= sumaanteproyecto %>" style="background-color: black;"></progress><span>Rechazados <%= cantanterechacom %></span>
                                                 <progress value="<%= cantantepencom %>" max="<%= sumaanteproyecto %>" style="background-color: black;"></progress><span>Pendiente <%=  cantantepencom %></span>
-                                                <h3>Total: <%= sumaanteproyecto %></h3>
+                                                <h3 style="color:black;">Total: <%= sumaanteproyecto %></h3>
                                               </section>
                                         </li>
                                         <li class="col-sm-4">
                                              <section id="skills" style="position: relative; top: auto;">
-                                                <h2>PROYECTO FINAL</h2>
+                                                <h2 style="color:black;">PROYECTO FINAL</h2>
                                                 <progress value="<%= finalaprobcom %>" max="<%= sumaproyectofinal %>" style="background-color: black;"></progress><span>Aprobados <%=  finalaprobcom %></span>
                                                 <progress value="<%= finalrechacom %>" max="<%= sumaproyectofinal %>" style="background-color: black;"></progress><span>Rechazados <%= finalrechacom %></span>
                                                 <progress value="<%= finalpencom %>" max="<%= sumaproyectofinal %>" style="background-color: black;"></progress><span>Pendiente <%=  finalpencom %></span>
-                                                <h3>Total: <%= sumaproyectofinal %></h3>
+                                                <h3 style="color:black;">Total: <%= sumaproyectofinal %></h3>
                                              </section>
                                         </li>
                                     </ul>
@@ -747,7 +747,7 @@
                                     <ul class="thumbnails">
                                         <li class="col-sm-4">
                                             <section>
-                                                <h3 style="position: relative; left: 8%;">PROPUESTAS</h3>
+                                                <h3 style="position: relative; left: 8%; color:black;">PROPUESTAS</h3>
                                                 <div class="pieID pie" id="propuesta">
                                                 </div>
                                                 <ul class="pieID legend" id="propuesta2" style="position: relative; left: 2%; width: 200px;">
@@ -768,7 +768,7 @@
                                         </li>
                                         <li class="col-sm-4">
                                             <section>
-                                                <h3>ANTEPROYECTOS</h3>
+                                                <h3 style="color:black;">ANTEPROYECTOS</h3>
                                                 <div class="pieID pie" id="anteproyecto" style="position: relative; left: 4%;">
                                                 </div>
                                                 <ul class="pieID legend" id="anteproyecto2" style="position: relative; left: 4%; width: 200px;">
@@ -789,7 +789,7 @@
                                         </li>
                                         <li class="col-sm-4">
                                             <section>
-                                                <h3>PROYECTOS FINALES</h3>
+                                                <h3 style="color:black;">PROYECTOS FINALES</h3>
                                                 <div class="pieID pie" id="proyectofinal" style="position: relative; left: 4%;">
                                                 </div>
                                                 <ul class="pieID legend" id="proyectofinal2" style="position: relative; left: 4%; width: 200px;">
@@ -832,11 +832,11 @@
                                         </li>
                                          <li class="col-sm-4">
                                               <section id="skills" style="position: relative; top: auto;">
-                                                <h2>REUNIONES EN EL MES ACTUAL POR CADA COMITE </h2>
+                                                <h2 style="color:black;">REUNIONES EN EL MES ACTUAL POR CADA COMITE </h2>
                                                 <progress value="<%= reunionescontaduria %>" max="<%= sumareunion %>" style="background-color: black;"></progress><span>Contaduría <%=  reunionescontaduria %></span>
                                                 <progress value="<%= reunionesadme %>" max="<%= sumareunion %>" style="background-color: black;"></progress><span>Administración de empresas <%= reunionesadme %></span>
                                                 <progress value="<%= reunionescomer %>" max="<%= sumareunion %>" style="background-color: black;"></progress><span>Comercio internacional <%=  reunionescomer %></span>
-                                                <h3>Total: <%= sumareunion %></h3>
+                                                <h3 style="color:black;">Total: <%= sumareunion %></h3>
                                               </section>
                                         </li>
                                     </ul>
