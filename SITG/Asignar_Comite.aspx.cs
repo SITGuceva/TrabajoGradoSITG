@@ -1,6 +1,7 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
 using System.Data;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Asignar_Comite : Conexion
@@ -76,6 +77,7 @@ public partial class Asignar_Comite : Conexion
 
         Roles.Visible = false;
         RevisarExiste();
+
     }
 
     /*Valida si el usuario ya esta en  la tabla usuario_rol*/
@@ -133,7 +135,7 @@ public partial class Asignar_Comite : Conexion
                         
                     }else{
                         ResultadoComite.Visible = false;
-                       
+                        Roles.Visible = false;
                     }
                 }
                 GVusuario.DataBind();

@@ -56,8 +56,7 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select DISTINCT  P.Ppro_Codigo, P.Pf_Titulo, P.Pf_Fecha, P.Pf_Estado, P.Pf_Aprobacion from proyecto_final p, estudiante e, profesor d , jurado j " +
-                    "WHERE J.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = P.Ppro_Codigo and P.Pf_Estado = 'PENDIENTE'and P.Pf_Aprobacion = 'APROBADO' and D.Usu_Username = J.Usu_Username and J.Ppro_Codigo = P.Ppro_Codigo and J.Jur_Revisado = 'PENDIENTE'";
+                string sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo, P.Pf_Fecha, P.Pf_Estado, P.Pf_Aprobacion from proyecto_final p, jurado j WHERE J.Usu_Username = '" + Session["id"] + "' and J.Ppro_Codigo = P.Ppro_Codigo and P.Pf_Estado = 'PENDIENTE' and P.Pf_Aprobacion = 'APROBADO' and J.Jur_Revisado = 'PENDIENTE'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
@@ -130,11 +129,10 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe calificar el anteproyecto.";
         } else {
-            guardarCriterios(); 
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true); 
         }
     }
-    private void guardarCriterios()
-    {
+    protected void btnDummy_Click(object sender, EventArgs e){
         foreach (GridViewRow row in GVcriterios.Rows){
             CheckBox check = row.FindControl("CBcumplio") as CheckBox;
             if (!check.Checked){
@@ -221,5 +219,4 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
         CargarCriterios();
     }
     protected void GVcriterios_RowDataBound(object sender, GridViewRowEventArgs e){}
-   
 }

@@ -100,11 +100,11 @@ public partial class DocumentosCom : System.Web.UI.Page
             OracleCommand cmd = null;
             if (conn != null) {
                 if (crit.Equals(2)){
-                      sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo,TO_CHAR( P.Pf_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director,  P.Pf_Aprobacion from proyecto_final p, estudiante e, director s, usuario u, profesor d" +
+                      sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo,TO_CHAR( P.Pf_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director,  InitCap(P.Pf_Aprobacion) as aprobacion from proyecto_final p, estudiante e, director s, usuario u, profesor d" +
                             " where P.Ppro_Codigo= e.PROP_CODIGO and P.Pf_Estado ='" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() +"' and u.USU_USERNAME = s.USU_USERNAME  and s.Prop_Codigo= P.Ppro_Codigo and d.com_codigo=e.prog_codigo";
                 }
                 else if (crit.Equals(1)) {
-                    sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo,TO_CHAR( P.Pf_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '),u.usu_apellido) as director,  P.Pf_Aprobacion from Propuesta n, Tema t, Lin_investigacion l, proyecto_final p, estudiante e, director s, usuario u " +
+                    sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo,TO_CHAR( P.Pf_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '),u.usu_apellido) as director,  InitCap(P.Pf_Aprobacion) as aprobacion from Propuesta n, Tema t, Lin_investigacion l, proyecto_final p, estudiante e, director s, usuario u " +
                         "Where  P.Ppro_Codigo= e.PROP_CODIGO and P.Pf_Estado = '" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() + "' and u.USU_USERNAME = s.USU_USERNAME  and s.Prop_Codigo= P.Ppro_Codigo and T.Linv_Codigo = L.Linv_Codigo And T.Tem_Codigo = n.Tem_Codigo  And L.Linv_Codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value + "'";
                 }
                 cmd = new OracleCommand(sql, conn);
@@ -146,10 +146,10 @@ public partial class DocumentosCom : System.Web.UI.Page
             OracleCommand cmd = null;
             if (conn != null){
                 if (crit.Equals(2)){
-                   sql = "select Distinct A.Apro_Codigo, A.Anp_Nombre,TO_CHAR( A.Anp_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, A.Anp_Aprobacion, CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor from anteproyecto a, estudiante e, director s, usuario u, evaluador r, usuario o, profesor d " +
+                   sql = "select Distinct A.Apro_Codigo, A.Anp_Nombre,TO_CHAR( A.Anp_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, InitCap(A.Anp_Aprobacion) as aprobacion, CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor from anteproyecto a, estudiante e, director s, usuario u, evaluador r, usuario o, profesor d " +
                          " where A.Apro_Codigo = e.PROP_CODIGO and A.Anp_Estado = '" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() + "' and u.USU_USERNAME = s.USU_USERNAME and s.Prop_Codigo = a.Apro_Codigo and r.Usu_Username = o.Usu_Username and r.Apro_Codigo = e.Prop_Codigo and d.com_codigo = e.prog_codigo";
                 } else if (crit.Equals(1)){
-                   sql = "Select Distinct A.Apro_Codigo, A.Anp_Nombre,TO_CHAR( A.Anp_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, A.Anp_Aprobacion, CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor From Propuesta P, Estudiante E, lin_investigacion L, director S, Usuario U,evaluador r, usuario o , Tema t, anteproyecto a " +
+                   sql = "Select Distinct A.Apro_Codigo, A.Anp_Nombre,TO_CHAR( A.Anp_Fecha, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, InitCap(A.Anp_Aprobacion) as aprobacion, CONCAT(CONCAT(o.usu_nombre, ' '), o.usu_apellido) as revisor From Propuesta P, Estudiante E, lin_investigacion L, director S, Usuario U,evaluador r, usuario o , Tema t, anteproyecto a " +
                         "Where T.Linv_Codigo = L.Linv_Codigo And T.Tem_Codigo = P.Tem_Codigo  And L.Linv_Codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value + "' and A.Apro_Codigo= e.PROP_CODIGO and A.Anp_Estado = '" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() + "' and u.USU_USERNAME = s.USU_USERNAME  and s.Prop_Codigo= a.Apro_Codigo and r.Usu_Username = o.Usu_Username and r.Apro_Codigo = e.Prop_Codigo";
                 }
                 cmd = new OracleCommand(sql, conn);
@@ -191,11 +191,11 @@ public partial class DocumentosCom : System.Web.UI.Page
             OracleCommand cmd = null;
             if (conn != null) {
                 if (crit.Equals(2)){
-                    sql = "select Distinct p.PROP_CODIGO,p.PROP_TITULO, l.LINV_NOMBRE, t.TEM_NOMBRE,TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_estado as Estado from propuesta p, estudiante e, lin_investigacion l, tema t, director s, usuario u, profesor d" +
+                    sql = "select Distinct p.PROP_CODIGO,p.PROP_TITULO, l.LINV_NOMBRE, t.TEM_NOMBRE,TO_CHAR( p.PROP_FECHA, 'dd/mm/yyyy') as FECHA ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, InitCap(s.dir_estado) as Estado from propuesta p, estudiante e, lin_investigacion l, tema t, director s, usuario u, profesor d" +
                         " where t.LINV_CODIGO = l.LINV_CODIGO and t.TEM_CODIGO = p.TEM_CODIGO and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = '" + DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() + "'and u.USU_USERNAME = s.USU_USERNAME and s.PROP_CODIGO = p.PROP_CODIGO and d.com_codigo = e.prog_codigo";
                 }
                 else if (crit.Equals(1)){
-                   sql = "Select Distinct P.Prop_Codigo,P.Prop_Titulo, L.Linv_Nombre, T.Tem_Nombre,To_Char( P.Prop_Fecha, 'dd/mm/yyyy') As Fecha ,Concat(Concat(U.Usu_Nombre, ' '), U.Usu_Apellido) As Director, S.dir_Estado As Estado From Propuesta P, Estudiante E, Lin_investigacion L, Tema T, director S, Usuario U Where T.Linv_Codigo = L.Linv_Codigo " +
+                   sql = "Select Distinct P.Prop_Codigo,P.Prop_Titulo, L.Linv_Nombre, T.Tem_Nombre,To_Char( P.Prop_Fecha, 'dd/mm/yyyy') As Fecha ,Concat(Concat(U.Usu_Nombre, ' '), U.Usu_Apellido) As Director, InitCap(S.dir_Estado) As Estado From Propuesta P, Estudiante E, Lin_investigacion L, Tema T, director S, Usuario U Where T.Linv_Codigo = L.Linv_Codigo " +
                         "And T.Tem_Codigo = P.Tem_Codigo And P.Prop_Codigo = E.Prop_Codigo And L.Linv_Codigo = '"+ DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value + "' And P.Prop_Estado = '"+ DDLestado.Items[DDLestado.SelectedIndex].Text.ToUpper() + "' And U.Usu_Username = S.Usu_Username And S.Prop_Codigo = P.Prop_Codigo";
                 }
                 cmd = new OracleCommand(sql, conn);

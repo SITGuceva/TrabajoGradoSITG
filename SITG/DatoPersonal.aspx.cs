@@ -32,25 +32,33 @@ public partial class DatoPersonal : Conexion
     {
         string rol = Session["rol"].ToString().Trim();
         String[] ciclo = rol.Split(' ');
-        foreach (var cadena in ciclo)
-        {
-            if (cadena.Equals("DOC")){
+        foreach (var cadena in ciclo){
+            if (cadena.Equals("DOC") || cadena.Equals("EXT")){
                 HVdoc.Visible = true;
+                RolP.Value = cadena;
                 BuscarHV();
                 break;
-            }else { HVdoc.Visible = false;
+            }else {
+                RolP.Value = "";
+                HVdoc.Visible = false;
                 Lhv.Visible = false;
                 LBhv.Visible = false;
             }
         }
     }
-    private void BuscarHV()
-    {
+
+    private void BuscarHV(){
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         if (conn != null){
-            string sql = "select Prof_Documento from profesor where Usu_Username='" + Session["id"] + "'";
+            string sql = "";
 
+            if (RolP.Value.Equals("DOC")) {
+               sql= "select Prof_Documento from profesor where Usu_Username='" + Session["id"] + "'";
+            } else {
+               sql= "select ext_documento from externo where usu_username='" + Session["id"] + "'";
+            }
+             
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
             OracleDataReader drc1 = cmd.ExecuteReader();
@@ -119,7 +127,16 @@ public partial class DatoPersonal : Conexion
     }
     private void EliminarHV(string usuario, string pass){
         string ruta = "";
-        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO FROM PROFESOR WHERE USU_USERNAME = '" + Session["id"] + "'";
+        string sql = "", sql2="";
+
+        if (RolP.Value.Equals("DOC")) {
+            sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO FROM PROFESOR WHERE USU_USERNAME = '" + Session["id"] + "'";
+            sql2 = "update profesor set prof_nomarchivo= null,Prof_Documento= null, Prof_Tipo=null where usu_username='" + Session["id"] + "'";
+        } else {
+            sql = "select EXT_NOMARCHIVO, EXT_DOCUMENTO FROM EXTERNO WHERE USU_USERNAME = '" + Session["id"] + "'";
+            sql2 = "update externo set ext_nomarchivo= null, ext_Documento= null, ext_Tipo=null where usu_username='" + Session["id"] + "'";
+        }
+
         List<string> contenido = con.consulta(sql, 2, 0);
         ruta = contenido[1] + contenido[0];
 
@@ -128,8 +145,7 @@ public partial class DatoPersonal : Conexion
         request.Credentials = new NetworkCredential(usuario, pass);
         using (FtpWebResponse response = (FtpWebResponse)request.GetResponse()) { }
 
-        sql = "update profesor set prof_nomarchivo= null,Prof_Documento= null, Prof_Tipo=null where usu_username='" + Session["id"] + "'";
-        Ejecutar("", sql);
+        Ejecutar("", sql2);
     }
     private void Guardar(string ruta, string usuario, string pass){
         string contentType = "";
@@ -151,7 +167,13 @@ public partial class DatoPersonal : Conexion
                 var response = (FtpWebResponse)request.GetResponse();
                 Linfo.Text = response.StatusDescription;
                 response.Close();
-                string query = "update PROFESOR set prof_documento='"+ruta+"', prof_nomarchivo='"+filename+"',prof_tipo='"+contentType+"' where usu_username='" + Session["id"] + "'";
+
+                string query = "";
+                if (RolP.Value.Equals("DOC")){
+                    query = "update PROFESOR set prof_documento='" + ruta + "', prof_nomarchivo='" + filename + "',prof_tipo='" + contentType + "' where usu_username='" + Session["id"] + "'";
+                } else {
+                    query = "update EXTERNO set ext_documento='" + ruta + "', ext_nomarchivo='" + filename + "',ext_tipo='" + contentType + "' where usu_username='" + Session["id"] + "'";
+                }
                 Ejecutar("", query);
             }
         }
@@ -189,7 +211,14 @@ public partial class DatoPersonal : Conexion
         string fileName = "", contentype = "", ruta = "";
         WebClient request = new WebClient();
         request.Credentials = new NetworkCredential(list[0], list[1]);
-        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + Session["id"] + "'";
+
+        string sql = "";
+        if (RolP.Value.Equals("DOC")){
+            sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + Session["id"] + "'";
+        }else{
+            sql = "select EXT_NOMARCHIVO, EXT_DOCUMENTO, EXT_TIPO FROM EXTERNO WHERE USU_USERNAME='" + Session["id"] + "'";
+        }
+
         List<string> prof = con.consulta(sql, 3, 0);
         fileName = prof[0];
         ruta = prof[1];

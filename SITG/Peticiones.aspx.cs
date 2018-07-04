@@ -24,6 +24,7 @@ public partial class PeticionDir : Conexion
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVinfprof);
+        scriptManager.RegisterPostBackControl(this.GVpeticion);
     }
 
     /*Metodos que manejan la parte del fronted*/
@@ -37,6 +38,7 @@ public partial class PeticionDir : Conexion
         Tipo.Value = "";
         IBregresar.Visible = false;
         Tinfprof.Visible = false;
+        CalificarPdir.Visible = false;
     }
     protected void LBPeticion_Est_Click(object sender, EventArgs e)
     {
@@ -47,9 +49,44 @@ public partial class PeticionDir : Conexion
         Tipo.Value = "";
         IBregresar.Visible = false;
         Tinfprof.Visible = false;
+        CalificarPdir.Visible = false;
     }
-   
+
     /*Metodos que se utilizan para consultar las peticiones de director pendientes*/
+    protected void DescargarCarta(object sender, EventArgs e)
+    {
+        int id = int.Parse((sender as LinkButton).CommandArgument);
+        List<string> list = con.FtpConexion();
+        string fileName = "", contentype = "", ruta = "";
+
+        WebClient request = new WebClient();
+        request.Credentials = new NetworkCredential(list[0], list[1]);
+
+        string sql = "select DIR_NOMARCHIVO, DIR_DOCUMENTO, DIR_TIPO FROM DIRECTOR WHERE DIR_ID=" + id + "";
+        List<string> prop = con.consulta(sql, 3, 0);
+        fileName = prop[0];
+        ruta = prop[1];
+        contentype = prop[2];
+        try
+        {
+            byte[] bytes = request.DownloadData(ruta + fileName);
+            string fileString = System.Text.Encoding.UTF8.GetString(bytes);
+            Console.WriteLine(fileString);
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentype;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }
+        catch (WebException a)
+        {
+            Linfo.Text = a.ToString();
+        }
+    }
     protected void GVpeticion_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {
         GVpeticion.PageIndex = e.NewPageIndex;
@@ -64,7 +101,7 @@ public partial class PeticionDir : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT DISTINCT S.DIR_ID, S.DIR_FECHA, S.DIR_ESTADO, p.PROP_TITULO, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_observacion,u.usu_username  FROM DIRECTOR S, USUARIO U, estudiante e, propuesta p, profesor d WHERE p.PROP_CODIGO = S.PROP_CODIGO  and S.DIR_ESTADO = 'PENDIENTE' AND U.USU_USERNAME = S.USU_USERNAME and S.PROP_CODIGO = e.PROP_CODIGO  and e.PROG_CODIGO = d.COM_CODIGO "; 
+                sql = "SELECT DISTINCT S.DIR_ID, S.DIR_FECHA, InitCap(S.DIR_ESTADO) as Estado, p.PROP_TITULO, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_observacion,u.usu_username, InitCap(S.DIR_EXTERNO) as Externo  FROM DIRECTOR S, USUARIO U, estudiante e, propuesta p, profesor d WHERE p.PROP_CODIGO = S.PROP_CODIGO  and S.DIR_ESTADO = 'PENDIENTE' AND U.USU_USERNAME = S.USU_USERNAME and S.PROP_CODIGO = e.PROP_CODIGO  and e.PROG_CODIGO = d.COM_CODIGO "; 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -91,7 +128,7 @@ public partial class PeticionDir : Conexion
             Tinfprof.Visible = true;
             TPeticiones.Visible = false;
             CalificarPdir.Visible = false;
-            Linfo.Text = "";
+            Linfo.Text = "";   
         }
         if (e.CommandName == "Calificar"){
             CalificarPdir.Visible = true;
@@ -106,23 +143,27 @@ public partial class PeticionDir : Conexion
         if (DDLestado.SelectedIndex.Equals(0)){
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe elegir un estado a la petición.";
-        }else { 
-            string estado = DDLestado.Items[DDLestado.SelectedIndex].Value.ToString();
-            if (estado.Equals("APROBADO")){
-                ExisteRol(Tipo.Value);
-            }
-            string sql = "";
-            if(string.IsNullOrEmpty(TAobs.Value) == true){
-                 sql = "update DIRECTOR set DIR_ESTADO='" + estado + "' where DIR_ID='" + Tipo.Value + "'";
-            }else{
-                 sql = "update DIRECTOR set DIR_ESTADO='" + estado + "', DIR_OBSERVACION='" + TAobs.Value + "' where DIR_ID='" + Tipo.Value + "'";
-            }
-           
-            Ejecutar("La solicitud se ha revisado correctamente", sql);
-            IBregresar.Visible = true;
-            CalificarPdir.Visible = false;
-            Tipo.Value = "";
+        }else {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true);
         }
+    }
+    protected void btnDummy_Click(object sender, EventArgs e)
+    {
+        string estado = DDLestado.Items[DDLestado.SelectedIndex].Value.ToString();
+        if (estado.Equals("APROBADO")) {
+            ExisteRol(Tipo.Value);
+        }
+        string sql = "";
+        if (string.IsNullOrEmpty(TAobs.Value) == true){
+            sql = "update DIRECTOR set DIR_ESTADO='" + estado + "' where DIR_ID='" + Tipo.Value + "'";
+        }else {
+            sql = "update DIRECTOR set DIR_ESTADO='" + estado + "', DIR_OBSERVACION='" + TAobs.Value + "' where DIR_ID='" + Tipo.Value + "'";
+        }
+
+        Ejecutar("La solicitud se ha revisado correctamente", sql);
+        IBregresar.Visible = true;
+        CalificarPdir.Visible = false;
+        Tipo.Value = "";
     }
     private void ExisteRol(string id)
     {
@@ -197,11 +238,19 @@ public partial class PeticionDir : Conexion
         string fileName = "", contentype = "", ruta = "";
         WebClient request = new WebClient();
         request.Credentials = new NetworkCredential(list[0], list[1]);
-        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
+
+        List<string> usu = con.consulta("select usu_username from externo where usu_username='"+ id + "'",1,1);
+        string sql = "";
+        if (usu.Count>0) {
+            sql = "select EXT_NOMARCHIVO, EXT_DOCUMENTO, EXT_TIPO FROM EXTERNO WHERE USU_USERNAME='" + id + "' and ext_documento is not null";
+        } else {
+            sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "' and prof_documento is not null";         
+        }
+
         List<string> prof = con.consulta(sql, 3, 0);
         if (prof.Count.Equals(0)){
             Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "El profesor no ha subido la hoja de vida.";
+            Linfo.Text = "El director no ha subido la hoja de vida.";
         } else { 
             fileName = prof[0];
             ruta = prof[1];

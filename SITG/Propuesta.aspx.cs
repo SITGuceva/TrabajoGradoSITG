@@ -138,34 +138,28 @@ public partial class Propuesta : Conexion
     /*Evento que envia la solicitud*/
     protected void SolicitarDir(object sender, EventArgs e)
     {
-        if (FUdirector.HasFile)
-        {
+        if (FUdirector.HasFile)  {
             string fileExt = System.IO.Path.GetExtension(FUdirector.FileName);
-            if (fileExt == ".pdf" || fileExt == ".doc" || fileExt == ".docx" )
-            {
+            if (fileExt == ".pdf" || fileExt == ".doc" || fileExt == ".docx" ){
                 List<string> list = con.FtpConexion();
                 string ruta = list[2] + "DIRECTOR/";
                 bool existe = con.ExisteDirectorio(ruta);
                 if (!existe)
                 {
                     con.crearcarpeta(ruta);
-                    Guardar(ruta, list[0], list[1]);
+                    GuardarDir(ruta, list[0], list[1]);
                 }
-                else { Guardar(ruta, list[0], list[1]); }
-            }
-            else
-            {
+                else { GuardarDir(ruta, list[0], list[1]); }
+            }else {
                 Linfo.ForeColor = System.Drawing.Color.Red;
                 Linfo.Text = "Formato no permitido, debe subir un archivo en PDF, Word";
             }
-        }
-        else
-        {
+        } else {
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe elegir un archivo";
         }
     }
-    private void Guardar(string ruta, string usuario, string pass)
+    private void GuardarDir(string ruta, string usuario, string pass)
     {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
         string filename = Session["id"] + FUdirector.FileName;
@@ -189,7 +183,12 @@ public partial class Propuesta : Conexion
                 var response = (FtpWebResponse)request.GetResponse();
                 Linfo.Text = response.StatusDescription;
                 response.Close();
-                string sql = "insert into DIRECTOR (DIR_ID, DIR_FECHA, PROP_CODIGO, USU_USERNAME, DIR_DOCUMENTO, DIR_NOMARCHIVO, DIR_TIPO) values(DIRECTORID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "','" + ruta + "', '" + filename + "','" + contentType + "')";
+
+                string ext = "";
+                if (RBexterno.Checked) { ext = "SI"; }
+                else { ext = "NO"; }
+
+                string sql = "insert into DIRECTOR (DIR_ID, DIR_FECHA, PROP_CODIGO, USU_USERNAME, DIR_DOCUMENTO, DIR_NOMARCHIVO, DIR_TIPO, DIR_EXTERNO) values(DIRECTORID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), '" + prop_codigo + "','" + DDLlista.Items[DDLlista.SelectedIndex].Value + "','" + ruta + "', '" + filename + "','" + contentType + "','" + ext + "')";
                 Ejecutar("Solicitud realizada correctamente", sql);
             }
         }
@@ -618,7 +617,13 @@ public partial class Propuesta : Conexion
         WebClient request = new WebClient();
         request.Credentials = new NetworkCredential(list[0], list[1]);
 
-        string sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
+        string sql = "";
+        if (RBexterno.Checked){
+            sql = "select EXT_NOMARCHIVO, EXT_DOCUMENTO, EXT_TIPO FROM EXTERNO WHERE USU_USERNAME='" + id + "'";
+        } else{
+            sql = sql = "select PROF_NOMARCHIVO, PROF_DOCUMENTO, PROF_TIPO FROM PROFESOR WHERE USU_USERNAME='" + id + "'";
+        }
+
         List<string> prof = con.consulta(sql, 3, 0);
         fileName = prof[0];
         ruta = prof[1];
@@ -655,7 +660,7 @@ public partial class Propuesta : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                string sql = "select s.dir_id, s.dir_fecha, s.dir_estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_observacion  from director s, usuario u where u.usu_username=s.usu_username and s.prop_codigo='" + prop_codigo + "'";
+                string sql = "select s.dir_id, s.dir_fecha, InitCap(s.dir_estado) as Estado, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_observacion  from director s, usuario u where u.usu_username=s.usu_username and s.prop_codigo='" + prop_codigo + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -676,28 +681,42 @@ public partial class Propuesta : Conexion
         }
     }
 
-
+    /*Metodos para director externo*/
     protected void RBtipodirector_CheckedChanged(object sender, EventArgs e)
     {
         Linfo.Text = "";
-        if (RBexterno.Checked) {
-            TSolicitar.Visible = true;
-            Lprof.Text = "Externos:";
-            DDLlista.Items.Clear();
-            string sql = "select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from usuario_rol e, usuario u where u.usu_username = E.Usu_Username and u.USU_ESTADO = 'ACTIVO' and E.Rol_Id = 'EXT'";
-            DDLlista.Items.AddRange(con.cargardatos(sql));
-            Tbotones2.Visible = false;
-            Tcarta.Visible = false;
-            GVinfprof.Visible = false;
+        Tbotones2.Visible = false;
+        Tcarta.Visible = false;
+        GVinfprof.Visible = false;
+
+        if (RBexterno.Checked) {   
+            bool ext= ExisteExterno();
+            if (ext) {
+                TSolicitar.Visible = true;
+                Lprof.Text = "Externos:";
+                DDLlista.Items.Clear();
+                string sql = "select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from usuario_rol e, usuario u where u.usu_username = E.Usu_Username and u.USU_ESTADO = 'ACTIVO' and E.Rol_Id = 'EXT'";
+                DDLlista.Items.AddRange(con.cargardatos(sql));
+            } else{
+                TSolicitar.Visible = false;
+                Linfo.ForeColor = System.Drawing.Color.Red;
+                Linfo.Text = "No se encuentran personas externas para solicitar director.";               
+            }  
         } else if (RBinterno.Checked) {
             TSolicitar.Visible = true;
             Lprof.Text = "Profesores:";
             DDLlista.Items.Clear();
             string sql = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido)from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
             DDLlista.Items.AddRange(con.cargardatos(sql));
-            Tbotones2.Visible = false;
-            Tcarta.Visible = false;
-            GVinfprof.Visible = false;
+        }
+    }
+    private bool ExisteExterno()
+    {
+        List<string> externo = con.consulta("select u.usu_username from usuario_rol e, usuario u where u.usu_username = E.Usu_Username and u.USU_ESTADO = 'ACTIVO' and E.Rol_Id = 'EXT'", 1, 1);
+        if (externo.Count > 0){
+            return true;
+        }else {
+            return false;
         }
     }
     protected void DescargarCarta(object sender, EventArgs e)

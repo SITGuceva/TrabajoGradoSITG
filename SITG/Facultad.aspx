@@ -8,13 +8,15 @@
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-12">
-                        <ul class="breadcrumb">
+                       <ul class="breadcrumb">
                             <li><asp:LinkButton ID="LBCrear" runat="server" OnClick="Crear" ForeColor="Black"><span class="glyphicon glyphicon-plus"></span>Crear</asp:LinkButton></li>                       
-                            <li><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>                         
+                            <li ><asp:LinkButton ID="LBconsultar" runat="server" OnClick="Consultar" ForeColor="Black"><span class="glyphicon glyphicon-search"></span>Consultar</asp:LinkButton></li>                         
                        </ul>
-                    </div>
-                </div>
-
+                   
+                <div class="panel panel-default">
+                  <div class="panel-body">
+                    
+                 </br>
                  <div id="Ingreso" runat="server" visible="true" class="row">
                     <asp:Table ID="TFac" runat="server" HorizontalAlign="Center" >                     
                          <asp:TableRow>
@@ -24,7 +26,8 @@
                     </asp:Table>  
                       <asp:Table ID="TBotonoes" runat="server" HorizontalAlign="Center">
                         <asp:TableRow>
-                            <asp:TableCell><asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White" OnClientClick="return confirm('hacer el postback del control ?');"/></asp:TableCell>
+                            <asp:TableCell><asp:Button ID="Bguardar" runat="server" OnClick="Aceptar" Text="Guardar" class="btn btn-success" ForeColor="White"/></asp:TableCell>
+                            
                             <asp:TableCell><asp:Button ID="Bcancelar" runat="server" OnClick="Limpiar" Text="Limpiar" class="btn btn-danger" ForeColor="White" /></asp:TableCell>
                         </asp:TableRow>
                     </asp:Table>
@@ -66,28 +69,16 @@
                      </asp:GridView>
                 </div>
 
-         
-                <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True" ></asp:Label>                     
-            </div>
+                <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True" ></asp:Label>            
+                       </div>
+                    </div>
+                     </div>
+             </div>
+             </div>
            </ContentTemplate></asp:UpdatePanel>
         </div>
     </div>
-    <script type="text/javascript">
- 
-        function Confirmacion() {
- 
-            var seleccion = confirm("acepta el mensaje ?");
- 
-            if (seleccion)
-                alert("se acepto el mensaje");
-            else
-                alert("NO se acepto el mensaje");
- 
-            //usado para que no haga postback el boton de asp.net cuando 
-            //no se acepte el confirm
-            return seleccion;
-         
-        }
-     
-    </script>
 </asp:Content>
+
+
+ 

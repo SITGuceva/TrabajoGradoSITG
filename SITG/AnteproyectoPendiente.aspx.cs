@@ -27,6 +27,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVanteproy);
         scriptManager.RegisterPostBackControl(this.GVinfprof);
+        scriptManager.RegisterPostBackControl(this.GVevaluador);
     }
 
     /*Tabla que carga la información del anteproyecto para descargar*/
@@ -225,12 +226,13 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         string info = con.IngresarBD(sql);
         if (info.Equals("Funciono")){
             if (texto.Equals("1")) {
+                Linfo.ForeColor = System.Drawing.Color.Green;
                 Verificador.Value = "Funciono";
             }else {
                 Linfo.ForeColor = System.Drawing.Color.Green;
                 Linfo.Text = texto;
             }
-        }else   {
+        }else {
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = info;
         }
@@ -239,9 +241,11 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
     {
         if (DDLconsultaReunion.SelectedIndex.Equals(0))
         {
+            Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Seleccione una reunión.";
             infoprofesor.Visible = false;
         } else if (DDLprofesores.SelectedIndex.Equals(0)){
+            Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Seleccione un profesor.";
             infoprofesor.Visible = false;
             Terminar.Visible = true;          
@@ -255,6 +259,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
                 Ejecutar("1", sql);
                 if (Verificador.Value.Equals("Funciono"))
                 {
+                    Verificador.Value = "";
                     ExisteRol(DDLprofesores.Items[DDLprofesores.SelectedIndex].Value);
                 }
             }
@@ -263,8 +268,11 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
     }
     private void quitar(){
         Mostrarprof.Visible = false;
-        InfoAnteproyecto.Visible = false;
-        Metodo.Value = "";
+        InfoAnteproyecto.Visible = true;
+        Evaluador.Visible = true;
+        CargarEvaluador();
+       
+       
         Terminar.Visible = false;
         infoprofesor.Visible = false;
         IBregresar.Visible = true;
@@ -273,6 +281,68 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         MostrarDDLReunion.Visible = false;
         Verificador.Value = "";
     }
+
+    /*Metodo cargar evaluador guardado*/
+    private void CargarEvaluador()
+    {
+        try{
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null){
+                string sql = "select e.eva_id,  e.usu_username,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as nombre, u.usu_correo, e.apro_codigo from evaluador e, usuario u where  apro_codigo='" + Metodo.Value + "' and u.usu_username = e.usu_username";
+
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader())
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVevaluador.DataSource = dataTable;
+                }
+                GVevaluador.DataBind();
+            }
+            conn.Close();
+        } catch (Exception ex){
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+    }
+    protected void GVevaluador_RowDataBound(object sender, GridViewRowEventArgs e) { }
+    protected void GVevaluador_RowDeleting(object sender, GridViewDeleteEventArgs e)
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            string id = GVevaluador.Rows[e.RowIndex].Cells[0].Text;
+            string sql = "Delete from evaluador where eva_id='" + id + "'";
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            using (OracleDataReader reader = cmd.ExecuteReader())
+            {
+                CargarEvaluador();
+
+                string sql3 = "update anteproyecto set anp_evaluador='SIN ASIGNAR' where apro_codigo='" + Metodo.Value + "' ";
+                Ejecutar("", sql3);
+
+                Mostrarprof.Visible = true;
+                Terminar.Visible = true;
+                MostrarDDLReunion.Visible = true;
+                IBregresar.Visible = false;
+                Linfo.Text = "";
+                DDLprofesores.Items.Clear();
+                string sql4 = "Select u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
+                DDLprofesores.Items.AddRange(con.cargardatos(sql4));
+                DDLprofesores.Items.Insert(0, "Seleccione");
+                DDLconsultaReunion.Items.Clear();
+                string sql2 = "SELECT r.REU_CODIGO, r.REU_CODIGO FROM REUNION r,profesor p WHERE r.COM_CODIGO=p.com_codigo AND p.usu_username='" + Session["id"] + "' AND r.REU_ESTADO='ACTIVO'";
+                DDLconsultaReunion.Items.AddRange(con.cargardatos(sql2));
+                DDLconsultaReunion.Items.Insert(0, "Seleccione Reunion");
+                DDLconsultaReunion.Visible = true;
+            }
+        }
+    }
+
     private void ExisteRol(string id)
     {
         string sql = " select u.USU_USERNAME from usuario_rol u where u.ROL_ID = 'EVA' and U.Usu_Username = '"+id+"'";
@@ -281,7 +351,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
             sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval, '" + id + "', 'EVA') ";
             Ejecutar("Se ha asignado el evaluador para el anteproyecto satisfactoriamente", sql);
         } else {
-            Linfo.ForeColor = System.Drawing.Color.Green;
+           Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = "Se ha asignado el evaluador para el anteproyecto satisfactoriamente";
         }
     }
@@ -308,7 +378,11 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         InfoAnteproyecto.Visible = false;
         Metodo.Value = "";
         Verificador.Value = "";
+        Evaluador.Visible = false;
     }
-    
 
+
+
+
+   
 }

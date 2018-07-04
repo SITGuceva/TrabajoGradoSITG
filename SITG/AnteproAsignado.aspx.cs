@@ -27,6 +27,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
         scriptManager.RegisterPostBackControl(this.GVconsultaAA);
+        scriptManager.RegisterPostBackControl(this.GVrevisado);
     }
 
     /*Metodos que se encargan de la consulta de los anteproyectos le asignaron */
@@ -55,8 +56,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select DISTINCT   A.Apro_Codigo,A.Anp_Nombre, A.Anp_Fecha, A.Anp_Estado, A.Anp_Aprobacion from anteproyecto a, estudiante e, PROFESOR d , evaluador r " +
-                    "WHERE R.Usu_Username = '"+Session["id"]+"' and E.Prop_Codigo = A.Apro_Codigo and A.Anp_Estado = 'PENDIENTE'and A.Anp_Aprobacion='APROBADO' and D.Usu_Username = R.Usu_Username";
+                string sql = "select DISTINCT   A.Apro_Codigo,A.Anp_Nombre, A.Anp_Fecha, InitCap(A.Anp_Estado) as estado, InitCap(A.Anp_Aprobacion) as aprobacion from anteproyecto a, evaluador r WHERE r.Usu_Username = '" + Session["id"] + "' and r.Apro_Codigo = a.Apro_Codigo  and a.Anp_Estado = 'PENDIENTE' and a.Anp_Aprobacion='APROBADO'";               
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()) {
@@ -64,6 +64,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
                     dataTable.Load(reader);
                     GVconsultaAA.DataSource = dataTable;
                     int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
+                    Linfo.ForeColor = System.Drawing.Color.Red;
                     Linfo.Text = "Cantidad de filas encontradas: " + cantfilas;
                 }
                 GVconsultaAA.DataBind();
@@ -120,7 +121,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                sql = "SELECT AOBS_CODIGO, AOBS_DESCRIPCION FROM ANTE_OBSERVACION  WHERE APROP_CODIGO ='" + Metodo.Value + "' and AOBS_REALIZADA='EVALUADOR'";
+                sql = "SELECT a.AOBS_CODIGO, a.AOBS_DESCRIPCION FROM ANTE_OBSERVACION a, EVALUADOR e WHERE a.APROP_CODIGO ='" + Metodo.Value + "' and a.AOBS_REALIZADA='EVALUADOR' and e.APRO_CODIGO = a.APROP_CODIGO and e.USU_USERNAME = '" + Session["id"] + "'";  
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -128,7 +129,6 @@ public partial class AnteproAsignado : System.Web.UI.Page
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVobservacion.DataSource = dataTable;
-                    int cantfilas = Convert.ToInt32(dataTable.Rows.Count.ToString());
                 }
                 GVobservacion.DataBind();
             }
@@ -224,16 +224,19 @@ public partial class AnteproAsignado : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe calificar el anteproyecto.";
         }else{
-            string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "update anteproyecto set anp_estado='" + DDLestadoA.Items[DDLestadoA.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Metodo.Value + "'";
-            Ejecutar("El anteproyecto ha sido revisado con exito, presione click en regresar para revisar otro.", sql);
-            Resultado.Visible = false;
-            MostrarAgregarObs.Visible = false;
-            MostrarDDLestadoP.Visible = false;
-            Terminar.Visible = false;
-            IBregresar.Visible = true;
-            Metodo.Value = "";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true); 
         }
+    }
+    protected void btnDummy_Click(object sender, EventArgs e){
+        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+        string sql = "update anteproyecto set anp_estado='" + DDLestadoA.Items[DDLestadoA.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Metodo.Value + "'";
+        Ejecutar("El anteproyecto ha sido revisado con exito, presione click en regresar para revisar otro.", sql);
+        Resultado.Visible = false;
+        MostrarAgregarObs.Visible = false;
+        MostrarDDLestadoP.Visible = false;
+        Terminar.Visible = false;
+        IBregresar.Visible = true;
+        Metodo.Value = "";
     }
     protected void cancelar(object sender, EventArgs e)
     {
@@ -245,7 +248,6 @@ public partial class AnteproAsignado : System.Web.UI.Page
         Consulta.Visible = true;
         DDLestadoA.SelectedIndex = 0;
         Metodo.Value = "";
-        Linfo.Text = "";
     }
     protected void regresar(object sender, EventArgs e)
     {
@@ -253,7 +255,71 @@ public partial class AnteproAsignado : System.Web.UI.Page
         ResultadoConsulta();
         Consulta.Visible = true;
         Metodo.Value = "";
+    }
+
+    /*Eventos que manejan lo que se muestra*/
+    protected void LBconsultar_Click(object sender, EventArgs e)
+    {
+        Revisados.Visible = true;
+        ConsultarRevisados();
+        Consulta.Visible = false;
+        MostrarDDLestadoP.Visible = false;
+        MostrarAgregarObs.Visible = false;
+        Resultado.Visible = false;
+        Terminar.Visible = false;
         Linfo.Text = "";
+        Metodo.Value = "";
+    }
+    protected void LBPendiente_Click(object sender, EventArgs e)
+    {
+        Consulta.Visible = true;
+        ResultadoConsulta();
+        MostrarDDLestadoP.Visible = false;
+        MostrarAgregarObs.Visible = false;
+        Resultado.Visible = false;
+        Terminar.Visible = false;
+        Revisados.Visible = false;
+        Metodo.Value = "";
+    }
+
+    /*Metodos para el consultar los anteproyectos ya asignados*/
+    private void ConsultarRevisados()
+    {
+        try {
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null){
+                string sql = "select Distinct A.Apro_Codigo, A.Anp_Nombre, A.Anp_Fecha, Initcap(A.Anp_Aprobacion) as aprobacion, Initcap(A.Anp_Estado) as estado from anteproyecto a, evaluador e where A.Apro_Codigo = E.Apro_Codigo and E.Usu_Username = '"+ Session["id"] + "' order by A.Anp_Fecha";
+
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader()){
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVrevisado.DataSource = dataTable;
+                }
+                GVrevisado.DataBind();
+            }
+            conn.Close();
+        } catch (Exception ex) {
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+    }
+    protected void GVrevisado_RowCommand(object sender, GridViewCommandEventArgs e)
+    {
+        if (e.CommandName == "buscar"){
+            int index = Convert.ToInt32(e.CommandArgument);
+            GridViewRow row = GVrevisado.Rows[index];
+            Metodo.Value = row.Cells[0].Text;
+            cargarTabla();
+            Resultado.Visible = true; 
+        }
+    }
+    protected void GVrevisado_RowDataBound(object sender, GridViewRowEventArgs e){}
+    protected void GVrevisado_PageIndexChanging(object sender, GridViewPageEventArgs e)
+    {
+        GVrevisado.PageIndex = e.NewPageIndex;
+        ConsultarRevisados();
     }
 
 }

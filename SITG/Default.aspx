@@ -43,14 +43,17 @@
                                 </asp:TableCell>
                             </asp:TableRow>
                             <asp:TableRow>
+                                <asp:TableCell>
+                                     <asp:Label ID="Lerror" runat="server" Text="" ForeColor="Red" Font-Bold="true"></asp:Label>
+                                </asp:TableCell>
+                            </asp:TableRow>
+                            <asp:TableRow>
                                 <asp:TableCell HorizontalAlign="Center" ColumnSpan="5">
                                     <asp:Button runat="server" OnClick="LogIn" Text="INGRESAR" Font-Bold="true" CssClass="btn btn-success" ForeColor="White" />
                                 </asp:TableCell>
                             </asp:TableRow>
                         </asp:Table>
                     </div>
-                    <asp:Label ID="Lerror" runat="server" Text="" ForeColor="Red"></asp:Label>
-
                 </div>
             </section>
         </div>

@@ -59,10 +59,13 @@ public partial class Reunion : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe Elegir una fecha.";
         }else {
-            string sql= "insert into REUNION (REU_CODIGO,REU_FPROP,COM_CODIGO) VALUES(reunionid.nextval,TO_DATE( '"+TBfecha.Text+ "', 'DD-MM-YYYY HH24:MI:SS'),'" + Metodo.Value+"')";
-            Ejecutar("Reunión creada satisfactoriamente", sql);
-            TBfecha.Text = "";
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true);  
         }
+    }
+    protected void btnDummy_Click(object sender, EventArgs e) {
+        string sql = "insert into REUNION (REU_CODIGO,REU_FPROP,COM_CODIGO) VALUES(reunionid.nextval,TO_DATE( '" + TBfecha.Text + "', 'DD-MM-YYYY HH24:MI:SS'),'" + Metodo.Value + "')";
+        Ejecutar("Reunión creada satisfactoriamente", sql);
+        TBfecha.Text = "";
     }
     private void Ejecutar(string texto, string sql)
     {

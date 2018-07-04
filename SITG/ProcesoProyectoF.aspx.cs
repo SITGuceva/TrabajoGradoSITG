@@ -223,18 +223,21 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
         if (DDLestadoP.SelectedIndex.Equals(0)) {
             Linfo.Text = "Debe seleccionar una calificación para el proyecto final.";
         } else{
-            string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "update proyecto_final set pf_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where ppro_codigo='" + CodigoP.Text + "'";
-            Ejecutar("El proyecto final ha sido revisado con exito, presione click en regresar para revisar otro proyecto final", sql);
-
-            Resultado.Visible = false;
-            MostrarAgregarObs.Visible = false;
-            MostrarDDLestadoP.Visible = false;
-            InformacionP.Visible = false;
-            Terminar.Visible = false;          
-            IBregresar.Visible = true;
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true);
         }
 
+    }
+    protected void btnDummy_Click(object sender, EventArgs e) {
+        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+        string sql = "update proyecto_final set pf_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where ppro_codigo='" + CodigoP.Text + "'";
+        Ejecutar("El proyecto final ha sido revisado con exito, presione click en regresar para revisar otro proyecto final", sql);
+
+        Resultado.Visible = false;
+        MostrarAgregarObs.Visible = false;
+        MostrarDDLestadoP.Visible = false;
+        InformacionP.Visible = false;
+        Terminar.Visible = false;
+        IBregresar.Visible = true;
     }
     protected void cancelar(object sender, EventArgs e)
     {

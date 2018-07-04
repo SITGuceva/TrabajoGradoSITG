@@ -36,7 +36,7 @@ public partial class OpcRol : Conexion
         Ingreso.Visible = false;
         Busqueda.Visible = true;
         Resultado.Visible = false;
-        Ltitulo.Text = "Asignar Opcion al Rol";
+        Ltitulo.Text = "Asignar Opción al Rol";
     }
     protected void Consultar(object sender, EventArgs e)
     {

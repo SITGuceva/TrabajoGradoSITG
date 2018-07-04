@@ -38,7 +38,7 @@ public partial class Pagos_Estudiante : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select p.pag_id, p.pag_nombre, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as estudiante ,p.pag_fecha, INITCAP(p.pag_estado) as estado  from pagos p, estudiante e, usuario u where pag_estado = 'PENDIENTE' and E.Usu_Username = U.Usu_Username and P.Usu_Username= E.Usu_Username";
+                string sql = "select p.pag_id, p.pag_nombre, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as estudiante ,p.pag_fecha, INITCAP(p.pag_estado) as estado from pagos p, estudiante e, usuario u where pag_estado = 'PENDIENTE' and E.Usu_Username = U.Usu_Username and P.Usu_Username = E.Usu_Username and E.Prog_Codigo IN(select P.Prog_Codigo from programa p, facultad f, decano d where F.Fac_Codigo= P.Fac_Codigo and D.Fac_Codigo= F.Fac_Codigo and D.Usu_Username= '"+Session["id"]+"' )";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -132,15 +132,21 @@ public partial class Pagos_Estudiante : Conexion
         Metodo.Value = "";
     }
     protected void guardar(object sender, EventArgs e)
+    {   
+        if (DDLestadoP.SelectedIndex.Equals(0)) {
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Debe validar el pago.";
+        } else {
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true);
+        } 
+    }
+    protected void btnDummy_Click(object sender, EventArgs e)
     {
         string sql;
-        if (string.IsNullOrEmpty(TAdescripcion.Value) == false)
-        {
+        if (string.IsNullOrEmpty(TAdescripcion.Value) == false) {
             sql = "update pagos set pag_observacion = '" + TAdescripcion.Value + "', pag_estado = '" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where pag_id = '" + Metodo.Value + "'";
             Ejecutar("Se verificó el pago correctamente", sql);
-        }
-        else
-        {
+        }else {
             sql = "update pagos set pag_estado='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where pag_id='" + Metodo.Value + "'";
             Ejecutar("Se verificó el pago correctamente", sql);
         }

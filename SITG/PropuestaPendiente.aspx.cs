@@ -264,23 +264,25 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Debe calificar la propuesta.";
         } else  {
-            string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql2 = "update propuesta set prop_estado='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where prop_codigo='" + Metodo.Value + "'";
-            Ejecutar("", sql2);
-            string sql = "insert into revision_propuesta (REV_FECHA, REV_ESTADO, PROP_CODIGO, REU_CODIGO) values (TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "','" + Metodo.Value + "', '" + DDLconsultaReunion.Items[DDLconsultaReunion.SelectedIndex].Value.ToString() + "')";
-            Ejecutar("La propuesta ha sido revisada con exito, presione click en regresar para revisar otra propuesta", sql);
-            
-            Resultado.Visible = false;
-            ConsultaContenidoP.Visible = false;
-            MostrarDDLReunion.Visible = false;
-            MostrarAgregarObs.Visible = false;
-            MostrarDDLestadoP.Visible = false;
-            Terminar.Visible = false;
-            IBregresar.Visible = true;
-            Metodo.Value = "";
-
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true);
         }
-    } 
+    }
+    protected void btnDummy_Click(object sender, EventArgs e) {
+        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+        string sql2 = "update propuesta set prop_estado='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where prop_codigo='" + Metodo.Value + "'";
+        Ejecutar("", sql2);
+        string sql = "insert into revision_propuesta (REV_FECHA, REV_ESTADO, PROP_CODIGO, REU_CODIGO) values (TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "','" + Metodo.Value + "', '" + DDLconsultaReunion.Items[DDLconsultaReunion.SelectedIndex].Value.ToString() + "')";
+        Ejecutar("La propuesta ha sido revisada con exito, presione click en regresar para revisar otra propuesta", sql);
+
+        Resultado.Visible = false;
+        ConsultaContenidoP.Visible = false;
+        MostrarDDLReunion.Visible = false;
+        MostrarAgregarObs.Visible = false;
+        MostrarDDLestadoP.Visible = false;
+        Terminar.Visible = false;
+        IBregresar.Visible = true;
+        Metodo.Value = "";
+    }
     protected void cancelar(object sender, EventArgs e)
     {
         Resultado.Visible = false;

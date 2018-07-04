@@ -52,7 +52,7 @@ public partial class PropuestaAsignada : Conexion
             Linfo.Text = "No se puede agregar una observación si se encuentra vacia.";
         } else {
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO) values (OBSPROPID.nextval,'" + TBdescripcion.Value + "','DIRECTOR', '"+ Metodo.Value + "')";
+            string sql  = "insert into observacion (OBS_CODIGO, OBS_DESCRIPCION, OBS_REALIZADA ,PROP_CODIGO, OBS_FECHA) values (OBSPROPID.nextval,'" + TBdescripcion.Value.ToLower() + "','DIRECTOR', '"+ Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'))";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             CargarObservaciones();
@@ -192,7 +192,7 @@ public partial class PropuestaAsignada : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-               string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='"+ Metodo.Value + "' and OBS_REALIZADA='Director'";
+               string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='"+ Metodo.Value + "' and OBS_REALIZADA='DIRECTOR'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -259,7 +259,7 @@ public partial class PropuestaAsignada : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='" + Metodo.Value + "' and OBS_REALIZADA='Comite'";
+                string sql = "SELECT OBS_CODIGO, OBS_DESCRIPCION FROM OBSERVACION  WHERE PROP_CODIGO ='" + Metodo.Value + "' and OBS_REALIZADA='COMITE'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

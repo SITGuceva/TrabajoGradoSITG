@@ -357,7 +357,7 @@ public partial class ProyectoFinal : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select pf.ppro_codigo, pf.pf_titulo, pf.pf_aprobacion, pf.pf_fecha, pf.pf_jur1, pf.pf_jur2, pf.pf_jur3, pf.pf_estado from proyecto_final pf, estudiante e where pf.ppro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
+                string sql = "select pf.ppro_codigo, pf.pf_titulo, InitCap(pf.pf_aprobacion) as aprobacion, pf.pf_fecha, InitCap(pf.pf_jur1) as jur1, InitCap(pf.pf_jur2) as jur2, InitCap(pf.pf_jur3) as jur3, InitCap(pf.pf_estado) as estado from proyecto_final pf, estudiante e where pf.ppro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -480,8 +480,8 @@ public partial class ProyectoFinal : Conexion
                 PdfWriter writer = PdfWriter.GetInstance(doc, ms);
 
                 // Le colocamos el título y el autor
-                doc.AddTitle("Acta de reunion");
-                doc.AddCreator("Comite de trabajos de grado");
+                doc.AddTitle("Certificado Sustentar");
+                doc.AddCreator("Comité de trabajos de grado");
                 doc.Open();
 
                 // Creamos el tipo de Font que vamos utilizar
@@ -490,17 +490,17 @@ public partial class ProyectoFinal : Conexion
                 iTextSharp.text.Image img = iTextSharp.text.Image.GetInstance(Server.MapPath("/Images/uceva.jpg"));
 
                 Paragraph saltoDeLinea1 = new Paragraph(" ");
-                Paragraph titulo3 = new Paragraph("Comite de trabajos de grado de "+comite);
+                Paragraph titulo3 = new Paragraph("Comité de trabajos de grado de "+comite);
                 titulo3.Alignment = Element.ALIGN_CENTER;
                 Paragraph titulo4 = new Paragraph("Certifica");
                 Paragraph Parrafo2 = new Paragraph("Que el/los estudiantes " + integrante + " con el trabajo de grado " + titulo + " con su director " + director + " fué aprobado por los jurados.");
                 Parrafo2.Alignment = Element.ALIGN_LEFT;
-                Paragraph Parrafo3 = new Paragraph("Este certificado debe ser refrendado por el comite de " + comite + " para ser llevado al CAU y programar la sustentación");
+                Paragraph Parrafo3 = new Paragraph("Este certificado debe ser refrendado por el comité de " + comite + " para ser llevado al CAU y programar la sustentación");
                 Parrafo3.Alignment = Element.ALIGN_LEFT;
                 titulo4.Alignment = Element.ALIGN_CENTER;
                 Paragraph Parrafo4 = new Paragraph("___________________________");
                 Parrafo4.Alignment = Element.ALIGN_LEFT;
-                Paragraph Parrafo5 = new Paragraph("Comite de "+comite);
+                Paragraph Parrafo5 = new Paragraph("Comité de "+comite);
                 Parrafo5.Alignment = Element.ALIGN_LEFT;
                 doc.Add(saltoDeLinea1);
                 doc.Add(saltoDeLinea1);

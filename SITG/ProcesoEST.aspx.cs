@@ -150,7 +150,7 @@ public partial class ProcesoEST : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "Select distinct p.ppro_codigo, p.pf_titulo, p.pf_fecha, INITCAP(p.pf_aprobacion) as aprobacion, p.pf_jur1, p.pf_jur2, p.pf_jur3, INITCAP(p.pf_estado) as estado from proyecto_final p, estudiante e, profesor d " +
+                string sql = "Select distinct p.ppro_codigo, p.pf_titulo, p.pf_fecha, INITCAP(p.pf_aprobacion) as aprobacion, InitCap(p.pf_jur1) as jur1, InitCap(p.pf_jur2)  as jur2, InitCap(p.pf_jur3) as jur3, INITCAP(p.pf_estado) as estado from proyecto_final p, estudiante e, profesor d " +
                              " where d.usu_username = '"+Session["id"]+"' and d.com_codigo = e.prog_codigo and e.usu_username = '"+TBCodigoE.Text+"' and e.prop_codigo = p.ppro_codigo";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

@@ -1,6 +1,7 @@
 ﻿using Oracle.DataAccess.Client;
 using System;
 using System.Data;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Facultad : System.Web.UI.Page
@@ -21,10 +22,10 @@ public partial class Facultad : System.Web.UI.Page
     }
 
     /*Metodos de crear-consultar que manejan la parte del fronted*/
-    protected void Crear(object sender, EventArgs e)
+  protected void Crear(object sender, EventArgs e)
     {
         Ingreso.Visible = true;
-        Resultado.Visible = false;
+       Resultado.Visible = false;
         Linfo.Text = "";
     }
     protected void Consultar(object sender, EventArgs e)
@@ -45,19 +46,16 @@ public partial class Facultad : System.Web.UI.Page
     /*Metodos que se utilizan para guardar-actualizar-inhabilitar*/
     protected void Aceptar(object sender, EventArgs e)
     {
-        string sql = "";
-        string texto = "";
-        if (Ingreso.Visible){
-            if (string.IsNullOrEmpty(TBnombre.Text) == true ){
-                Linfo.ForeColor = System.Drawing.Color.Red;
-                Linfo.Text = "Los campos son obligatorios";
-            }else{
-                sql = "insert into FACULTAD (FAC_CODIGO,FAC_NOMBRE) VALUES(facultadid.nextval, '" + TBnombre.Text + "')";
-                texto = "Datos guardados satisfactoriamente";
-                Ejecutar(texto, sql);
-            }
-        }
+      if (string.IsNullOrEmpty(TBnombre.Text) == true ){
+            Linfo.ForeColor = System.Drawing.Color.Red;
+            Linfo.Text = "Los campos son obligatorios";
+      }else{
+            string sql = "insert into FACULTAD (FAC_CODIGO,FAC_NOMBRE) VALUES(facultadid.nextval, '" + TBnombre.Text + "')";
+            string texto = "Datos guardados satisfactoriamente";
+            Ejecutar(texto, sql);
+      }   
     }
+
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
@@ -138,5 +136,5 @@ public partial class Facultad : System.Web.UI.Page
             }
         }
     }
-
+  
 }

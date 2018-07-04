@@ -21,7 +21,7 @@ public partial class ConsultarAReunion : System.Web.UI.Page
                 Response.Redirect("MenuPrincipal.aspx");
             } else{
                 DDLprog.Items.Clear();
-                string sql = "SELECT PROG_CODIGO,PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
+                string sql = "SELECT P.Prog_Codigo, P.Prog_Nombre FROM PROGRAMA p, FACULTAD f, DECANO d WHERE F.Fac_Codigo = P.Fac_Codigo and D.Fac_Codigo = F.Fac_Codigo and D.Usu_Username = '" + Session["id"] + "' and P.Prog_Estado = 'ACTIVO'";
                 DDLprog.Items.AddRange(con.cargardatos(sql));
                 DDLprog.Items.Insert(0, "Seleccione");
             }
@@ -60,15 +60,12 @@ public partial class ConsultarAReunion : System.Web.UI.Page
     }
     protected void DDLprog_SelectedIndexChanged(object sender, EventArgs e)
     {
-        if (DDLprog.SelectedIndex.Equals(0))
-        {
+        TBdesde.Text = "";
+        TBhasta.Text = "";
+        if (DDLprog.SelectedIndex.Equals(0)){
             Linfo.Text = "";
             GVactas.Visible = false;
-            TBdesde.Text = "";
-            TBhasta.Text = "";
-        }
-        else
-        {
+        } else {
             Linfo.Text = "";
             GVactas.Visible = false;
         }

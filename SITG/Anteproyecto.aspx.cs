@@ -228,7 +228,7 @@ public partial class Anteproyecto : Conexion
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select an.apro_codigo, an.anp_nombre, an.anp_aprobacion, an.anp_estado, an.anp_fecha, an.anp_evaluador  from anteproyecto an, estudiante e where an.apro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
+                string sql = "select an.apro_codigo, an.anp_nombre, InitCap(an.anp_aprobacion) as aprobacion, InitCap(an.anp_estado) as estado, an.anp_fecha, InitCap(an.anp_evaluador) as evaluador  from anteproyecto an, estudiante e where an.apro_codigo = e.prop_codigo and e.usu_username ='" + Session["id"] + "'";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

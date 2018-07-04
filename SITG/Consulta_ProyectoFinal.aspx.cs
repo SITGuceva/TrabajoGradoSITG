@@ -19,11 +19,11 @@ public partial class Consulta_ProyectoFinal : System.Web.UI.Page
                 Response.Redirect("MenuPrincipal.aspx");
             } else{
                 DDLconsultaPrograma.Items.Clear();
-                string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA";
+                string sql = "SELECT P.Prog_Codigo, P.Prog_Nombre FROM PROGRAMA p, FACULTAD f, DECANO d WHERE F.Fac_Codigo=P.Fac_Codigo and D.Fac_Codigo = F.Fac_Codigo and D.Usu_Username='" + Session["id"] + "'";
                 DDLconsultaPrograma.Items.AddRange(con.cargardatos(sql));
-                DDLconsultaPrograma.Items.Insert(0, "Seleccione Programa");
-                DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
-                DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
+                DDLconsultaPrograma.Items.Insert(0, "Seleccione");
+                DDLconsultaLinea.Items.Insert(0, "Seleccione");
+                DDLconsultaTema.Items.Insert(0, "Seleccione");
             }
         }
     }
@@ -42,7 +42,7 @@ public partial class Consulta_ProyectoFinal : System.Web.UI.Page
         else
         {
             TResultado.Visible = false;
-            Linfo.Text = "Seleccione una programa y una linea de profundización";
+            Linfo.Text = "Seleccione una programa y una línea de profundización";
         }
     }
 
@@ -55,20 +55,14 @@ public partial class Consulta_ProyectoFinal : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                if (crit.Equals(2))
-                {
-                    sql = "Select F.Ppro_Codigo, F.Pf_Titulo,F.Pf_Fecha,F.Pf_Estado from proyecto_final f,propuesta p, programa pro, estudiante e, tema t, lin_investigacion l " +
-                        "where pro.prog_codigo = e.prog_codigo and pro.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.linv_codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'and t.tem_codigo = p.tem_codigo and l.linv_codigo = t.linv_codigo  and P.Prop_Codigo = F.Ppro_Codigo";
-                } else if (crit.Equals(1))
-                {
-                    sql = "Select F.Ppro_Codigo, F.Pf_Titulo,F.Pf_Fecha,F.Pf_Estado from proyecto_final f,propuesta p, programa pro, estudiante e, tema t, lin_investigacion l " +
-                        "where pro.prog_codigo = e.prog_codigo and pro.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.linv_codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo = '" + DDLconsultaTema.Items[DDLconsultaTema.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.linv_codigo = t.linv_codigo and P.Prop_Codigo = F.Ppro_Codigo";
+                if (crit.Equals(2)){
+                    sql = "Select distinct F.Ppro_Codigo, F.Pf_Titulo,F.Pf_Fecha, Initcap(F.Pf_Estado) as Estado from proyecto_final f, programa b, estudiante e, lin_investigacion l where b.prog_codigo = e.prog_codigo  and b.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.linv_codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and E.Prop_Codigo = F.Ppro_Codigo order by F.Pf_Fecha";
+                } else if (crit.Equals(1)){
+                    sql = "Select Distinct F.Ppro_Codigo, F.Pf_Titulo,F.Pf_Fecha,Initcap(F.Pf_Estado) as Estado from proyecto_final f,propuesta p, programa b, estudiante e, tema t, lin_investigacion l  where b.prog_codigo = e.prog_codigo and  b.prog_codigo = '" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "' and l.linv_codigo = '" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "' and t.tem_codigo = '" + DDLconsultaTema.Items[DDLconsultaTema.SelectedIndex].Value.ToString() + "' and t.tem_codigo = p.tem_codigo and l.linv_codigo = t.linv_codigo and P.Prop_Codigo = F.Ppro_Codigo order by F.Pf_Fecha";
                 }
-
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
-                using (OracleDataReader reader = cmd.ExecuteReader())
-                {
+                using (OracleDataReader reader = cmd.ExecuteReader()){
                     DataTable dataTable = new DataTable();
                     dataTable.Load(reader);
                     GVresulpro.DataSource = dataTable;
@@ -89,39 +83,38 @@ public partial class Consulta_ProyectoFinal : System.Web.UI.Page
     {
         TResultado.Visible = false;
         Linfo.Text = "";
-        if (DDLconsultaPrograma.SelectedIndex.Equals(0))
-        {
+        if (DDLconsultaPrograma.SelectedIndex.Equals(0)){
             DDLconsultaLinea.Items.Clear();
             DDLconsultaLinea.Items.Insert(0, "Seleccione");
             DDLconsultaTema.Items.Clear();
             DDLconsultaTema.Items.Insert(0, "Seleccione");            
-        }
-        else
-        {
+        }else {
             DDLconsultaLinea.Items.Clear();
             string sql = "SELECT LINV_CODIGO, LINV_NOMBRE FROM LIN_INVESTIGACION WHERE PROG_CODIGO='" + DDLconsultaPrograma.Items[DDLconsultaPrograma.SelectedIndex].Value.ToString() + "'";
             DDLconsultaLinea.Items.AddRange(con.cargardatos(sql));
-            DDLconsultaLinea.Items.Insert(0, "Seleccione Linea");
+            DDLconsultaLinea.Items.Insert(0, "Seleccione");
             Linfo.Text = "";
         }
     }
-    protected void DDLconsultaLinea_SelectedIndexChanged(object sender, EventArgs e)/*evento del ddl para cuando selecciona un item*/
+    protected void DDLconsultaLinea_SelectedIndexChanged(object sender, EventArgs e)
     {
         TResultado.Visible = false;
         Linfo.Text = "";
-        if (DDLconsultaLinea.SelectedIndex.Equals(0))
-        {
+        if (DDLconsultaLinea.SelectedIndex.Equals(0)){
             DDLconsultaTema.Items.Clear();
             DDLconsultaTema.Items.Insert(0, "Seleccione");
-        }
-        else
-        {
+        }else{
             DDLconsultaTema.Items.Clear();
             string sql3 = "SELECT TEM_CODIGO, TEM_NOMBRE FROM TEMA WHERE LINV_CODIGO='" + DDLconsultaLinea.Items[DDLconsultaLinea.SelectedIndex].Value.ToString() + "'";
             DDLconsultaTema.Items.AddRange(con.cargardatos(sql3));
-            DDLconsultaTema.Items.Insert(0, "Seleccione Tema");
+            DDLconsultaTema.Items.Insert(0, "Seleccione");
             Linfo.Text = "";
         }
+    }
+    protected void DDLconsultaTema_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        TResultado.Visible = false;
+        Linfo.Text = "";
     }
 
 }

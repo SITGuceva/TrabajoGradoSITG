@@ -25,6 +25,7 @@ public partial class ProyFinalPendiente : Conexion
                 Response.Redirect("MenuPrincipal.aspx");
             } else {
                 BuscarDocumentos();
+               // ProfDisponible();
                 Consulta.Visible = true;
                 Page.Form.Attributes.Add("enctype", "multipart/form-data");
             }
@@ -108,6 +109,26 @@ public partial class ProyFinalPendiente : Conexion
         }
     }
 
+    /*metodo que verifica estado jurado2*/
+    private void Jur3()
+    {
+        OracleConnection conn = con.crearConexion();
+        OracleCommand cmd = null;
+        if (conn != null)
+        {
+            string sql = "select pf_jur3 from proyecto_final where ppro_codigo='" + Metodo.Value + "'";
+
+            cmd = new OracleCommand(sql, conn);
+            cmd.CommandType = CommandType.Text;
+            OracleDataReader drc1 = cmd.ExecuteReader();
+            if (drc1.HasRows)
+            {
+                jurado3 = drc1[0].ToString();
+            }
+            drc1.Close();
+        }
+    }
+
     /*Pestaña de consultar proyecto*/
     protected void consultarproy(object sender, EventArgs e)
     {
@@ -120,10 +141,10 @@ public partial class ProyFinalPendiente : Conexion
         infoprofesor.Visible = false;
         Mostrarprof.Visible = false;
         Mostrarprog.Visible = true;
-        string sql = "Select * from programa";
+        string sql = "SELECT P.Prog_Codigo, P.Prog_Nombre FROM PROGRAMA p, FACULTAD f, DECANO d WHERE F.Fac_Codigo = P.Fac_Codigo and D.Fac_Codigo = F.Fac_Codigo and D.Usu_Username = '" + Session["id"] + "' and P.Prog_Estado = 'ACTIVO'";
         DDLprogramas.Items.Clear();
         DDLprogramas.Items.AddRange(con.cargardatos(sql));
-        DDLprogramas.Items.Insert(0, "Seleccione un programa");
+        DDLprogramas.Items.Insert(0, "Seleccione Programa");
     }
 
     protected void asignarproy(object sender, EventArgs e)
@@ -138,10 +159,8 @@ public partial class ProyFinalPendiente : Conexion
         trabajosdegrado.Visible = false;
         Mostrarjurados.Visible = false;
         IBregresarCon.Visible= false;
-        
+        Linfo.Text = "";
     }
-
-
 
     /*Metodo que verifica si  el evaluador del anteproyecto ya fue asignado*/
     private void EvaluadorAsignado()
@@ -186,8 +205,8 @@ public partial class ProyFinalPendiente : Conexion
 
     }
 
-        /*Metodo que verifica cantidad de jurado asignados en el proyecto seleccionado*/
-        private void CantidadJur()
+    /*Metodo que verifica cantidad de jurado asignados en el proyecto seleccionado*/
+    private void CantidadJur()
     {
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
@@ -218,7 +237,8 @@ public partial class ProyFinalPendiente : Conexion
             OracleCommand cmd = null;
             if (conn != null)
             {
-                string sql = "select PPRO_CODIGO, PF_TITULO, PF_FECHA from proyecto_final where (pf_jur1='PENDIENTE' or pf_jur2='PENDIENTE' or pf_jur3='PENDIENTE') and pf_aprobacion='APROBADO'";
+                string sql = "select F.Ppro_Codigo, F.Pf_Titulo, F.Pf_Fecha from proyecto_final f, estudiante e where (F.Pf_Jur1='PENDIENTE' or F.Pf_Jur2='PENDIENTE' or F.Pf_Jur3='PENDIENTE') and F.Pf_Aprobacion='APROBADO' and E.Prop_Codigo= F.Ppro_Codigo" +
+                     " and E.Prog_Codigo IN(select P.Prog_Codigo from programa p, facultad f, decano d where F.Fac_Codigo= P.Fac_Codigo and D.Fac_Codigo= F.Fac_Codigo and D.Usu_Username= '"+ Session["id"] + "')";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -350,7 +370,6 @@ public partial class ProyFinalPendiente : Conexion
             Linfo.Text = "Error al cargar la lista: " + ex.Message;
         }
     }
-
     protected void GVjurado1_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
         OracleConnection conn = con.crearConexion();
@@ -485,30 +504,15 @@ public partial class ProyFinalPendiente : Conexion
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
+   /*Proceso para consultar los jurados ya asignados*/
     private void CargarTablatg()
     {
         List<ListItem> list = new List<ListItem>();
-        try
-        {
+        try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
-            if (conn != null)
-            {
-                string sql = "select distinct pro.ppro_codigo, pro.pf_titulo, pro.pf_fecha from estudiante e, programa p, proyecto_final pro  where e.prop_codigo = pro.ppro_codigo and e.prog_codigo='" + DDLprogramas.Items[DDLprogramas.SelectedIndex].Value + "' and pf_jur1='ASIGNADO' and pf_jur2='ASIGNADO' and pf_jur3='ASIGNADO'";
+            if (conn != null){
+                string sql = "select distinct pro.ppro_codigo, pro.pf_titulo, pro.pf_fecha from estudiante e, programa p, proyecto_final pro  where e.prop_codigo = pro.ppro_codigo and e.prog_codigo='" + DDLprogramas.Items[DDLprogramas.SelectedIndex].Value + "' and pf_jur1!='PENDIENTE' and pf_jur2!='PENDIENTE' and pf_jur3!='PENDIENTE'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
@@ -527,7 +531,6 @@ public partial class ProyFinalPendiente : Conexion
         }
     }
     protected void GVtg_RowDataBound(object sender, GridViewRowEventArgs e) { }
-
     protected void GVtg_RowCommand(object sender, GridViewCommandEventArgs e)
     {
         if (e.CommandName == "Ver")
@@ -543,19 +546,22 @@ public partial class ProyFinalPendiente : Conexion
             IBregresarCon.Visible = true;
 
         }
-
     }
-
-        protected void consultarprograma(object sender, EventArgs e)
-    {
-      
+    protected void consultarprograma(object sender, EventArgs e){
+        if (DDLprogramas.SelectedIndex.Equals(0))
+        {
+            Linfo.Text = "Se requiere que seleccione un programa.";
+        }
+        else {
             CargarTablatg();
             trabajosdegrado.Visible = true;
-            Linfo.Text = "";
-     
+        }
     }
-
-
+    protected void DDLprogramas_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        trabajosdegrado.Visible = false;
+        Linfo.Text = "";
+    }
     protected void regresarCon(object sender, EventArgs e)
     {
         Mostrarjurados.Visible = false;
@@ -565,52 +571,6 @@ public partial class ProyFinalPendiente : Conexion
         IBregresarCon.Visible = false;
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     private void CargarTablajurados()
     {
         List<ListItem> list = new List<ListItem>();
@@ -639,117 +599,6 @@ public partial class ProyFinalPendiente : Conexion
         }
     }
     protected void GVmjurados_RowDataBound(object sender, GridViewRowEventArgs e) { }
-
-
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     /*Metodos que se encargan de consultar la informacion de un profesor seleccionado*/
     protected void InfProfesor(object sender, EventArgs e)
@@ -803,22 +652,19 @@ public partial class ProyFinalPendiente : Conexion
     }
     protected void ProfDisponible()
     {
-        if (Eliminado == 1)
-        {
-            string sql = "Select distinct u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";
-            DDLprofesores.Items.Clear();
-            DDLprofesores.Items.AddRange(con.cargardatos(sql));
-            DDLprofesores.Items.Insert(0, "Seleccione un profesor");
+        Jur1();
+        Jur2();
+        Jur3();
+        string sql = "";
+        if (jurado1.Equals("ELIMINADO") && jurado2.Equals("PENDIENTE")  && jurado3.Equals("PENDIENTE")){
+             sql = "Select distinct u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from profesor p, usuario u where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO'";    
+        }else{
+             sql = "Select distinct u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from profesor p, usuario u, jurado j where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO' and u.usu_username not in (select j.usu_username from jurado j where u.usu_username = j.usu_username and j.ppro_codigo='" + Metodo.Value + "')";  
         }
-        else
-        {
-            string sql = "Select distinct u.usu_username ,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) from profesor p, usuario u, jurado j where u.usu_username=p.usu_username and u.USU_ESTADO='ACTIVO' and u.usu_username not in (select j.usu_username from jurado j where u.usu_username = j.usu_username and j.ppro_codigo='" + Metodo.Value + "')";
-            DDLprofesores.Items.Clear();
-            DDLprofesores.Items.AddRange(con.cargardatos(sql));
-            DDLprofesores.Items.Insert(0, "Seleccione un profesor");
-        }
-      
-       
+        DDLprofesores.Items.Clear();
+        DDLprofesores.Items.AddRange(con.cargardatos(sql));
+        DDLprofesores.Items.Insert(0, "Seleccione un profesor");
+
     }
     protected void DescargaHV(object sender, EventArgs e)
     {
@@ -877,13 +723,11 @@ public partial class ProyFinalPendiente : Conexion
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono"))
-        {
+        if (info.Equals("Funciono")){
+            ProfDisponible();
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = texto;
-        }
-        else
-        {
+        }else{
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = info;
         }

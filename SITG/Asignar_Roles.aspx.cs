@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Web.UI;
 using System.Web.UI.WebControls;
 
 public partial class Asignar_Roles : Conexion
@@ -63,16 +64,27 @@ public partial class Asignar_Roles : Conexion
         }
     }
     protected void InsertarRol(object sender, EventArgs e)
-    {    
-       string sql= "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval,'" + TBcodigo.Text + "','" + DDLroles.Items[DDLroles.SelectedIndex].Value.ToString() + "')";
-       Ejecutar("Rol asignado correctamente", sql);
-       CargarRoles();         
-    }
-    private void Ejecutar(string texto, string sql)
     {
+        ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true);     
+    }
+    protected void btnDummy_Click(object sender, EventArgs e)
+    {
+        string rol = DDLroles.Items[DDLroles.SelectedIndex].Value.ToString();
+        string sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES(USUARIOID.nextval,'" + TBcodigo.Text + "','" + DDLroles.Items[DDLroles.SelectedIndex].Value.ToString() + "')";
+        Ejecutar("Rol asignado correctamente", sql);
+        string sql2 = "";
+        if (rol.Equals("DOC")){
+            sql2 = "insert into PROFESOR (USU_USERNAME) VALUES ('" + TBcodigo.Text + "' )";
+            Ejecutar("Rol asignado correctamente", sql2);
+        }else if (rol.Equals("EXT")) {
+            sql2 = "insert into EXTERNO (USU_USERNAME) VALUES ('" + TBcodigo.Text + "' )";
+            Ejecutar("Rol asignado correctamente", sql2);
+        }
+        CargarRoles();
+    }
+    private void Ejecutar(string texto, string sql){
         string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono"))
-        {
+        if (info.Equals("Funciono")){
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = texto;
             CargarDDLRoles();
@@ -80,7 +92,6 @@ public partial class Asignar_Roles : Conexion
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = info;
         }
-
     }
     protected void Nueva(object sender, EventArgs e)
     {
@@ -189,15 +200,25 @@ public partial class Asignar_Roles : Conexion
         OracleCommand cmd = null;
         if (conn != null){
             string id = GVasigrol.Rows[e.RowIndex].Cells[0].Text;
+            EliminarRoles();
             string sql = "Delete from usuario_rol where USUROL_ID='" + id + "'";
             cmd = new OracleCommand(sql, conn);
             cmd.CommandType = CommandType.Text;
-            using (OracleDataReader reader = cmd.ExecuteReader())
-            {
+            using (OracleDataReader reader = cmd.ExecuteReader()){
                 CargarRoles();
                 CargarDDLRoles();
             }
         }
+    }
+    private void EliminarRoles(){
+        List<string> rolparticular = con.consulta("select usu_username from profesor where usu_username= '"+TBcodigo.Text+"'",1,1);
+        if (rolparticular.Count > 0) {
+            Ejecutar("", "Delete from profesor where usu_username='" + TBcodigo.Text + "'");
+        } 
+        rolparticular = con.consulta("select usu_username from externo where usu_username='" + TBcodigo.Text + "'",1,1);
+        if (rolparticular.Count > 0){
+          Ejecutar("", "Delete from externo where usu_username='" + TBcodigo.Text + "'");
+        }    
     }
     protected void GVasigrol_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {

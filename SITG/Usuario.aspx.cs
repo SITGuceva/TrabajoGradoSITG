@@ -73,16 +73,17 @@ public partial class Usuario : Conexion
             sql = "insert into USUARIO_ROL (USUROL_ID,USU_USERNAME,ROL_ID) VALUES (USUARIOID.nextval,'" + cod + "','" + rol + "')";
             Ejecutar("", sql);
             string sql2 = "";
-            if (rol.Equals("EST"))
-            {
+            if (rol.Equals("EST")){
                 sql2 = "insert into ESTUDIANTE (EST_SEMESTRE, USU_USERNAME, PROG_CODIGO) VALUES ('" + TBsemestre.Text + "','" + cod + "', '" + DDLprograma.Items[DDLprograma.SelectedIndex].Value.ToString() + "' )";
                 Ejecutar("Datos guardados satisfactoriamente.", sql2);
                 DDLprograma.SelectedIndex = 0;
-            }
-            else if (rol.Equals("DOC"))
-            {
+            }else if (rol.Equals("DOC")) {
                 sql2 = "insert into PROFESOR (USU_USERNAME) VALUES ('" + cod + "' )";
                 Ejecutar("Datos guardados satisfactoriamente.", sql2);
+            }else if (rol.Equals("DEC")) {
+                sql2 = "insert into DECANO (USU_USERNAME, FAC_CODIGO) VALUES ('" + cod + "', '" + DDLfacultad.Items[DDLfacultad.SelectedIndex].Value.ToString() + "' )";
+                Ejecutar("Datos guardados satisfactoriamente.", sql2);
+                DDLfacultad.SelectedIndex = 0;
             }
         }
         borrardatos();
@@ -96,9 +97,15 @@ public partial class Usuario : Conexion
             DDLprograma.Items.Clear();
             string sql = "SELECT PROG_CODIGO, PROG_NOMBRE FROM PROGRAMA WHERE PROG_ESTADO='ACTIVO'";
             DDLprograma.Items.AddRange(con.cargardatos(sql));
-        } else {
+        } else if (rol.Equals("DEC")) {
+            Tdecano.Visible = true;
+            DDLfacultad.Items.Clear();
+            string sql = "SELECT FAC_CODIGO, FAC_NOMBRE FROM FACULTAD WHERE FAC_ESTADO='ACTIVO'";
+            DDLfacultad.Items.AddRange(con.cargardatos(sql));
+        }
+        else {
             Testudiante.Visible = false;
-
+            Tdecano.Visible = false;
         }
     }
     private void Ejecutar(string texto, string sql)
@@ -128,6 +135,7 @@ public partial class Usuario : Conexion
         TBdireccion.Text = "";
         TBcorreo.Text = "";
         Testudiante.Visible = false;
+        Tdecano.Visible = false;
         DDLrol.SelectedIndex = 0;
     }
    
