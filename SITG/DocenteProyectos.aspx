@@ -2,6 +2,11 @@
 
 <asp:Content ID="DocenteProyectos" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="DOCENTE" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol docente." ></asp:Label>
+        </div>
+    </div>
+    <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Proyectos - Proyectos</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPproyectosdoc" runat="server"> <ContentTemplate>

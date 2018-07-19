@@ -1,6 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="ProyFinalAsignado.aspx.cs" Inherits="ProyFinalAsignado" %>
 
 <asp:Content ID="ProyFinalAsignado" ContentPlaceHolderID="MainContent" Runat="Server">
+    <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="JURADO" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol jurado." ></asp:Label>
+        </div>
+    </div>
      <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Documentos - Proyecto Final Asignado</div>
         <div class="panel-body">
@@ -26,8 +31,8 @@
                                             <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
                                             <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
                                             <asp:BoundField DataField="PF_FECHA" HeaderText="Fecha" />
-                                            <asp:BoundField DataField="PF_ESTADO" HeaderText="Estado" />
-                                            <asp:BoundField DataField="PF_APROBACION" HeaderText="Autorización Director" />
+                                            <asp:BoundField DataField="ESTADO" HeaderText="Estado" />
+                                            <asp:BoundField DataField="APROBACION" HeaderText="Autorización Director" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Documento">
                                                 <ItemTemplate>
                                                     <asp:LinkButton ID="LBdescarga" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("PPRO_CODIGO") %>'></asp:LinkButton></ItemTemplate>

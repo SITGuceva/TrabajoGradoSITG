@@ -1,6 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="ActaReunion.aspx.cs" Inherits="ActaReunion" %>
 
 <asp:Content ID="ActaReunion" ContentPlaceHolderID="MainContent" Runat="Server"> 
+    <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="COMITÉ" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol comité." ></asp:Label>
+        </div>
+    </div>
      <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Reunión - Acta de Reunión</div>
         <div class="panel-body">

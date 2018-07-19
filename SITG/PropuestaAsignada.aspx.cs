@@ -154,6 +154,7 @@ public partial class PropuestaAsignada : Conexion
                 CargarObservaciones();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
@@ -173,6 +174,7 @@ public partial class PropuestaAsignada : Conexion
                 CargarObservaciones();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowEditing(object sender, GridViewEditEventArgs e)
     {      

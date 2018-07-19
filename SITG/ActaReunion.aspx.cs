@@ -540,6 +540,7 @@ public partial class ActaReunion : System.Web.UI.Page
                     }
                     drc1.Close();
                 }
+                conn.Close();
                 table13.WidthPercentage = 100f;
                 doc.Add(table13);
             }
@@ -601,6 +602,7 @@ public partial class ActaReunion : System.Web.UI.Page
                   }
                   drc1.Close();
                }
+               conn.Close();
                table20.WidthPercentage = 100f;
                doc.Add(table20);
             }
@@ -848,6 +850,7 @@ public partial class ActaReunion : System.Web.UI.Page
                 }
             }
         }
+        conn.Close();
     }
     protected void GVactas_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {

@@ -2,6 +2,11 @@
 
 <asp:Content ID="ProyFinalPendiente" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="DECANO" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol decano." ></asp:Label>
+        </div>
+    </div>
+    <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Decanatura - Proyectos Finales Pendientes</div>
         <div class="panel-body">
             <asp:UpdatePanel runat="server" ID="UPasignarjur"> <ContentTemplate>
@@ -16,7 +21,7 @@
                             <div class="panel panel-default">
                                 <div class="panel-body">
 
-                                    <div id="Consulta" runat="server" visible="false" class="row">
+                                    <div id="Consulta" runat="server" visible="true" class="row">
                                         <asp:GridView ID="GVconsulta" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None"
                                             AutoGenerateColumns="False" CssClass="table table-bordered bs-table" OnRowCommand="GVconsulta_RowCommand">
                                             <AlternatingRowStyle BackColor="White" />
@@ -45,7 +50,7 @@
                                                 </asp:TemplateField>
                                             </Columns>
                                         </asp:GridView>
-                                        <asp:HiddenField ID="Metodo" runat="server" Value="" />
+                                       
                                     </div>
 
                                     <div id="Jurado1" runat="server" style="overflow-x: auto" visible="false" class="row">
@@ -65,6 +70,8 @@
                                                 <asp:BoundField DataField="USU_USERNAME" HeaderText="Cédula" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:BoundField DataField="USU_CORREO" HeaderText="Correo Electrónico" HeaderStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="JUR_FECHA" HeaderText="Fecha Asignación" HeaderStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="JUR_FRPTA" HeaderText="Fecha Respuesta" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de Vida">
                                                     <ItemTemplate>
                                                         <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton></ItemTemplate>
@@ -93,7 +100,9 @@
                                                 <asp:BoundField DataField="USU_USERNAME" HeaderText="Cédula" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:BoundField DataField="USU_CORREO" HeaderText="Correo Electrónico" HeaderStyle-HorizontalAlign="Center" />
-                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de Vida">
+                                                <asp:BoundField DataField="JUR_FECHA" HeaderText="Fecha Asignación" HeaderStyle-HorizontalAlign="Center" />
+                                               <asp:BoundField DataField="JUR_FRPTA" HeaderText="Fecha Respuesta" HeaderStyle-HorizontalAlign="Center" />
+                                               <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de Vida">
                                                     <ItemTemplate>
                                                         <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton>
                                                     </ItemTemplate>
@@ -122,6 +131,8 @@
                                                 <asp:BoundField DataField="USU_USERNAME" HeaderText="Cédula" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:BoundField DataField="USU_CORREO" HeaderText="Correo Electrónico" HeaderStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="JUR_FECHA" HeaderText="Fecha Asignación" HeaderStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="JUR_FRPTA" HeaderText="Fecha Respuesta" HeaderStyle-HorizontalAlign="Center" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de Vida">
                                                     <ItemTemplate>
                                                         <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton></ItemTemplate>
@@ -217,8 +228,7 @@
                                             </Columns>
                                         </asp:GridView>
                                         <asp:HiddenField ID="Metodo2" runat="server" Value="" />
-                                        <asp:Table ID="Table1" runat="server" HorizontalAlign="center">
-                                        </asp:Table>
+                                        
                                     </div>
 
                                     <div id="Mostrarjurados" runat="server" visible="false" class="row" style="overflow-x: auto">
@@ -233,6 +243,10 @@
                                             <EmptyDataTemplate>¡No hay trabajos de grado para esta consulta! </EmptyDataTemplate>
                                             <Columns>
                                                 <asp:BoundField DataField="JURADOS" HeaderText="Jurados" />
+                                                 <asp:BoundField DataField="JUR_FECHA" HeaderText="Fecha Asignación" HeaderStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="JUR_FRPTA" HeaderText="Fecha Respuesta" HeaderStyle-HorizontalAlign="Center" />
+                                                <asp:BoundField DataField="JUR_FENVIO" HeaderText="Fecha Envío" HeaderStyle-HorizontalAlign="Center" />
+                                                
                                             </Columns>
                                         </asp:GridView>
                                     </div>
@@ -242,6 +256,7 @@
                                     <br />
                                     <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
 
+                                     <asp:HiddenField ID="Metodo" runat="server" Value="" />
                                 </div>
                             </div>
                         </div>

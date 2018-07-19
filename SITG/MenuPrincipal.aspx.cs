@@ -57,9 +57,6 @@ public partial class Menu : Page{
     public string dirpeticion;// cantidad de anteproyectos pendientes por asignar evaluador
     public string solicom;// solicitudes estudiantes comite
     public string cantreunionescom;// cantidad de reuniones comite en un determinado mes
-    public string reunionescontaduria;// cantidad de reuniones del comite de contaduria en un determinado mes
-    public string reunionesadme;// cantidad de reuniones del comite de adm de empresas en un determinado mes
-    public string reunionescomer;// cantidad de reuniones del comite de comercio internacional en un determinado mes
     public int sumapropuesta, sumaanteproyecto, sumaproyectofinal, sumareunion;
 
 
@@ -86,6 +83,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void consultarusuarios()
     {
@@ -101,6 +99,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void consultarestudiantes()
     {
@@ -116,6 +115,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void consultarprofesor()
     {
@@ -131,6 +131,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void consultarprogramas()
     {
@@ -146,6 +147,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*--------------------------------------ESTUDIANTE-------------------------------------*/
@@ -174,6 +176,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void obsdirectorpropuesta()
     {
@@ -189,6 +192,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void estadopropuesta()
     {
@@ -215,6 +219,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void obscomitepropuesta()
     {
@@ -230,6 +235,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     //**ANTEPROYECTO**//
     protected void anteproyectoeva()// saber si el evaluador fue asignado
@@ -249,6 +255,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectoevacal() // saber calificación evaluador
     {
@@ -264,6 +271,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectoevaobs() // saber cantidad observaciones evaluador
     {
@@ -279,6 +287,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     //**DIRECTOR**//
     protected void anteproyectodircal() // saber calificación director
@@ -306,6 +315,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectodirobs() // saber cantidad observaciones director
     {
@@ -321,6 +331,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     //**PROYECTO FINAL**//
     protected void pagosestudiante()  // saber pagos
@@ -348,7 +359,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
-
+        conn.Close();
     }
     protected void proyfinaldirector() // Aceptación director proyecto final
     {
@@ -375,6 +386,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinaldirectorobs() // observaciones director proyecto final
     {
@@ -390,6 +402,7 @@ public partial class Menu : Page{
             } 
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinaljurado()// Aceptación jurado proyecto final
     {
@@ -416,6 +429,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
      }   
     protected void proyfinaljuradoobs() // observaciones jurado proyecto final
     {
@@ -431,6 +445,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*--------------------------------------EVALUADOR-------------------------------------*/    
@@ -448,6 +463,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteprorevisareva()//Cantidad de anteproyectos que faltan por revisar
     {
@@ -463,6 +479,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*--------------------------------------DOCENTE-------------------------------------*/   
@@ -480,6 +497,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*--------------------------------------DIRECTOR-------------------------------------*/
@@ -497,6 +515,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }  
     protected void propuestaspen() //cantidad de propuestas sin revisar
     {
@@ -512,6 +531,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectopen()//cantidad de anteproyectos sin revisar
     {
@@ -527,6 +547,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }   
     protected void proyectofinalpen()//cantidad de anteproyectos sin revisar
     {
@@ -542,6 +563,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*--------------------------------------JURADO---------------------------------------*/
@@ -559,6 +581,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinalrevision() //cantidad de proyectos finales sin revisar
     {
@@ -574,6 +597,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*----------------------------------------DECANO-------------------------------------*/
@@ -591,6 +615,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void propuestasrecha()
     {
@@ -606,6 +631,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void propuestaspendiente()
     {
@@ -621,6 +647,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectosaprob() //Cantidad de anteproyectos
     {
@@ -636,6 +663,7 @@ public partial class Menu : Page{
             };
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectosrecha()
     {
@@ -651,6 +679,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectospen()
     {
@@ -666,6 +695,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinalaprob()//Cantidad de proyectos finales
     {
@@ -681,6 +711,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinalrecha()
     {
@@ -696,6 +727,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinalpen()
     {
@@ -711,6 +743,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinaljur() //Cantidad de proyectos finales sin jurado
     {
@@ -726,62 +759,9 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
-    protected void reucontaduria()//Cantidad de reuniones en el mes actual contaduria
-    {
-        OracleConnection conn = con.crearConexion();
-        OracleCommand cmd = null;
-        if (conn != null) {
-            int mes = DateTime.Now.Month;
-            string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='1' AND TO_CHAR(reu.reu_fprop,'MM')='"+mes+"'";
-            cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
-            OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows){
-                reunionescontaduria = drc1.GetInt32(0).ToString();
-                int Valor = Convert.ToInt32(reunionescontaduria);
-                sumareunion = sumareunion + Valor;
-            }
-            drc1.Close();
-        }
-    }
-    protected void reuadmempresas()//Cantidad de reuniones en el mes actual administracion
-    {
-        OracleConnection conn = con.crearConexion();
-        OracleCommand cmd = null;
-        if (conn != null) {
-            int mes = DateTime.Now.Month;
-            string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='2' AND TO_CHAR(reu.reu_fprop,'MM')='" + mes + "'";
-            cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
-            OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows){
-                reunionesadme = drc1.GetInt32(0).ToString();
-                int Valor = Convert.ToInt32(reunionesadme);
-                sumareunion = sumareunion + Valor; 
-            }
-            drc1.Close();
-        }
-    }
-    protected void reucomercio()//Cantidad de reuniones en el mes actual comercio
-    {
-        OracleConnection conn = con.crearConexion();
-        OracleCommand cmd = null;
-        if (conn != null) {
-            int mes = DateTime.Now.Month;
-            string sql = "SELECT COUNT(*) FROM reunion reu, comite com WHERE reu.com_codigo=com.com_codigo AND Com.Com_Codigo='3' AND TO_CHAR(reu.reu_fprop,'MM')='" + mes + "'";
-            cmd = new OracleCommand(sql, conn);
-            cmd.CommandType = CommandType.Text;
-            OracleDataReader drc1 = cmd.ExecuteReader();
-            if (drc1.HasRows){
-                reunionescomer = drc1.GetInt32(0).ToString();
-                int Valor = Convert.ToInt32(reunionescomer);
-                sumareunion = sumareunion + Valor;
-            }
-            drc1.Close();
-        }
-    }
-
+   
     /*-----------------------------------------COMITE-------------------------------------*/
     protected void propuestasaprobcom()//Cantidad de propuestas
     {
@@ -799,6 +779,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void propuestasrechacom()
     {
@@ -816,6 +797,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void propuestaspencom()
     {
@@ -833,6 +815,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectosaprobcom()//Cantidad de anteproyectos
     {
@@ -850,6 +833,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectorechacom()
     {
@@ -867,6 +851,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void anteproyectopencom()
     {
@@ -884,6 +869,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinalaprobcom() //Cantidad de proyectos finales
     {
@@ -901,6 +887,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }   
     protected void proyfinalrechacom()
     {
@@ -918,6 +905,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proyfinalpencom()
     {
@@ -935,6 +923,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void proppendientecom() //Cantidad de propuestas pendientes
     {
@@ -950,6 +939,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void antependientecom()//Cantidad de anteproyectos pendientes por asignar evaluador
     {
@@ -965,6 +955,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void dirpendientecom()//Cantidad de peticiones director pendientes
     {
@@ -980,6 +971,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void solicitudespencom()//Cantidad de peticiones director pendientes
     {
@@ -995,6 +987,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
     protected void cantreucom()//Cantidad de reuniones en el mes
     {
@@ -1011,6 +1004,7 @@ public partial class Menu : Page{
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     //**ROLES DEL USUARIO**//
@@ -1121,9 +1115,6 @@ public partial class Menu : Page{
                 proyfinalrecha();
                 proyfinalpen();
                 proyfinaljur();
-                reucontaduria();
-                reuadmempresas();
-                reucomercio();
             }
             Notificaciones.Controls.Add(new LiteralControl("<li style='background-color:black'><a href =\"#"+ciclo[i]+ "\" data-toggle=\"tab\" style=\"color:gray;\" > " +nombre+"</a></li>"));
         }

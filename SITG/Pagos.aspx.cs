@@ -51,6 +51,7 @@ public partial class Pagos : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /* Metodo que verifica si el estado del pago*/
@@ -78,6 +79,7 @@ public partial class Pagos : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*Metodos que manejan la interfaz del subir-consultar*/

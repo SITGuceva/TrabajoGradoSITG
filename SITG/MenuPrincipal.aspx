@@ -89,7 +89,7 @@
                                             <section class="statistics text-center" style="position: relative; left: -1%;">
                                                 <div class="data">
                                                     <div class="container">
-                                                        <h3>PROPUESTAS PENDIENTES</h3>
+                                                        <h2>PROPUESTAS PENDIENTES</h2>
                                                         <div class="row">
                                                             <div class="col-md-3 col-sm-6 col-xs-12">
                                                                 <div class="stats">
@@ -829,16 +829,7 @@
                                                     </div>
                                                 </div>
                                             </section>
-                                        </li>
-                                         <li class="col-sm-4">
-                                              <section id="skills" style="position: relative; top: auto;">
-                                                <h2 style="color:black;">REUNIONES EN EL MES ACTUAL POR CADA COMITE </h2>
-                                                <progress value="<%= reunionescontaduria %>" max="<%= sumareunion %>" style="background-color: black;"></progress><span>Contaduría <%=  reunionescontaduria %></span>
-                                                <progress value="<%= reunionesadme %>" max="<%= sumareunion %>" style="background-color: black;"></progress><span>Administración de empresas <%= reunionesadme %></span>
-                                                <progress value="<%= reunionescomer %>" max="<%= sumareunion %>" style="background-color: black;"></progress><span>Comercio internacional <%=  reunionescomer %></span>
-                                                <h3 style="color:black;">Total: <%= sumareunion %></h3>
-                                              </section>
-                                        </li>
+                                        </li> 
                                     </ul>
                                 </div><!-- /Slide2 -->
                             </div>

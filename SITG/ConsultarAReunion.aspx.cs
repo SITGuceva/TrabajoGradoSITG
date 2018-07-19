@@ -159,6 +159,7 @@ public partial class ConsultarAReunion : System.Web.UI.Page
                 }
             }
         }
+        conn.Close();
     }
     protected void GVactas_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {

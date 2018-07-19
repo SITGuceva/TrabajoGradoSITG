@@ -1,6 +1,11 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="OpcRol.aspx.cs" Inherits="OpcRol" %>
 
 <asp:Content ID="OpcRol" ContentPlaceHolderID="MainContent" Runat="Server">
+    <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="ADMINISTRADOR" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol administrador." ></asp:Label>
+        </div>
+    </div>
  <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Sistema - Opciones Rol</div>
         <div class="panel-body">

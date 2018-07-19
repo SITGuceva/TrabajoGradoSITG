@@ -75,6 +75,7 @@ public partial class DatoPersonal : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*Metodo para buscar la  informacion del usuario*/

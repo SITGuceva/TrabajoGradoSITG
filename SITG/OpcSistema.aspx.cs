@@ -169,6 +169,7 @@ public partial class OpcSistema : Conexion
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void DDLcat_SelectedIndexChanged(object sender, EventArgs e)
     {

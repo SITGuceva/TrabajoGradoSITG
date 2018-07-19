@@ -50,6 +50,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             DDLconsultaReunion.Items.AddRange(con.cargardatos(sql));
             DDLconsultaReunion.Items.Insert(0, "Seleccione Reunion");
             DDLconsultaReunion.Visible = true;
+            Linfo.Text = "";
         }
     }
     private void ResultadoConsulta()
@@ -58,7 +59,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null) {
-                string sql = "select DISTINCT   p.PROP_CODIGO,p.PROP_TITULO, p.PROP_ESTADO, p.PROP_FECHA, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, s.dir_estado as Estado  " +
+                string sql = "select DISTINCT   p.PROP_CODIGO,p.PROP_TITULO, InitCap(p.PROP_ESTADO) as pestado, p.PROP_FECHA, CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as director, InitCap(s.dir_estado) as Estado  " +
                     "from estudiante e, PROPUESTA p,  PROFESOR d, director s, usuario u " +
                     "WHERE u.usu_username = s.usu_username and e.prop_codigo = s.prop_codigo and s.prop_codigo=p.prop_codigo and p.PROP_CODIGO = e.PROP_CODIGO and p.PROP_ESTADO = 'PENDIENTE' and d.COM_CODIGO = e.PROG_CODIGO and d.USU_USERNAME = '"+ Session["id"] + "'";
 
@@ -171,7 +172,9 @@ public partial class PropuestaPendiente : System.Web.UI.Page
                 GVobservacion.DataBind();
             }
             conn.Close();
-        } catch (Exception ex) {}
+        } catch (Exception ex) {
+            Linfo.Text = "Error al cargar la lista: " + ex.StackTrace;
+        }
     }
 
     /*Metodos que sirven para el modificar-eliminar de la tabla observaciones*/
@@ -189,6 +192,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
@@ -206,6 +210,7 @@ public partial class PropuestaPendiente : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowEditing(object sender, GridViewEditEventArgs e)
     {
@@ -304,6 +309,5 @@ public partial class PropuestaPendiente : System.Web.UI.Page
         ResultadoConsulta();
         Consulta.Visible = true;
         Metodo.Value = "";
-        Linfo.Text = "";
     }
 }

@@ -115,6 +115,7 @@ public partial class Roles : Conexion
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVrol_RowEditing(object sender, GridViewEditEventArgs e)
     {

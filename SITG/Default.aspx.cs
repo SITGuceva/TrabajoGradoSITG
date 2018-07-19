@@ -53,6 +53,7 @@ public partial class _Default : Page{
                     UserName.Text = "";
                 }
             }
+            conn.Close();
         }catch (Exception ex){
            Lerror.Text=ex.StackTrace;          
         }

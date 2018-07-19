@@ -127,6 +127,7 @@ public partial class ProyectoFinal : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
     private void CalificarProyectoF()
     {
@@ -192,7 +193,7 @@ public partial class ProyectoFinal : Conexion
             } 
             drc1.Close();
         }
-
+        conn.Close();
         if (estado.Equals("APROBADO")){
             LBGenerar.Enabled = true;
             LBGenerar.ForeColor = System.Drawing.Color.Black;
@@ -221,6 +222,7 @@ public partial class ProyectoFinal : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*Metodos que manejan la interfaz del subir-consultar- generar*/

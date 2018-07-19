@@ -198,6 +198,7 @@ public partial class DocenteProyectos : System.Web.UI.Page
                 ResultadoConsulta();
             }
         }
+        conn.Close();
     }
     protected void GVproyectos_RowEditing(object sender, GridViewEditEventArgs e)
     {

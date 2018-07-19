@@ -155,5 +155,6 @@ public partial class Categoria : Conexion
                 cargarTabla();
             }
         }
+        conn.Close();
     }
 }

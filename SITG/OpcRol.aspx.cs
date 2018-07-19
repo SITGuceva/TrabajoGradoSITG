@@ -159,6 +159,7 @@ public partial class OpcRol : Conexion
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVopcrol_PageIndexChanging(object sender, GridViewPageEventArgs e)
     {

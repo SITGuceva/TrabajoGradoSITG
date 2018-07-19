@@ -67,6 +67,7 @@ public partial class Consulta_Formatos : System.Web.UI.Page
                 }
             }
         }
+        conn.Close();
     }
     private void ResultadoConsulta()
     {

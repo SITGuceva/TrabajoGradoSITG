@@ -73,6 +73,7 @@ public partial class ProcesoEST : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
     private void Comprobado()
     {

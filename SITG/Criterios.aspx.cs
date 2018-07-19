@@ -128,6 +128,7 @@ public partial class Criterios : System.Web.UI.Page
                  ResultadoConsulta();
              }
         }
+        conn.Close();
     }
     protected void GVcriterios_RowEditing(object sender, GridViewEditEventArgs e)
     {

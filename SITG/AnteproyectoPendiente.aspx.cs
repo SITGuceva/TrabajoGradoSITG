@@ -220,7 +220,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         }
     }
 
-    /*Eventos de los botones*/
+    /*Eventos que manejan el asignar el evaluador*/
     private void Ejecutar(string texto, string sql)
     {
         string info = con.IngresarBD(sql);
@@ -251,7 +251,8 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
             Terminar.Visible = true;          
         }else{  
             string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-            string sql = "insert into evaluador (EVA_ID, EVA_FECHA,USU_USERNAME ,APRO_CODIGO, REU_CODIGO) values (EVALUADORID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'"+ DDLprofesores.Items[DDLprofesores.SelectedIndex].Value+"', '" + Metodo.Value + "', '" + DDLconsultaReunion.Items[DDLconsultaReunion.SelectedIndex].Value + "')";
+            string fentrega = System.DateTime.Now.AddMonths(1).Date.ToString("yyyy/MM/dd, HH:mm:ss");
+            string sql = "insert into evaluador (EVA_ID, EVA_FECHA,USU_USERNAME ,APRO_CODIGO, REU_CODIGO, EVA_FRTA) values (EVALUADORID.nextval,TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'),'"+ DDLprofesores.Items[DDLprofesores.SelectedIndex].Value+"', '" + Metodo.Value + "', '" + DDLconsultaReunion.Items[DDLconsultaReunion.SelectedIndex].Value + "',TO_DATE( '" + fentrega + "', 'YYYY-MM-DD HH24:MI:SS'))";
             Ejecutar("1", sql);
             if (Verificador.Value.Equals("Funciono")){
                 Verificador.Value = "";
@@ -270,6 +271,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         Mostrarprof.Visible = false;
         InfoAnteproyecto.Visible = true;
         Evaluador.Visible = true;
+
         CargarEvaluador();
        
        
@@ -282,14 +284,14 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         Verificador.Value = "";
     }
 
-    /*Metodo cargar evaluador guardado*/
+    /*Metodo cargar evaluador guardado y evento del eliminar el evaluador*/
     private void CargarEvaluador()
     {
         try{
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select e.eva_id,  e.usu_username,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as nombre, u.usu_correo, e.apro_codigo from evaluador e, usuario u where  apro_codigo='" + Metodo.Value + "' and u.usu_username = e.usu_username";
+                string sql = "select e.eva_id,  e.usu_username,CONCAT(CONCAT(u.usu_nombre, ' '), u.usu_apellido) as nombre, u.usu_correo, e.apro_codigo, e.eva_fecha, e.eva_frta, e.eva_fenvio from evaluador e, usuario u where  apro_codigo='" + Metodo.Value + "' and u.usu_username = e.usu_username";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
@@ -310,6 +312,7 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
     protected void GVevaluador_RowDataBound(object sender, GridViewRowEventArgs e) { }
     protected void GVevaluador_RowDeleting(object sender, GridViewDeleteEventArgs e)
     {
+        string codigo = GVevaluador.Rows[e.RowIndex].Cells[1].Text;
         OracleConnection conn = con.crearConexion();
         OracleCommand cmd = null;
         if (conn != null)
@@ -341,8 +344,12 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
                 DDLconsultaReunion.Visible = true;
             }
         }
+        conn.Close();
+        
+        enviarmensaje(codigo, 2);
     }
 
+    //metodo que verifica si el usuario asignado a evaluador ya tiene el rol correspondiente
     private void ExisteRol(string id)
     {
         string sql = " select u.USU_USERNAME from usuario_rol u where u.ROL_ID = 'EVA' and U.Usu_Username = '"+id+"'";
@@ -354,7 +361,29 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
            Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = "Se ha asignado el evaluador para el anteproyecto satisfactoriamente";
         }
+        
+        enviarmensaje(id, 1);
     }
+
+    //Metodo  que envia el mensaje de asignacion o eliminacion de la asignacion al evaluador
+    private void enviarmensaje(string id, int opc)
+    {
+        List<string> correo = con.consulta("select usu_correo from usuario where usu_username='" + id + "'", 1, 0);
+        string msj = "", asunto="";
+        if (correo.Count.Equals(0)){
+            Linfo.Text = "El profesor no tiene un correo para enviarle la alerta";
+        } else {
+            if (opc.Equals(1)) {
+                asunto = "ASIGNADO A EVALUADOR";
+                msj = "Ha sido asignado como evaluador de un anteproyecto con código: "+Metodo.Value+" para saber mas de dicha información por favor ingresar a SITG"; }
+            else if (opc.Equals(2)) {
+                asunto = "ELIMINADO DE EVALUADOR";
+                msj = "Ha sido desasignado como evaluador del anteproyecto con código: "+Metodo.Value+""; }
+
+            con.EnviarCorreo(correo[0], asunto, msj);
+        }
+    }
+
     protected void cancelar(object sender, EventArgs e)
     {     
         Mostrarprof.Visible = false;
@@ -381,8 +410,4 @@ public partial class AnteproyectoPendiente : System.Web.UI.Page
         Evaluador.Visible = false;
     }
 
-
-
-
-   
 }

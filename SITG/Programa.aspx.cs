@@ -159,6 +159,7 @@ public partial class Programa : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVprog_RowEditing(object sender, GridViewEditEventArgs e)
     {

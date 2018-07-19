@@ -135,6 +135,7 @@ public partial class Facultad : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
   
 }

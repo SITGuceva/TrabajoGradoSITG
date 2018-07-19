@@ -159,6 +159,7 @@ public partial class Formatos : System.Web.UI.Page
                 }
             }
         }
+        conn.Close();
     }
     private void ResultadoConsulta(){
         try {
@@ -209,6 +210,7 @@ public partial class Formatos : System.Web.UI.Page
                 ResultadoConsulta();
             }
         }
+        conn.Close();
     }
     protected void GVformatos_RowEditing(object sender, GridViewEditEventArgs e)
     {

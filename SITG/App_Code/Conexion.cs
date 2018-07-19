@@ -196,6 +196,7 @@ public class Conexion : System.Web.UI.Page
                 }
                 drc1.Close();
             }
+            conn.Close();
         }catch (Exception ex){
             Response.Write("Error al cargar la lista: " + ex.StackTrace);
         }
@@ -211,6 +212,28 @@ public class Conexion : System.Web.UI.Page
         stream = md5.ComputeHash(encoding.GetBytes(str));
         for (int i = 0; i < stream.Length; i++) sb.AppendFormat("{0:x2}", stream[i]);
         return sb.ToString();
+    }
+
+    public void EnviarCorreo( string para, string asunto, string mensaje) {
+        System.Net.Mail.MailMessage msg = new System.Net.Mail.MailMessage();
+        msg.To.Add(para); //para saber a quien se lo enviamos
+        msg.Subject = asunto; // el asunto
+        msg.SubjectEncoding = System.Text.Encoding.UTF8;
+        msg.Body = mensaje; //el mensaje
+        msg.BodyEncoding = System.Text.Encoding.UTF8;
+        msg.IsBodyHtml = true; 
+        msg.From = new System.Net.Mail.MailAddress("sitguceva@gmail.com"); //desde donde se envia el correo
+        System.Net.Mail.SmtpClient cliente = new System.Net.Mail.SmtpClient(); 
+        cliente.Credentials = new System.Net.NetworkCredential("sitguceva@gmail.com", "uceva2024");//credenciales
+        cliente.Port = 587; 
+        cliente.EnableSsl = true; 
+        cliente.Host = "smtp.gmail.com"; 
+
+        try{
+            cliente.Send(msg);
+        } catch (Exception ex){
+            Response.Write("Error al enviar correo: " + ex.StackTrace);
+        }
     }
 
 }

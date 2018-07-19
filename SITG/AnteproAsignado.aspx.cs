@@ -152,6 +152,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
@@ -170,6 +171,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowEditing(object sender, GridViewEditEventArgs e)
     {
@@ -229,8 +231,10 @@ public partial class AnteproAsignado : System.Web.UI.Page
     }
     protected void btnDummy_Click(object sender, EventArgs e){
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+        Ejecutar("", "update evaluador set eva_fenvio= TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS') where apro_codigo='"+Metodo.Value+"' and usu_username= '"+ Session["id"] + "'");
         string sql = "update anteproyecto set anp_estado='" + DDLestadoA.Items[DDLestadoA.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Metodo.Value + "'";
         Ejecutar("El anteproyecto ha sido revisado con exito, presione click en regresar para revisar otro.", sql);
+
         Resultado.Visible = false;
         MostrarAgregarObs.Visible = false;
         MostrarDDLestadoP.Visible = false;
@@ -289,7 +293,7 @@ public partial class AnteproAsignado : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select Distinct A.Apro_Codigo, A.Anp_Nombre, A.Anp_Fecha, Initcap(A.Anp_Aprobacion) as aprobacion, Initcap(A.Anp_Estado) as estado from anteproyecto a, evaluador e where A.Apro_Codigo = E.Apro_Codigo and E.Usu_Username = '"+ Session["id"] + "' order by A.Anp_Fecha";
+                string sql = "select Distinct A.Apro_Codigo, A.Anp_Nombre, Initcap(A.Anp_Aprobacion) as aprobacion, Initcap(A.Anp_Estado) as estado, TO_CHAR( e.eva_fecha, 'dd/mm/yyyy') as FASIGNADO, TO_CHAR( e.eva_frta, 'dd/mm/yyyy') as FRPTA, TO_CHAR( e.eva_fenvio, 'dd/mm/yyyy') as FENVIO from anteproyecto a, evaluador e where A.Apro_Codigo = E.Apro_Codigo and E.Usu_Username = '" + Session["id"] + "' order by FASIGNADO";
 
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;

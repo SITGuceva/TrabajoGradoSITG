@@ -2,6 +2,11 @@
 
 <asp:Content ID="Asignar_Roles" ContentPlaceHolderID="MainContent" Runat="Server">
         <div class="panel panel-default">
+            <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+                <asp:Label ID="Ltitle" runat="server"  Text="ADMINISTRADOR" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol administrador." ></asp:Label>
+            </div>
+        </div>
+        <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Usuarios - Asignar Roles</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPasigrol" runat="server"> <ContentTemplate>

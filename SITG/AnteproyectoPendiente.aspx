@@ -2,6 +2,11 @@
 
 <asp:Content ID="AnteproPendiente" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="COMITÉ" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol comité." ></asp:Label>
+        </div>
+    </div>
+    <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Reunión - Anteproyectos Pendientes</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPantepropendi" runat="server"> <ContentTemplate>
@@ -78,6 +83,9 @@
                                             <asp:BoundField DataField="USU_USERNAME" HeaderText="Cédula" HeaderStyle-HorizontalAlign="Center" />
                                             <asp:BoundField DataField="NOMBRE" HeaderText="Nombre" HeaderStyle-HorizontalAlign="Center" />
                                             <asp:BoundField DataField="USU_CORREO" HeaderText="Correo Electrónico" HeaderStyle-HorizontalAlign="Center" />
+                                            <asp:BoundField DataField="EVA_FECHA" HeaderText="Fecha Asignación" HeaderStyle-HorizontalAlign="Center" />
+                                            <asp:BoundField DataField="EVA_FRTA" HeaderText="Fecha Respuesta" HeaderStyle-HorizontalAlign="Center" />
+                                            <asp:BoundField DataField="EVA_FENVIO" HeaderText="Fecha Envío" HeaderStyle-HorizontalAlign="Center" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Hoja de Vida">
                                                 <ItemTemplate>
                                                     <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DescargaHV" CommandArgument='<%# Eval("USU_USERNAME") %>'></asp:LinkButton></ItemTemplate>

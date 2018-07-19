@@ -63,6 +63,7 @@ public partial class Anteproyecto : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /* Metodo que verifica si un anteproyecto fue aprobado o rechazado*/
@@ -95,6 +96,7 @@ public partial class Anteproyecto : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*Metodos que manejan la interfaz del subir-consultar*/

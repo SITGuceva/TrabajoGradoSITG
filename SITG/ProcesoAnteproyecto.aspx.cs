@@ -25,7 +25,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
-        scriptManager.RegisterPostBackControl(this.LBdescarga);
+        scriptManager.RegisterPostBackControl(this.GVanteproyecto);
     }
 
     /*Metodos que consultan los anteproyectos pendientes por revisar */
@@ -66,8 +66,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
             Consulta.Visible = false;
             int index = Convert.ToInt32(e.CommandArgument);
             GridViewRow row = GVantependiente.Rows[index];
-            Codigo.Value = row.Cells[0].Text; 
-            Titulo.Value = row.Cells[1].Text; 
+            Codigo.Value = row.Cells[0].Text;
             CargarContenido();  
         }
     }
@@ -75,8 +74,25 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
     /*Metodos que consultan anteproyecto especifico*/
     private void CargarContenido()
     {
-        CodigoP.Text = Codigo.Value;
-        TituloP.Text = Titulo.Value;
+        try{
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null) {
+                string sql = "select  apro_codigo, anp_nombre from  anteproyecto  WHERE  apro_codigo = '" + Codigo.Value + "'";
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader()){
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVanteproyecto.DataSource = dataTable;
+                }
+                GVanteproyecto.DataBind();
+            }
+            conn.Close();
+        } catch (Exception ex) {
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+
         MostrarCalifica.Visible = true;
         Linfo.Text = "";
         InfoAnteproy.Visible = true;
@@ -156,6 +172,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowUpdating(object sender, GridViewUpdateEventArgs e)
     {
@@ -173,6 +190,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowEditing(object sender, GridViewEditEventArgs e)
     {
@@ -232,7 +250,7 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
     }
 
     protected void btnDummy_Click(object sender, EventArgs e) {
-        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+       
         string sql = "update anteproyecto set anp_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where apro_codigo='" + Codigo.Value + "'";
         Ejecutar("El anteproyecto ha sido revisada con exito, presione click en regresar para revisar otra", sql);
 
@@ -242,7 +260,6 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
         InfoAnteproy.Visible = false;
         Terminar.Visible = false;
         IBregresar.Visible = true;
-        Titulo.Value = "";
         Codigo.Value = "";
     }
     protected void cancelar(object sender, EventArgs e)
@@ -256,7 +273,6 @@ public partial class ProcesoAnteproyecto : System.Web.UI.Page
         Consulta.Visible = true;
         DDLestadoP.SelectedIndex = 0;
         Codigo.Value = "";
-        Titulo.Value = "";
     }
     protected void regresar(object sender, EventArgs e)
     {

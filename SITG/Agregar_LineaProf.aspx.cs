@@ -205,6 +205,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVlineaprof_RowEditing(object sender, GridViewEditEventArgs e)
     {       
@@ -300,6 +301,7 @@ public partial class Agregar_LineaProf : System.Web.UI.Page
                 ResultadoTemas();
             }
         }
+        conn.Close();
     }
     protected void GVtema_RowEditing(object sender, GridViewEditEventArgs e)
     {

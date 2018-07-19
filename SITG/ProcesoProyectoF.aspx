@@ -2,6 +2,11 @@
 
 <asp:Content ID="ProcesoPF" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="DIRECTOR" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol director." ></asp:Label>
+        </div>
+    </div>
+    <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Documentos - Proceso Proyecto Final</div>
         <div class="panel-body">
             <asp:UpdatePanel runat="server" ID="UPprocesopf">
@@ -38,15 +43,21 @@
 
                                     <!--RESULTADO DE UN PROYECTO FINAL PARA REVISAR -->
                                     <div id="InformacionP" runat="server" visible="false" class="row">
-                                        <asp:Label ID="Lcodigo" runat="server" Text="Código:" ForeColor="Gray" Font-Bold="True"></asp:Label>
-                                        <asp:Label ID="CodigoP" runat="server" Text="" ForeColor="Black" Font-Bold="True"></asp:Label>
-                                        <br />
-                                        <asp:Label ID="Ltitulo" runat="server" Text="Título:" ForeColor="Gray" Font-Bold="True"></asp:Label>
-                                        <asp:Label ID="TituloP" runat="server" Text="" ForeColor="Black" Font-Bold="True"></asp:Label>
-                                        <br />
-                                        <asp:Label ID="Ldocumento" runat="server" Text="Documento:" ForeColor="Gray" Font-Bold="True"></asp:Label>
-                                        <asp:LinkButton ID="LBdescarga" runat="server" Text="Descargar" OnClick="DownloadFile"></asp:LinkButton>
-                                    </div>
+                                         <asp:GridView ID="GVpf" runat="server" AllowPaging="True" CellPadding="4" ForeColor="#333333" GridLines="None" AutoGenerateColumns="False" CssClass="table table-bordered bs-table" >
+                                            <AlternatingRowStyle BackColor="White" />
+                                            <RowStyle BackColor="white" />
+                                            <SelectedRowStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                                            <HeaderStyle BackColor="#1C2833" Font-Bold="True" ForeColor="White" />
+                                          <Columns>
+                                                <asp:BoundField DataField="PPRO_CODIGO" HeaderText="Código" />
+                                                <asp:BoundField DataField="PF_TITULO" HeaderText="Título" />
+                                                <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Documento">
+                                                    <ItemTemplate>
+                                                        <asp:LinkButton ID="LBdescarga" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("PPRO_CODIGO") %>'></asp:LinkButton></ItemTemplate>
+                                                </asp:TemplateField>
+                                            </Columns>
+                                        </asp:GridView>
+                                   </div>
 
                                     <div id="MostrarDDLestadoP" runat="server" visible="false" style="text-align: center;">
                                         <asp:DropDownList ID="DDLestadoP" class="btn btn-secondary btn-lg dropdown-toggle" runat="server">
@@ -110,8 +121,6 @@
                                     <br />
                                     <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Green" Font-Bold="True"></asp:Label>
                                     <asp:HiddenField ID="Metodo" runat="server" Value="" />
-                                    <asp:HiddenField ID="Titulo" runat="server" Value="" />
-
                                 </div>
                             </div>
                         </div>

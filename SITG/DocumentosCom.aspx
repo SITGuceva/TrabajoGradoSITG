@@ -2,6 +2,11 @@
 
 <asp:Content ID="Documentoscom" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="COMITÉ" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol comité." ></asp:Label>
+        </div>
+    </div>
+    <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Documentos - Documentos</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPdocumentoscom" runat="server">
@@ -35,6 +40,7 @@
                                                             <asp:ListItem Value="0" Text="Seleccione" />
                                                             <asp:ListItem Value="1" Text="Aprobado" />
                                                             <asp:ListItem Value="2" Text="Rechazado" />
+                                                             <asp:ListItem Value="3" Text="Pendiente" />
                                                         </asp:DropDownList>
                                                     </asp:TableCell>
                                                     <asp:TableCell>
@@ -77,10 +83,13 @@
                                                 <Columns>
                                                     <asp:BoundField DataField="APRO_CODIGO" HeaderText="Código" />
                                                     <asp:BoundField DataField="ANP_NOMBRE" HeaderText="Título" />
-                                                    <asp:BoundField DataField="FECHA" HeaderText="Fecha" />
+                                                    <asp:BoundField DataField="FECHA" HeaderText="Fecha Entrega" />
                                                     <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
                                                     <asp:BoundField DataField="APROBACION" HeaderText="Aprobación Director" />
                                                     <asp:BoundField DataField="REVISOR" HeaderText="Revisor" />
+                                                     <asp:BoundField DataField="FASIGNADO" HeaderText="Fecha Asignación" />
+                                                     <asp:BoundField DataField="FRPTA" HeaderText="Fecha Respuesta" />
+                                                     <asp:BoundField DataField="FENVIO" HeaderText="Fecha Envío" />
                                                 </Columns>
                                             </asp:GridView>
                                         </div>

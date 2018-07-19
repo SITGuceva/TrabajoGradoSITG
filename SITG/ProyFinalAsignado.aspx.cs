@@ -56,7 +56,7 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo, P.Pf_Fecha, P.Pf_Estado, P.Pf_Aprobacion from proyecto_final p, jurado j WHERE J.Usu_Username = '" + Session["id"] + "' and J.Ppro_Codigo = P.Ppro_Codigo and P.Pf_Estado = 'PENDIENTE' and P.Pf_Aprobacion = 'APROBADO' and J.Jur_Revisado = 'PENDIENTE'";
+                string sql = "select Distinct P.Ppro_Codigo, P.Pf_Titulo, P.Pf_Fecha, InitCap(P.Pf_Estado) as estado, InitCap(P.Pf_Aprobacion) as aprobacion from proyecto_final p, jurado j WHERE J.Usu_Username = '" + Session["id"] + "' and J.Ppro_Codigo = P.Ppro_Codigo and P.Pf_Estado = 'PENDIENTE' and P.Pf_Aprobacion = 'APROBADO' and J.Jur_Revisado = 'PENDIENTE'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader())
@@ -150,10 +150,11 @@ public partial class ProyFinalAsignado : System.Web.UI.Page
     }
     private void CambiaEstado()
     {
-        string revision = "update jurado set jur_revisado='REVISADO' where ppro_codigo='" + Metodo.Value + "' and usu_username='" + Session["id"] + "'";
+        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+        string revision = "update jurado set jur_revisado='REVISADO',  jur_fenvio= TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS') where ppro_codigo='" + Metodo.Value + "' and usu_username='" + Session["id"] + "'";
         Ejecutar("", revision);
 
-        string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
+        
         string sql = "select Jur_Num from jurado where Usu_Username = '" + Session["id"] + "' and Ppro_Codigo = '" + Metodo.Value + "'";
         List<string> list = con.consulta(sql, 1, 1);
         int num = Convert.ToInt32(list[0]);

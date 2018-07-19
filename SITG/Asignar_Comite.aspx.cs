@@ -97,6 +97,7 @@ public partial class Asignar_Comite : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
         CargarComite();
     }
 
@@ -199,6 +200,7 @@ public partial class Asignar_Comite : Conexion
                 Ejecutar("", sql);
             }
         }
+        conn.Close();
     }
 
     /*Metodos que sirven para saber si el usuario tiene un comite*/

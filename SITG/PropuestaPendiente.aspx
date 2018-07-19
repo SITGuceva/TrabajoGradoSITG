@@ -2,6 +2,11 @@
 
 <asp:Content ID="PropuestaPendiente" ContentPlaceHolderID="MainContent" runat="Server">
     <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="COMITÉ" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol comité." ></asp:Label>
+        </div>
+    </div>
+    <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Reunión - Propuestas Pendientes</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPproppendi" runat="server"> <ContentTemplate>
@@ -28,7 +33,7 @@
                                             <asp:BoundField DataField="PROP_CODIGO" HeaderText="Código" />
                                             <asp:BoundField DataField="PROP_TITULO" HeaderText="Título" />
                                             <asp:BoundField DataField="PROP_FECHA" HeaderText="Fecha" />
-                                            <asp:BoundField DataField="PROP_ESTADO" HeaderText="Estado" />
+                                            <asp:BoundField DataField="PESTADO" HeaderText="Estado" />
                                             <asp:BoundField DataField="DIRECTOR" HeaderText="Director" />
                                             <asp:BoundField DataField="ESTADO" HeaderText="Estado Director" />
                                             <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Revisar">

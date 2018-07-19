@@ -25,7 +25,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             }
         }
         ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
-        scriptManager.RegisterPostBackControl(this.LBdescarga);
+        scriptManager.RegisterPostBackControl(this.GVpf);
     }
 
     /*Metodos que se encargan de proyectos final pendientes al director*/
@@ -42,7 +42,6 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             int index = Convert.ToInt32(e.CommandArgument);
             GridViewRow row = GVproyfinalp.Rows[index];
             Metodo.Value = row.Cells[0].Text; //obtiene el codigo del pf en la tabla         
-            Titulo.Value = row.Cells[1].Text; //obtiene el titulo del pf en la tabla
             ResultadoContenidoP();
         }
     }
@@ -74,9 +73,27 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
     /*Metodos para la informacion de un pf especifico*/
     private void ResultadoContenidoP()
     {
-        CodigoP.Text = Metodo.Value;    
-        TituloP.Text = Titulo.Value;
-  
+        try{
+            OracleConnection conn = con.crearConexion();
+            OracleCommand cmd = null;
+            if (conn != null){
+                string sql = "select  PPRO_CODIGO, PF_TITULO from  proyecto_final  WHERE  PPRO_CODIGO = '" + Metodo.Value + "'";
+                cmd = new OracleCommand(sql, conn);
+                cmd.CommandType = CommandType.Text;
+                using (OracleDataReader reader = cmd.ExecuteReader())
+                {
+                    DataTable dataTable = new DataTable();
+                    dataTable.Load(reader);
+                    GVpf.DataSource = dataTable;
+                }
+                GVpf.DataBind();
+            }
+            conn.Close();
+        } catch (Exception ex){
+            Linfo.Text = "Error al cargar la lista: " + ex.Message;
+        }
+
+
         InformacionP.Visible = true;
         MostrarDDLestadoP.Visible = true;
         Terminar.Visible = true;
@@ -90,7 +107,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
         WebClient request = new WebClient();
         request.Credentials = new NetworkCredential(list[0], list[1]);
 
-        string sql = "select PF_NOMARCHIVO, PF_DOCUMENTO, PF_TIPO FROM PROYECTO_FINAL WHERE PPRO_CODIGO=" + CodigoP.Text + "";
+        string sql = "select PF_NOMARCHIVO, PF_DOCUMENTO, PF_TIPO FROM PROYECTO_FINAL WHERE PPRO_CODIGO=" + Metodo.Value + "";
         List<string> pf = con.consulta(sql, 3, 0);
         fileName = pf[0];
         ruta = pf[1];
@@ -138,7 +155,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             OracleConnection conn = con.crearConexion();
             OracleCommand cmd = null;
             if (conn != null){
-                string sql = " SELECT PFOBS_CODIGO, PFOBS_DESCRIPCION FROM PF_OBSERVACIONES WHERE PPRO_CODIGO = '" + CodigoP.Text + "'";
+                string sql = " SELECT PFOBS_CODIGO, PFOBS_DESCRIPCION FROM PF_OBSERVACIONES WHERE PPRO_CODIGO = '" + Metodo.Value + "'";
                 cmd = new OracleCommand(sql, conn);
                 cmd.CommandType = CommandType.Text;
                 using (OracleDataReader reader = cmd.ExecuteReader()){
@@ -166,6 +183,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowUpdating(object sender, GridViewUpdateEventArgs e) {
         OracleConnection conn = con.crearConexion();
@@ -182,6 +200,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
                 cargarTabla();
             }
         }
+        conn.Close();
     }
     protected void GVobservacion_RowEditing(object sender, GridViewEditEventArgs e)
     {
@@ -209,7 +228,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "No se puede agregar una observacion vacia";
         } else  {         
-            string sql = "insert into pf_observaciones (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBdescripcion.Value.ToLower() + "','" + CodigoP.Text + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'DIRECTOR')";
+            string sql = "insert into pf_observaciones (PFOBS_CODIGO, PFOBS_DESCRIPCION, PPRO_CODIGO ,PFOBS_FECHA, PFOBS_REALIZADA) values (OBSPROYFID.nextval,'" + TBdescripcion.Value.ToLower() + "','" + Metodo.Value + "',TO_DATE( '" + fecha + "', 'YYYY-MM-DD HH24:MI:SS'), 'DIRECTOR')";
             Ejecutar("", sql);
             TBdescripcion.Value = "";
             Resultado.Visible = true;
@@ -229,7 +248,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
     }
     protected void btnDummy_Click(object sender, EventArgs e) {
         string fecha = DateTime.Now.ToString("yyyy/MM/dd, HH:mm:ss");
-        string sql = "update proyecto_final set pf_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where ppro_codigo='" + CodigoP.Text + "'";
+        string sql = "update proyecto_final set pf_aprobacion ='" + DDLestadoP.Items[DDLestadoP.SelectedIndex].Value.ToString() + "' where ppro_codigo='" + Metodo.Value + "'";
         Ejecutar("El proyecto final ha sido revisado con exito, presione click en regresar para revisar otro proyecto final", sql);
 
         Resultado.Visible = false;
@@ -249,6 +268,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
         ResultadoConsulta();
         Consulta.Visible = true;
         DDLestadoP.SelectedIndex = 0;
+        Metodo.Value = "";
     }
     protected void regresar(object sender, EventArgs e)
     {
@@ -256,6 +276,7 @@ public partial class ProcesoProyectoF : System.Web.UI.Page
         IBregresar.Visible = false;
         ResultadoConsulta();
         Consulta.Visible = true;
+        Metodo.Value = "";
     }
 
    

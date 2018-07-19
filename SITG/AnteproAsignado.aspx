@@ -2,6 +2,11 @@
 
 <asp:Content ID="AnteproyectoAsignado" ContentPlaceHolderID="MainContent" Runat="Server">
     <div class="panel panel-default">
+        <div class="panel-body" style="margin-left: auto; margin-right: auto; text-align: center;"> 
+            <asp:Label ID="Ltitle" runat="server"  Text="EVALUADOR" Font-Bold="True" Font-Italic="True" Font-Size="Medium" ForeColor="#333333" ToolTip="La opción pertenece al rol evaluador." ></asp:Label>
+        </div>
+    </div>
+    <div class="panel panel-default">
         <div class="panel-heading" style="background-color:#1C2833 ;color:white">Gestionar Documentos - Anteproyectos Asignados</div>
         <div class="panel-body">
             <asp:UpdatePanel ID="UPanteasignado" runat="server"> <ContentTemplate>
@@ -89,9 +94,11 @@
                                             <Columns>
                                                 <asp:BoundField DataField="APRO_CODIGO" HeaderText="Código" />
                                                 <asp:BoundField DataField="ANP_NOMBRE" HeaderText="Título" />
-                                                <asp:BoundField DataField="ANP_FECHA" HeaderText="Fecha" />
                                                 <asp:BoundField DataField="APROBACION" HeaderText="Aprobación Director" />
                                                 <asp:BoundField DataField="ESTADO" HeaderText="Estado" />
+                                                <asp:BoundField DataField="FASIGNADO" HeaderText="Fecha Asignación" />
+                                                <asp:BoundField DataField="FRPTA" HeaderText="Fecha Respuesta" />
+                                                <asp:BoundField DataField="FENVIO" HeaderText="Fecha Envío" />
                                                 <asp:TemplateField ItemStyle-HorizontalAlign="Center" HeaderText="Documento">
                                                     <ItemTemplate>
                                                         <asp:LinkButton ID="lnkDownload" runat="server" Text="Descargar" OnClick="DownloadFile" CommandArgument='<%# Eval("APRO_CODIGO") %>'></asp:LinkButton>

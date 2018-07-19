@@ -25,6 +25,10 @@ public partial class CambiarPass : Conexion
             Linfo.Text = "Los campos son obligatorios";
         }else { 
             if (TBpassnueva.Text.Equals(TBpassnueva2.Text)){
+                string pass = con.GetMD5(TBpassactual.Text);
+                string passnueva = con.GetMD5(TBpassnueva.Text);
+                string sql = "UPDATE USUARIO SET USU_CONTRASENA='" + passnueva + "' WHERE USU_USERNAME='" + Session["id"].ToString() + "' AND USU_CONTRASENA='" + pass + "'";
+                HFcontra.Value = con.IngresarBD(sql);
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "myconfirmbox", "myconfirmbox();", true);
             }else{
                 Linfo.ForeColor = System.Drawing.Color.Red;
@@ -35,21 +39,18 @@ public partial class CambiarPass : Conexion
         }
     }
     protected void btnDummy_Click(object sender, EventArgs e) {
-        string pass = con.GetMD5(TBpassactual.Text);
-        string passnueva = con.GetMD5(TBpassnueva.Text);
-        string sql = "UPDATE USUARIO SET USU_CONTRASENA='" + passnueva + "' WHERE USU_USERNAME='" + Session["id"].ToString() + "' AND USU_CONTRASENA='" + pass + "'";
-        string info = con.IngresarBD(sql);
-        if (info.Equals("Funciono")) {
+        if (HFcontra.Value.Equals("Funciono")) {
             Linfo.ForeColor = System.Drawing.Color.Green;
             Linfo.Text = "La contraseña ha sido actualizada satisfactoriamente";
             TBpassactual.Text = "";
             TBpassnueva.Text = "";
-            TBpassnueva2.Text = "";
+            TBpassnueva2.Text = "";    
         } else{
             Linfo.ForeColor = System.Drawing.Color.Red;
             Linfo.Text = "Contraseña incorrecta";
             TBpassactual.Text = "";
         }
+        HFcontra.Value = "";
     }
     protected void Limpiar(object sender, EventArgs e)
     {

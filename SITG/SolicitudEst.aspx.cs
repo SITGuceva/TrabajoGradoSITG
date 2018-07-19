@@ -53,6 +53,7 @@ public partial class GDirEst : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*Metodos que manejar la interfaz del solicitar - consultar*/

@@ -50,6 +50,7 @@
                                     </div>
 
                                     <asp:Label ID="Linfo" runat="server" Text="" ForeColor="Red" Font-Bold="True"></asp:Label>
+                                    <asp:HiddenField ID="HFcontra" runat="server" />
                                 </div>
                             </div>
                         </div>

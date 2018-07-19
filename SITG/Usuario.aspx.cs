@@ -55,7 +55,7 @@ public partial class Usuario : Conexion
             guardarusuario();
         }else{
             Linfo.ForeColor = System.Drawing.Color.Red;
-            Linfo.Text = "Ya existe un usuario con el codigo ingresado";
+            Linfo.Text = "Ya existe un usuario con el código ingresado";
             TBcodigo.Text = "";
         }
         
@@ -86,6 +86,9 @@ public partial class Usuario : Conexion
                 DDLfacultad.SelectedIndex = 0;
             }
         }
+        string msj = "El usuario ha sido creado para ingresar al sistema de información de trabajos de grado de FACAEC. " +
+            " Su código de acceso es: " + TBcodigo.Text + " y la contraseña es la misma que el código. Recuerde que debe cambiar la contraseña apenas inicie sesión. ";
+        con.EnviarCorreo(TBcorreo.Text, "BIENVENIDO A SITG", msj );
         borrardatos();
     }
     protected void DDLrol_SelectedIndexChanged(object sender, EventArgs e)/*evento del ddl para cuando selecciona un item*/
@@ -214,6 +217,7 @@ public partial class Usuario : Conexion
                 }
             }
         }
+        conn.Close();
     }
     protected void GVusuarios_RowEditing(object sender, GridViewEditEventArgs e)
     {

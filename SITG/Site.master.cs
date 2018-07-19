@@ -134,6 +134,7 @@ public partial class SiteMaster : MasterPage
                     }
                     drc1.Close();
                 }
+                conn.Close();
             }catch (Exception ex){ Response.Write(ex.StackTrace);}
         }
 

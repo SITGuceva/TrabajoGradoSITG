@@ -77,6 +77,7 @@ public partial class Propuesta : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
     private void RevisarRechaza(){
         OracleConnection conn = con.crearConexion();
@@ -103,6 +104,7 @@ public partial class Propuesta : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*Metodo para saber si ya se tiene una solicitud y depende del estado se habilita la opcion*/
@@ -133,6 +135,7 @@ public partial class Propuesta : Conexion
             }
             drc1.Close();
         }
+        conn.Close();
     }
 
     /*Evento que envia la solicitud*/

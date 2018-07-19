@@ -370,6 +370,7 @@ public partial class PeticionDir : Conexion
                 PeticionEstudiante();
             }
         }
+        conn.Close();
     }
    
 }

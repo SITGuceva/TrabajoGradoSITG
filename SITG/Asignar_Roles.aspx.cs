@@ -209,6 +209,7 @@ public partial class Asignar_Roles : Conexion
                 CargarDDLRoles();
             }
         }
+        conn.Close();
     }
     private void EliminarRoles(){
         List<string> rolparticular = con.consulta("select usu_username from profesor where usu_username= '"+TBcodigo.Text+"'",1,1);
