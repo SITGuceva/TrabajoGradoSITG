@@ -530,7 +530,7 @@ public partial class ProyectoFinal : Conexion
              }
              Response.Clear();
              Response.ContentType = "application/octet-stream";
-             Response.AddHeader("content-disposition", "attachment;filename= ActaReunion.pdf");
+             Response.AddHeader("content-disposition", "attachment;filename= Certificado.pdf");
              Response.Buffer = true;
              Response.Clear();
              var bytes = ms.ToArray();
